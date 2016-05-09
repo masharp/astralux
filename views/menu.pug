@@ -1,0 +1,25 @@
+doctype html
+html
+  head
+    title= title
+
+    meta(charset='utf-8')
+    meta(name='description', content='Find your favorite moonlet in far off galaxies. Buy now and stake out your claim!')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0')
+    script(type='application/ld+json').
+      {
+        "@context": "http://schema.org",
+        "@type": "Organization",
+        "url": "http://astralux.herokuapp.com",
+        "founder": "Michael Sharp (@sharp_mi)",
+        "name": "Astralux",
+        "alternateName": "Astralux | Moonlet Marketplace",
+        "logo": ""
+      }
+
+    link(rel='stylesheet', type='text/css', href='https://fonts.googleapis.com/css?family=Montserrat')\
+    link(rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css')
+    link(rel='stylesheet', href='/stylesheets/global/global.css')
+
+    body
+      block content

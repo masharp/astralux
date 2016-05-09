@@ -2,9 +2,9 @@
   "name": "astralux",
   "version": "0.0.1",
   "private": true,
-  "homepage": "",
+  "homepage": "http://astralux.herokuapp.com",
   "bugs": {
-    "url": ""
+    "url": "https://github.com/masharp/astralux/issues"
   },
   "author": "Michael Sharp (http://www.softwareontheshore.com)",
   "license": "MIT",
@@ -20,7 +20,7 @@
     "bundle-about": "browserify ./scripts/about.js -t babelify --outfile ./public/javascripts/about/bundle-about.js && minify ./public/javascripts/about/bundle-about.js",
     "start": "node ./bin/www",
     "test": "jasmine JASMINE_CONFIG_PATH=test/jasmine.json",
-    "sass": "sass --watch ./public/stylesheets/style.scss:./public/stylesheets/style.css --style compressed",
+    "sass-global": "sass --watch ./public/stylesheets/global/global.scss:./public/stylesheets/global/global.css --style compressed"
   },
   "engines": {
     "node": "~6.0.0",
@@ -44,12 +44,12 @@
     "debug": "^2.2.0",
     "dotenv": "^2.0.0",
     "express": "^4.13.4",
-    "jade": "^1.11.0",
     "morgan": "^1.7.0",
+    "pug": "^2.0.0-alpha7",
     "react": "^0.14.7",
     "react-dom": "^0.14.7",
     "request": "^2.69.0",
-    "serve-favicon": "^2.3.0",
+    "serve-favicon": "^2.3.0"
   },
   "devDependencies": {
     "babel-cli": "^6.6.5",
