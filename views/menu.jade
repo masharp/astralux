@@ -1,0 +1,56 @@
+doctype html
+
+html
+  head
+    title= title
+    
+    meta(charset='utf-8')
+    meta(name='description', content='Find your favorite moonlet in far off galaxies. Buy now and stake out your claim!')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0')
+    script(type='application/ld+json').
+      {
+        "@context": "http://schema.org",
+        "@type": "Organization",
+        "url": "http://www.makertowns.com",
+        "founder": "Michael Sharp (@sharp_mi)",
+        "name": "Astralux",
+        "alternateName": "Astralux | Moonlet Marketplace",
+        "logo": ""
+      }
+    
+    //Fonts
+    link(href='https://fonts.googleapis.com/css?family=Asap:400italic' rel='stylesheet' type='text/css')
+    link(href='https://fonts.googleapis.com/css?family=Roboto:300', rel='stylesheet', type='text/css')
+    link(rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css')
+    
+    //jQuery
+    script(src='https://code.jquery.com/jquery-2.2.3.min.js' integrity='sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo=' crossorigin='anonymous')
+    
+    //Bootstrap
+    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css')
+    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js')
+    
+    //Jasny-Plugin
+    link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/jasny-bootstrap/3.1.3/css/jasny-bootstrap.min.css')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/jasny-bootstrap/3.1.3/js/jasny-bootstrap.min.js')
+    
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    
+    body
+      nav#sidebar.navmenu.navmenu-default.navmenu-fixed-left.offcanvas(role='navigation')
+        #sidebar-close(type='button', data-toggle='offcanvas', data-target='#sidebar') #[i.fa.fa-times]
+        a(href='/') #[img.brand-logo(src='/assets/main_logo.png')]
+        br
+        #menu-loader
+      
+      #top-menu
+        a#sidebar-toggle(data-toggle='offcanvas', data-target='#sidebar', data-canvas='body') #[i.fa.fa-bars]
+        a#map-toggle(href='/') #[i.fa.fa-globe]
+        #social-top.pull-right
+          a#twitter.social(href='https://twitter.com/makertowns', target='_blank') #[i.fa.fa-twitter]
+          a#facebook.social(href='https://www.facebook.com/MakerTowns/', target='_blank') #[i.fa.fa-facebook]
+          a#github.social(href='https://github.com/masharp/maker-towns', target='_blank') #[i.fa.fa-github]
+
+      script(src='/javascripts/menu/bundle-menu.min.js')
+      
+      block content
