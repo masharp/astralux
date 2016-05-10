@@ -39,14 +39,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 /* express.static for setting browser cache headers, currently cacheing all
  * public scripts, css, and images.
  */
-app.use(express.static(path.join(__dirname, 'public'), { maxAge: oneMinute * 10 }));
-
-/* CORS fix for a cross origin error I was getting on mobile
-app.use(function(request, response, next) {
-  response.header('Access-Control-Allow-Origin', '*');
-  response.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  next();
-}); */
+app.use(express.static(path.join(__dirname, 'public'), { maxAge: 0}));
 
 /* HTTP page routing */
 app.use('/', index);

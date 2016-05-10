@@ -61,9 +61,6 @@
     "expect": "^1.16.0",
     "frisby": "^0.8.5",
     "jasmine": "^2.4.1",
-    "jasmine-core": "^2.4.1",
-    "karma": "^0.13.22",
-    "karma-jasmine": "^0.3.8",
-    "karma-phantomjs-launcher": "^1.0.0"
+    "jasmine-core": "^2.4.1"
   }
 }
