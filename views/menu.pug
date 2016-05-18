@@ -22,5 +22,13 @@ html
     link(rel='stylesheet', href='/stylesheets/global/global.css')
 
     body
-      block content
+      header
+        #menu
+          a.navlink(href='/') #[image.brand-img(src='/assets/brand.png')]
+          #link-nav
+            a.navlink.hidden(href='') Logout
+            a.navlink.login(href='/login') Login
+            a.navdrop.navlink(href='') Menu
+
       script(src='/javascripts/menu/bundle-menu.min.js')
+      block content

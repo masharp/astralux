@@ -43,6 +43,10 @@ app.use(express.static(path.join(__dirname, 'public'), { maxAge: 0}));
 
 /* HTTP page routing */
 app.use('/', index);
+app.use('/login', index);
+app.use('/marketplace', index);
+app.use('/dashboard', index);
+app.use('/about', index);
 app.use('/robots.txt', index);
 app.use('/sitemap.txt', index);
 

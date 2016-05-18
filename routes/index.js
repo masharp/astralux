@@ -10,10 +10,35 @@ const express = require('express');
 const router = express.Router();
 const dotenv = require('dotenv'); dotenv.config();
 
+/* Home Page */
+router.get('/', (request, response) => {
+  response.render('home', { title: 'Astralux - A moonlet Marketplace of the Future' });
+});
+
+/* Login Page */
+router.get('/login', (request, response) => {
+  response.render('login', { title: 'Astralux Login | A moonlet Marketplace of the Future' });
+});
+
+/* Dashboard Page */
+router.get('/dashboard', (request, response) => {
+  response.render('dashboard', { title: 'Astralux Dashboard | A moonlet Marketplace of the Future' });
+});
+
+/* Marketplace Page */
+router.get('/marketplace', (request, response) => {
+  response.render('marketplace', { title: 'Astralux Marketplace | A moonlet Marketplace of the Future' });
+});
+
+/* Marketplace Page */
+router.get('/about', (request, response) => {
+  response.render('about', { title: 'Astralux About | A moonlet Marketplace of the Future' });
+});
+
 /* handle web crawlers */
 router.get('/robots.txt', (request, response) => {
   response.type('text/plain');
-  response.send('User-agent: *\nDisallow: /api/');
+  response.send('User-agent: *\nDisallow:');
 });
 
 /* displays the sitemap */
@@ -26,11 +51,6 @@ router.get('/sitemap.txt', (request, response) => {
 router.get('/error', (request, response) => {
   response.render('error', { message: 'Something went wrong here!', title: 'Astralux - Critical Error!',
     error: { status: 500 } });
-});
-
-/* Home Page */
-router.get('/', (request, response) => {
-  response.render('home', { title: 'Astralux - A moonlet Marketplace of the Future' });
 });
 
 module.exports = router;

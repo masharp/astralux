@@ -1,5 +1,73 @@
+/* http://paletton.com/#uid=75m0u0kllllfpbJf-gFr6q0uXt1 */
 $font: 'Montserrat', sans-serif;
+
+$font-color: #FFFFFF;
+$link-color: #05A252;
+
+$primary-color: #953255;
+$secondary-color: #B61C52;
+$tertiary-color: #743C50;
+$quadrary-color: #28774F;
 
 body, html {
   font-family: $font;
+  font-size: 15px;
+  background-color: $primary-color;
+  color: $font-color;
+  overflow-x: hidden;
+}
+.hidden {
+  display: none;
+}
+header {
+  width: 100%;
+  height: 10%;
+  background-color: $quadrary-color;
+  position: fixed;
+  z-index: 100;
+  top: 0;
+  left: 0;
+}
+#menu {
+  background-color: $quadrary-color;
+  padding: 1em;
+
+  .brand-img {
+    width: auto;
+    height: 50px;
+  }
+  #link-nav {
+    float: right;
+    margin-top: 1em;
+    margin-right: 1em;
+
+    .navlink {
+      margin-left: .5em;
+      margin-right: .5em;
+      color: $font-color;
+      text-decoration: none;
+    }
+    .marketplace {
+    }
+    .login {
+    }
+  }
+}
+
+#error {
+  margin-top: 8em;
+  text-align: center;
+  font-size: 1.5em;
+
+  .footer {
+    font-size: .8em;
+    margin-top: 10em;
+    text-align: center;
+
+    a {
+      color: $link-color;
+      text-decoration: none;
+      &:hover { text-decoration: underline; }
+    }
+  }
 }
