@@ -1,3 +1,7 @@
 extends menu
 block content
   #home
+
+  script(type='text/javascript').
+    const credentials = !{ JSON.stringify(credentials) };
+  script(src='/javascripts/home/bundle-home.js')

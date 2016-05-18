@@ -12,7 +12,12 @@ const dotenv = require('dotenv'); dotenv.config();
 
 /* Home Page */
 router.get('/', (request, response) => {
-  response.render('home', { title: 'Astralux - A moonlet Marketplace of the Future' });
+  const credentials = {
+    username: process.env.MASTER_USERNAME,
+    password: process.env.MASTER_PASSWORD
+  };
+
+  response.render('home', { title: 'Astralux - A moonlet Marketplace of the Future', credentials });
 });
 
 /* Login Page */
