@@ -79,6 +79,14 @@ header {
       }
     }
     #home-featured {
+      .moonlet-display {
+        text-align: center;
+        
+        .moonlet-display-img {
+          width: auto;
+          height: 10em;
+        }
+      }
 
     }
   }

@@ -1,12 +1,12 @@
 'use strict';
 
 import PageFooter from './components/PageFooter';
-
+import Moonlet from './components/moonlets/Moonlet'
 const React = require('react');
 const ReactDOM = require('react-dom');
 const Request = require('request');
 
-const ASTRALUX_API = 'astralux-api.herokuapp.com/api/v1.0/moonlets';
+const ASTRALUX_API = 'http://astralux-api.herokuapp.com/api/v1.0/moonlets';
 
 class Home extends React.Component {
   constructor(props) {
@@ -16,15 +16,22 @@ class Home extends React.Component {
   componentDidMount() {
     const username = this.props.apiCredentials.username;
     const password = this.props.apiCredentials.password;
-    const url = `http://${username}:${password}@${this.props.apiURL}`;
+    const url = this.props.apiURL;
+    const self = this;
 
-    Request({ url }, (error, response, body) => {
-      console.log(response);
-      console.log(body);
-    });
+    function callback(error, response, body) {
+      const content = JSON.parse(body);
+      if (error || !content.moonlets) window.location.href = '/error';
+
+      const featured = content.moonlets.slice(0, 3);
+      self.setState({ featured });
+    }
+
+    Request(url, callback).auth(username, password, true);
   }
   render() {
     if (this.state.featured !== null) {
+
       return (
         React.createElement('div', { id: 'home-component' },
           React.createElement('div', { id: 'home-header' },
@@ -39,7 +46,11 @@ class Home extends React.Component {
               )
             )
           ),
-          React.createElement('div', { id: 'home-featured' }),
+          React.createElement('div', { id: 'home-featured' },
+            React.createElement(Moonlet, { moonlet: this.state.featured[0] }),
+            React.createElement(Moonlet, { moonlet: this.state.featured[1] }),
+            React.createElement(Moonlet, { moonlet: this.state.featured[2] })
+          ),
           React.createElement(PageFooter, null)
         )
       );

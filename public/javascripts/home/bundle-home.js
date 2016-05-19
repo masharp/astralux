@@ -78612,11 +78612,37 @@ function PageFooter() {
 },{"react":366}],443:[function(require,module,exports){
 'use strict';
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = Moonlet;
+/**
+ * Module that exports the reusable Moonlet element
+ *
+ * @return {object} Component's React element
+ */
+var React = require('react');
+
+function Moonlet(props) {
+  return React.createElement('div', { className: 'moonlet-display' }, React.createElement('h2', { className: 'moonlet-display-name' }, props.moonlet.display_name), React.createElement('h3', { className: 'moonlet-display-class' }, props.moonlet.classification), React.createElement('img', { className: 'moonlet-display-img', src: props.moonlet.img_src }), React.createElement('span', { className: 'moonlet-display-desc' }, props.moonlet.description), React.createElement('span', { className: 'moonlet-display-price' }, props.moonlet.price), React.createElement('span', { className: 'moonlet-display-color' }, props.moonlet.color), React.createElement('input', { type: 'button', className: 'moonlet-display-btn', value: 'Buy' }));
+}
+
+Moonlet.propTypes = {
+  moonlet: React.PropTypes.object
+};
+
+},{"react":366}],444:[function(require,module,exports){
+'use strict';
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _PageFooter = require('./components/PageFooter');
 
 var _PageFooter2 = _interopRequireDefault(_PageFooter);
+
+var _Moonlet = require('./components/moonlets/Moonlet');
+
+var _Moonlet2 = _interopRequireDefault(_Moonlet);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -78630,7 +78656,7 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var Request = require('request');
 
-var ASTRALUX_API = 'astralux-api.herokuapp.com/api/v1.0/moonlets';
+var ASTRALUX_API = 'http://astralux-api.herokuapp.com/api/v1.0/moonlets';
 
 var Home = function (_React$Component) {
   _inherits(Home, _React$Component);
@@ -78649,18 +78675,25 @@ var Home = function (_React$Component) {
     value: function componentDidMount() {
       var username = this.props.apiCredentials.username;
       var password = this.props.apiCredentials.password;
-      var url = 'http://' + username + ':' + password + '@' + this.props.apiURL;
+      var url = this.props.apiURL;
+      var self = this;
 
-      Request({ url: url }, function (error, response, body) {
-        console.log(response);
-        console.log(body);
-      });
+      function callback(error, response, body) {
+        var content = JSON.parse(body);
+        if (error || !content.moonlets) window.location.href = '/error';
+
+        var featured = content.moonlets.slice(0, 3);
+        self.setState({ featured: featured });
+      }
+
+      Request(url, callback).auth(username, password, true);
     }
   }, {
     key: 'render',
     value: function render() {
       if (this.state.featured !== null) {
-        return React.createElement('div', { id: 'home-component' }, React.createElement('div', { id: 'home-header' }, React.createElement('img', { src: '/assets/home.png', id: 'home-img' }), React.createElement('div', { id: 'home-copy' }, React.createElement('h1', { className: 'copy-header' }, 'Astralux Industries'), React.createElement('p', { className: 'copy' }, 'Brave space explorers have discovered Moonlets in the far reaches of the galaxy! ' + 'The United Nations Galactic Agency has commissioned Astralux to sell rights to these ' + 'countless wonders in hopes to fund colonization efforts. Stake your claim and grab your ' + 'moonlet today!'))), React.createElement('div', { id: 'home-featured' }), React.createElement(_PageFooter2.default, null));
+
+        return React.createElement('div', { id: 'home-component' }, React.createElement('div', { id: 'home-header' }, React.createElement('img', { src: '/assets/home.png', id: 'home-img' }), React.createElement('div', { id: 'home-copy' }, React.createElement('h1', { className: 'copy-header' }, 'Astralux Industries'), React.createElement('p', { className: 'copy' }, 'Brave space explorers have discovered Moonlets in the far reaches of the galaxy! ' + 'The United Nations Galactic Agency has commissioned Astralux to sell rights to these ' + 'countless wonders in hopes to fund colonization efforts. Stake your claim and grab your ' + 'moonlet today!'))), React.createElement('div', { id: 'home-featured' }, React.createElement(_Moonlet2.default, { moonlet: this.state.featured[0] }), React.createElement(_Moonlet2.default, { moonlet: this.state.featured[1] }), React.createElement(_Moonlet2.default, { moonlet: this.state.featured[2] })), React.createElement(_PageFooter2.default, null));
       }
       return React.createElement('div', null);
     }
@@ -78679,4 +78712,4 @@ Home.propTypes = {
 
 ReactDOM.render(React.createElement(Home, { apiURL: ASTRALUX_API, apiCredentials: credentials }), document.getElementById('home'));
 
-},{"./components/PageFooter":442,"react":366,"react-dom":237,"request":377}]},{},[443]);
+},{"./components/PageFooter":442,"./components/moonlets/Moonlet":443,"react":366,"react-dom":237,"request":377}]},{},[444]);
