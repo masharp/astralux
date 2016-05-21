@@ -17,6 +17,15 @@ class Home extends React.Component {
     const username = this.props.apiCredentials.username;
     const password = this.props.apiCredentials.password;
     const url = this.props.apiURL;
+    const options = {
+      url,
+      headers: {
+        'Content-Type': 'application/json;charset=UTF-8',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET',
+        'Access-Control-Allow-Headers': 'Content-Type, Content-Range, Content-Disposition, Content-Description'
+      }
+    };
     const self = this;
 
     function callback(error, response, body) {
@@ -27,7 +36,7 @@ class Home extends React.Component {
       self.setState({ featured });
     }
 
-    Request(url, callback).auth(username, password, true);
+    Request.get(options, callback).auth(username, password, true);
   }
   render() {
     if (this.state.featured !== null) {

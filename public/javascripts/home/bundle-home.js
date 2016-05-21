@@ -78676,6 +78676,15 @@ var Home = function (_React$Component) {
       var username = this.props.apiCredentials.username;
       var password = this.props.apiCredentials.password;
       var url = this.props.apiURL;
+      var options = {
+        url: url,
+        headers: {
+          'Content-Type': 'application/json;charset=UTF-8',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET',
+          'Access-Control-Allow-Headers': 'Content-Type, Content-Range, Content-Disposition, Content-Description'
+        }
+      };
       var self = this;
 
       function callback(error, response, body) {
@@ -78686,7 +78695,7 @@ var Home = function (_React$Component) {
         self.setState({ featured: featured });
       }
 
-      Request(url, callback).auth(username, password, true);
+      Request.get(options, callback).auth(username, password, true);
     }
   }, {
     key: 'render',
