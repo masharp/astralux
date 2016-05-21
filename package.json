@@ -17,6 +17,7 @@
     "bundle-dash": "browserify ./scripts/dashboard.js -t babelify --outfile ./public/javascripts/dashboard/bundle-dashboard.js && minify ./public/javascripts/dashboard/bundle-dashboard.js",
     "bundle-menu": "browserify ./scripts/menu.js -t babelify --outfile ./public/javascripts/menu/bundle-menu.js && minify ./public/javascripts/menu/bundle-menu.js",
     "bundle-home": "browserify ./scripts/home.js -t babelify --outfile ./public/javascripts/home/bundle-home.js && minify ./public/javascripts/home/bundle-home.js",
+    "bundle-login": "browserify ./scripts/login.js -t babelify --outfile ./public/javascripts/login/bundle-login.js && minify ./public/javascripts/login/bundle-login.js",
     "start": "node ./bin/www",
     "test": "jasmine JASMINE_CONFIG_PATH=test/jasmine.json",
     "sass-global": "atom ./public/stylesheets/global/global.scss && sass --watch ./public/stylesheets/global/global.scss:./public/stylesheets/global/global.css --style compressed",

@@ -36,17 +36,18 @@ header {
     width: auto;
     height: 50px;
   }
+  .navlink {
+    margin-left: .5em;
+    margin-right: .5em;
+    color: $font-color;
+    text-decoration: none;
+  }
   #link-nav {
     float: right;
     margin-top: 1em;
     margin-right: 1em;
+    font-size: 1.2em;
 
-    .navlink {
-      margin-left: .5em;
-      margin-right: .5em;
-      color: $font-color;
-      text-decoration: none;
-    }
     .marketplace {
     }
     .login {
@@ -76,23 +77,103 @@ header {
         .copy {
           font-size: 1.4em;
         }
+        .home-btn {
+          margin-right: 2em;
+        }
       }
     }
+    .featured-header {
+      margin-top: 3em;
+    }
     #home-featured {
+      display: table;
+      width: 100%;
+      table-layout: fixed;
+      border-spacing: 1em;
+
       .moonlet-display {
         text-align: center;
-        
+        display: table-cell;
+        padding: 1em;
+        font-size: 1.2em;
+        margin-right: 2em;
+
+        &:hover {
+          box-shadow: .5px .5px .5px .5px #000;
+          cursor: pointer;
+        }
+        .moonlet-display-name {
+          color: $link-color;
+          font-size: 1.8em;
+        }
         .moonlet-display-img {
           width: auto;
           height: 10em;
+          display: inline-block;
+          margin: 0 auto;
         }
       }
-
     }
   }
 }
+#login {
+  #login-component {
+    text-align: center;
+    margin-top: 6em;
+
+    #login-header {
+      img {
+        width: auto;
+        height: 12em;
+        margin: 0 auto;
+        display: inline-block;
+      }
+      .login-header-text {
+        font-size: 1.6em;
+      }
+      .login-btn {
+        font-size: 1.2em;
+        display: inline-block;
+        margin: 0 auto;
+        margin-top: 1em;
+        width: 25%;
+        padding: .7em;
+        &:hover { cursor: pointer; }
+
+        .fa {
+          float: left;
+          font-size: 1.3em;
+        }
+        span { float: right; }
+      }
+      #login-facebook {
+        background-color: #3b5998;
+        &:hover { background-color: lighten(#3b5998, 15); }
+      }
+      #login-twitter {
+        background-color: #55acee;
+        &:hover { background-color: lighten(#55acee, 15); }
+      }
+      #login-google {
+        background-color: #ea4335;
+        &:hover { background-color: lighten(#ea4335, 15); }
+      }
+    }
+  }
+}
+.moonlet-display-btn, .home-btn {
+  border: 0 none;
+  border-radius: .3px;
+  padding: 1em 2em 1em 2em;
+  cursor: pointer;
+  background-color: $quadrary-color;
+  color: $font-color;
+  font-size: 1em;
+  font-weight: bold;
+  &:hover { background-color: lighten($quadrary-color, 10); }
+}
 .page-footer {
-  margin-top: 5em;
+  margin-top: 4em;
 
   a {
     text-decoration: none;
@@ -101,13 +182,17 @@ header {
   }
 }
 #error {
-  margin-top: 8em;
+  margin-top: 5em;
   text-align: center;
   font-size: 1.5em;
 
+  img {
+    width: auto;
+    height: 8em;
+  }
   .footer {
-    font-size: .8em;
-    margin-top: 10em;
+    font-size: .7em;
+    margin-top: 4em;
     text-align: center;
 
     a {

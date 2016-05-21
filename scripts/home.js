@@ -6,26 +6,18 @@ const React = require('react');
 const ReactDOM = require('react-dom');
 const Request = require('request');
 
-const ASTRALUX_API = 'http://astralux-api.herokuapp.com/api/v1.0/moonlets';
+const ASTRALUX_API = 'https://astralux-api.herokuapp.com/api/v1.0/moonlets';
 
 class Home extends React.Component {
   constructor(props) {
     super(props);
     this.state = { featured: null };
+    this.handleButtonClick = this.handleButtonClick.bind(this);
   }
   componentDidMount() {
     const username = this.props.apiCredentials.username;
     const password = this.props.apiCredentials.password;
     const url = this.props.apiURL;
-    const options = {
-      url,
-      headers: {
-        'Content-Type': 'application/json;charset=UTF-8',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET',
-        'Access-Control-Allow-Headers': 'Content-Type, Content-Range, Content-Disposition, Content-Description'
-      }
-    };
     const self = this;
 
     function callback(error, response, body) {
@@ -36,7 +28,10 @@ class Home extends React.Component {
       self.setState({ featured });
     }
 
-    Request.get(options, callback).auth(username, password, true);
+    Request.get(url, callback).auth(username, password, true);
+  }
+  handleButtonClick() {
+    window.location.href = '/login';
   }
   render() {
     if (this.state.featured !== null) {
@@ -52,9 +47,14 @@ class Home extends React.Component {
                 'The United Nations Galactic Agency has commissioned Astralux to sell rights to these ' +
                 'countless wonders in hopes to fund colonization efforts. Stake your claim and grab your ' +
                 'moonlet today!'
-              )
+              ),
+              React.createElement('input', { type: 'button', className: 'home-btn',
+                value: 'Sign Up', onClick: this.handleButtonClick }),
+              React.createElement('input', { type: 'button', className: 'home-btn',
+                value: 'Login', onClick: this.handleButtonClick })
             )
           ),
+          React.createElement('h1', { className: 'featured-header'}, 'Today\'s Featured Moonlets'),
           React.createElement('div', { id: 'home-featured' },
             React.createElement(Moonlet, { moonlet: this.state.featured[0] }),
             React.createElement(Moonlet, { moonlet: this.state.featured[1] }),
@@ -74,7 +74,7 @@ Home.propTypes = {
 };
 
 // front end global error handler -> redirect to error page for now
-//window.onerror = () => window.location.href = '/error';
+window.onerror = () => window.location.href = '/error';
 
 ReactDOM.render(React.createElement(Home, { apiURL: ASTRALUX_API, apiCredentials: credentials }),
   document.getElementById('home'));

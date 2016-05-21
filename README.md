@@ -10,4 +10,8 @@ Technologies:
   * Heroku
   * Node
   * Express
-  * React
+  * React  
+
+Credits:
+  * Generic Moonlet Image: http://www.wpclipart.com/
+  * Home Page Rocket Ship, Login Alien, Error Alien: https://pixabay.com/

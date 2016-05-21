@@ -4,4 +4,7 @@ block content
 
   #moonlet-loader
 
-  script(src='/javascripts/moonlet/bundle-moonlet.min.js')
+  script(type='text/javascript').
+    const credentials = !{ JSON.stringify(credentials) };
+    const moonletID = !{ JSON.stringify(moonletID) };
+  script(src='/javascripts/moonlet/bundle-moonlet.js')

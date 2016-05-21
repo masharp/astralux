@@ -10,19 +10,26 @@ const express = require('express');
 const router = express.Router();
 const dotenv = require('dotenv'); dotenv.config();
 
+const credentials = {
+  username: process.env.MASTER_USERNAME,
+  password: process.env.MASTER_PASSWORD
+};
+
 /* Home Page */
 router.get('/', (request, response) => {
-  const credentials = {
-    username: process.env.MASTER_USERNAME,
-    password: process.env.MASTER_PASSWORD
-  };
-
   response.render('home', { title: 'Astralux - A moonlet Marketplace of the Future', credentials });
+});
+
+router.get('/moonlet/:moonletID/:moonletName', (request, response) => {
+  const moonletID = request.params.moonletID;
+  const moonletName = request.params.moonletName;
+
+  response.render('moonlet', { title: `Astralux - ${moonletName} | A fancy space Moonlet!`, credentials, moonletID });
 });
 
 /* Login Page */
 router.get('/login', (request, response) => {
-  response.render('login', { title: 'Astralux Login | A moonlet Marketplace of the Future' });
+  response.render('login', { title: 'Astralux Login | A moonlet Marketplace of the Future', credentials });
 });
 
 /* Dashboard Page */
