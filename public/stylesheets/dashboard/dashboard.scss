@@ -1,0 +1,99 @@
+@import '../global/global';
+
+#dashboard {
+  #dash-component {
+    margin-top: 8em;
+    padding-left: 3em;
+    padding-right: 3em;
+
+    .ReactTabs__TabList {
+      border-bottom: 2px solid $quadrary-color;
+      text-align: right;
+    }
+    .ReactTabs__Tab {
+      background-color: $quadrary-color;
+      color: $font-color;
+      margin-right: .3em;
+      font-size: 1.2em;
+    }
+    .ReactTabs__Tab--selected {
+      background-color: lighten($quadrary-color, 10);
+    }
+    #profile-panel {
+      margin-top: 1em;
+
+      #profile-panel-header {
+        float: left;
+        margin-left: 1em;
+        margin-bottom: 3em;
+
+        .profile-username {
+          font-size: 1.8em;
+        }
+
+        img {
+          width: auto;
+          height: 12em;
+          margin: 0 auto;
+          display: inline-block;
+        }
+      }
+      #profile-panel-wallet {
+        float: right;
+        margin-right: 20em;
+        font-size: 1.2em;
+
+        p {
+          font-size: .8em;
+        }
+      }
+      #profile-panel-inventory {
+        clear: both;
+
+        .profile-inventory-header {
+
+        }
+        #moonlet-inventory {
+          display: table;
+          width: 100%;
+          table-layout: fixed;
+          border-spacing: 1em;
+
+          .moonlet-display {
+            text-align: center;
+            display: table-cell;
+            padding: 1em;
+            font-size: 1em;
+            margin-right: 2em;
+
+            &:hover {
+              box-shadow: .5px .5px .5px .5px #000;
+              cursor: pointer;
+            }
+            .moonlet-display-name {
+              color: $link-color;
+              font-size: 1.8em;
+            }
+            .moonlet-display-img {
+              width: auto;
+              height: 10em;
+              display: inline-block;
+              margin: 0 auto;
+            }
+            .moonlet-display-btn {
+              display: none;
+            }
+          }
+        }
+      }
+    }
+    #transaction-panel {
+      .transaction-header {
+        
+      }
+    }
+    .page-footer {
+      text-align: center;
+    }
+  }
+}

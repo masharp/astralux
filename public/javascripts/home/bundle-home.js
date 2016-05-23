@@ -78606,7 +78606,7 @@ exports.default = PageFooter;
 var React = require('react');
 
 function PageFooter() {
-  return React.createElement('p', { className: 'page-footer' }, '\xA9 2016 Astralux | Alpha Release | ', React.createElement('a', { href: '/about' }, 'About '));
+  return React.createElement('p', { className: 'page-footer' }, '\xA9 2016 Astralux | Alpha Release | ', React.createElement('a', { href: '/about' }, 'About '), '| ', React.createElement('a', { href: 'http://www.softwareontheshore.com' }, 'Software on the Shore'));
 }
 
 },{"react":366}],443:[function(require,module,exports){
@@ -78703,7 +78703,6 @@ var Home = function (_React$Component) {
     key: 'render',
     value: function render() {
       if (this.state.featured !== null) {
-
         return React.createElement('div', { id: 'home-component' }, React.createElement('div', { id: 'home-header' }, React.createElement('img', { src: '/assets/home.png', id: 'home-img' }), React.createElement('div', { id: 'home-copy' }, React.createElement('h1', { className: 'copy-header' }, 'Astralux Industries'), React.createElement('p', { className: 'copy' }, 'Brave space explorers have discovered Moonlets in the far reaches of the galaxy! ' + 'The United Nations Galactic Agency has commissioned Astralux to sell rights to these ' + 'countless wonders in hopes to fund colonization efforts. Stake your claim and grab your ' + 'moonlet today!'), React.createElement('input', { type: 'button', className: 'home-btn',
           value: 'Sign Up', onClick: this.handleButtonClick }), React.createElement('input', { type: 'button', className: 'home-btn',
           value: 'Login', onClick: this.handleButtonClick }))), React.createElement('h1', { className: 'featured-header' }, 'Today\'s Featured Moonlets'), React.createElement('div', { id: 'home-featured' }, React.createElement(_Moonlet2.default, { moonlet: this.state.featured[0] }), React.createElement(_Moonlet2.default, { moonlet: this.state.featured[1] }), React.createElement(_Moonlet2.default, { moonlet: this.state.featured[2] })), React.createElement(_PageFooter2.default, null));
@@ -78721,7 +78720,9 @@ Home.propTypes = {
 };
 
 // front end global error handler -> redirect to error page for now
-//window.onerror = () => window.location.href = '/error';
+window.onerror = function () {
+  return window.location.href = '/error';
+};
 
 ReactDOM.render(React.createElement(Home, { apiURL: ASTRALUX_API, apiCredentials: credentials }), document.getElementById('home'));
 

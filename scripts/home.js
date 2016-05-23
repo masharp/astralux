@@ -1,7 +1,7 @@
 'use strict';
 
 import PageFooter from './components/PageFooter';
-import Moonlet from './components/moonlets/Moonlet'
+import Moonlet from './components/moonlets/Moonlet';
 const React = require('react');
 const ReactDOM = require('react-dom');
 const Request = require('request');
@@ -35,7 +35,6 @@ class Home extends React.Component {
   }
   render() {
     if (this.state.featured !== null) {
-
       return (
         React.createElement('div', { id: 'home-component' },
           React.createElement('div', { id: 'home-header' },
