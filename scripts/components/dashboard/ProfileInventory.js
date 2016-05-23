@@ -20,7 +20,7 @@ const tempMoonlet = {
 export default function ProfileInventory(props) {
   return (
     React.createElement('div', { id: 'profile-panel-inventory' },
-      React.createElement('h2', { className: 'profile-inventory-header' }, `Michael's Moonlets`),
+      React.createElement('h2', { className: 'profile-inventory-header' }, 'Your Moonlets'),
       React.createElement('div', { id: 'moonlet-inventory' },
         React.createElement(Moonlet, { moonlet: tempMoonlet }),
         React.createElement(Moonlet, { moonlet: tempMoonlet }),
@@ -31,4 +31,5 @@ export default function ProfileInventory(props) {
 }
 
 ProfileInventory.propTypes = {
+  moonlets: React.PropTypes.object.isRequired
 };

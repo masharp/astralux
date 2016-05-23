@@ -7,3 +7,7 @@ export default function SettingsPanel(props) {
     React.createElement('h2', {}, 'Settings')
   );
 }
+
+SettingsPanel.propTypes = {
+  user: React.PropTypes.object.isRequired
+}

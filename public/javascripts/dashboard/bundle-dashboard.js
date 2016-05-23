@@ -79372,10 +79372,12 @@ var tempMoonlet = {
 };
 
 function ProfileInventory(props) {
-  return React.createElement('div', { id: 'profile-panel-inventory' }, React.createElement('h2', { className: 'profile-inventory-header' }, 'Michael\'s Moonlets'), React.createElement('div', { id: 'moonlet-inventory' }, React.createElement(_Moonlet2.default, { moonlet: tempMoonlet }), React.createElement(_Moonlet2.default, { moonlet: tempMoonlet }), React.createElement(_Moonlet2.default, { moonlet: tempMoonlet })));
+  return React.createElement('div', { id: 'profile-panel-inventory' }, React.createElement('h2', { className: 'profile-inventory-header' }, 'Your Moonlets'), React.createElement('div', { id: 'moonlet-inventory' }, React.createElement(_Moonlet2.default, { moonlet: tempMoonlet }), React.createElement(_Moonlet2.default, { moonlet: tempMoonlet }), React.createElement(_Moonlet2.default, { moonlet: tempMoonlet })));
 }
 
-ProfileInventory.propTypes = {};
+ProfileInventory.propTypes = {
+  moonlets: React.PropTypes.object.isRequired
+};
 
 },{"../../components/moonlets/Moonlet":457,"react":376}],454:[function(require,module,exports){
 'use strict';
@@ -79394,10 +79396,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var React = require('react');
 
 function ProfilePanel(props) {
-  return React.createElement('div', { id: 'profile-panel' }, React.createElement('div', { id: 'profile-panel-header' }, React.createElement('h2', { className: 'profile-username' }, 'Michael\'s Profile'), React.createElement('img', { src: '/assets/login-alien.png' })), React.createElement('div', { id: 'profile-panel-wallet' }, React.createElement('h3', { className: 'wallet-header' }, 'Astralux Galactic Account'), React.createElement('p', { className: 'wallet-balance' }, 'Current Balance: 4444 Credits'), React.createElement('p', { className: 'wallet-transactions' }, 'Recent Transactions: -2202 Credits')), React.createElement(_ProfileInventory2.default, {}));
+  console.log(props);
+  return React.createElement('div', { id: 'profile-panel' }, React.createElement('div', { id: 'profile-panel-header' }, React.createElement('h2', { className: 'profile-username' }, props.user.display_name + '\'s Profile'), React.createElement('img', { src: '/assets/login-alien.png' })), React.createElement('div', { id: 'profile-panel-wallet' }, React.createElement('h3', { className: 'wallet-header' }, 'Astralux Galactic Account'), React.createElement('p', { className: 'wallet-balance' }, 'Current Balance: ' + props.user.balance + ' Credits'), React.createElement('p', { className: 'wallet-transactions' }, 'Recent Transactions: -2202 Credits')), React.createElement(_ProfileInventory2.default, { moonlets: props.user.moonlets }));
 }
 
-ProfilePanel.propTypes = {};
+ProfilePanel.propTypes = {
+  user: React.PropTypes.object.isRequired
+};
 
 },{"./ProfileInventory":453,"react":376}],455:[function(require,module,exports){
 'use strict';
@@ -79412,6 +79417,10 @@ function SettingsPanel(props) {
   return React.createElement('h2', {}, 'Settings');
 }
 
+SettingsPanel.propTypes = {
+  user: React.PropTypes.object.isRequired
+};
+
 },{"react":376}],456:[function(require,module,exports){
 'use strict';
 
@@ -79422,10 +79431,12 @@ exports.default = TransactionsPanel;
 var React = require('react');
 
 function TransactionsPanel(props) {
-  return React.createElement('div', { id: 'transaction-panel' }, React.createElement('h2', { className: 'transaction-header' }, 'Transaction History'), React.createElement('div', { id: 'transaction-history' }));
+  return React.createElement('div', { id: 'transaction-panel' }, React.createElement('h2', { className: 'transaction-header' }, 'Your Transaction History'), React.createElement('div', { id: 'transaction-history' }));
 }
 
-TransactionsPanel.propTypes = {};
+TransactionsPanel.propTypes = {
+  history: React.PropTypes.object.isRequired
+};
 
 },{"react":376}],457:[function(require,module,exports){
 'use strict';
@@ -79503,7 +79514,7 @@ var Dashboard = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Dashboard).call(this, props));
 
-    _this.state = {};
+    _this.state = { user: null };
     _this.handleButtonClick = _this.handleButtonClick.bind(_this);
     _this.handleTabClick = _this.handleTabClick.bind(_this);
     return _this;
@@ -79514,18 +79525,17 @@ var Dashboard = function (_React$Component) {
     value: function componentDidMount() {
       var username = this.props.apiCredentials.username;
       var password = this.props.apiCredentials.password;
-      var url = this.props.apiURL;
+      var url = this.props.apiURL + '/' + this.props.username;
       var self = this;
 
       function callback(error, response, body) {
-        var content = JSON.parse(body);
-        if (error || !content.moonlets) window.location.href = '/error';
+        if (error) window.location.href = '/error';
+        var result = JSON.parse(body);
 
-        var featured = content.moonlets.slice(0, 3);
-        self.setState({ featured: featured });
+        self.setState({ user: result.user });
       }
 
-      //Request.get(url, callback).auth(username, password, true);
+      Request.get(url, callback).auth(username, password, true);
     }
   }, {
     key: 'handleButtonClick',
@@ -79538,9 +79548,8 @@ var Dashboard = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      if (true) {
-
-        return React.createElement('div', { id: 'dash-component' }, React.createElement(Tabs, { onSelect: this.handleTabClick, selectedIndex: 0 }, React.createElement(TabList, null, React.createElement(Tab, null, 'Profile'), React.createElement(Tab, null, 'History'), React.createElement(Tab, null, 'Settings')), React.createElement(TabPanel, {}, React.createElement(_ProfilePanel2.default, {})), React.createElement(TabPanel, {}, React.createElement(_TransactionsPanel2.default, {})), React.createElement(TabPanel, {}, React.createElement(_SettingsPanel2.default, {}))), React.createElement(_PageFooter2.default, null));
+      if (this.state.user !== null) {
+        return React.createElement('div', { id: 'dash-component' }, React.createElement(Tabs, { onSelect: this.handleTabClick, selectedIndex: 0 }, React.createElement(TabList, null, React.createElement(Tab, null, 'Profile'), React.createElement(Tab, null, 'History'), React.createElement(Tab, null, 'Settings')), React.createElement(TabPanel, {}, React.createElement(_ProfilePanel2.default, { user: this.state.user })), React.createElement(TabPanel, {}, React.createElement(_TransactionsPanel2.default, { history: this.state.user.transactions })), React.createElement(TabPanel, {}, React.createElement(_SettingsPanel2.default, { user: this.state.user }))), React.createElement(_PageFooter2.default, null));
       }
       return React.createElement('div', null);
     }

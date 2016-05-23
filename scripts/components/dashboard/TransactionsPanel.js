@@ -5,7 +5,7 @@ const React = require('react');
 export default function TransactionsPanel(props) {
   return (
     React.createElement('div', { id: 'transaction-panel' },
-      React.createElement('h2', { className: 'transaction-header' }, 'Transaction History'),
+      React.createElement('h2', { className: 'transaction-header' }, `Your Transaction History`),
       React.createElement('div', { id: 'transaction-history' }
 
       )
@@ -14,4 +14,5 @@ export default function TransactionsPanel(props) {
 }
 
 TransactionsPanel.propTypes = {
+  history: React.PropTypes.object.isRequired
 };
