@@ -79329,6 +79329,24 @@ function extend() {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.default = LoadingOverlay;
+/**
+ * Module that exports the reusable loading overlay React component
+ *
+ * @return {object} Component's React element
+ */
+var React = require('react');
+
+function LoadingOverlay() {
+  return React.createElement('div', { id: 'load-screen' }, React.createElement('i', { className: 'fa fa-spinner fa-pulse' }));
+}
+
+},{"react":376}],453:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 exports.default = PageFooter;
 /**
  * Module that exports the reusable Footer p element
@@ -79341,7 +79359,7 @@ function PageFooter() {
   return React.createElement('p', { className: 'page-footer' }, '\xA9 2016 Astralux | Alpha Release | ', React.createElement('a', { href: '/about' }, 'About '), '| ', React.createElement('a', { href: 'http://www.softwareontheshore.com' }, 'Software on the Shore'));
 }
 
-},{"react":376}],453:[function(require,module,exports){
+},{"react":376}],454:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -79357,29 +79375,36 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var React = require('react');
 
-var tempMoonlet = {
-  classification: "AA-Zeus",
-  color: "Grey",
-  description: "A newly discovered moonlet!",
-  discount: 10,
-  display_name: "Special-K",
-  img_src: "/assets/moonlets/generic.png",
-  inventory: 100,
-  limited: false,
-  on_sale: false,
-  price: 1000,
-  uri: "https://astralux-api.herokuapp.com/api/v1.0/moonlets/520200"
-};
-
 function ProfileInventory(props) {
-  return React.createElement('div', { id: 'profile-panel-inventory' }, React.createElement('h2', { className: 'profile-inventory-header' }, 'Your Moonlets'), React.createElement('div', { id: 'moonlet-inventory' }, React.createElement(_Moonlet2.default, { moonlet: tempMoonlet }), React.createElement(_Moonlet2.default, { moonlet: tempMoonlet }), React.createElement(_Moonlet2.default, { moonlet: tempMoonlet })));
+  var userMoonlets = props.user.moonlets.moonlets;
+  var moonletNodes = [];
+
+  // populate inventory with moonlets that match the user's moonlets
+  if (userMoonlets.length > 0) {
+    for (var x in userMoonlets[0]) {
+      for (var y = 0; y < props.moonlets.length; y++) {
+        if (props.moonlets[y].uri.indexOf(x) >= 0) {
+          var moonlet = props.moonlets[y];
+          moonlet.inventory = userMoonlets[0][x];
+
+          moonletNodes.push(React.createElement(_Moonlet2.default, { moonlet: moonlet, key: 'inv-' + x }));
+        }
+      }
+    }
+    // handle an empty inventory
+  } else {
+      var emptyElement = React.createElement('p', { className: 'empty-invtentory' }, 'Your inventory is empty!');
+      moonletNodes.push(emptyElement);
+    }
+  return React.createElement('div', { id: 'profile-panel-inventory' }, React.createElement('h2', { className: 'profile-inventory-header' }, 'Your Moonlets'), React.createElement('div', { id: 'moonlet-inventory' }, moonletNodes));
 }
 
 ProfileInventory.propTypes = {
-  moonlets: React.PropTypes.object.isRequired
+  user: React.PropTypes.object.isRequired,
+  moonlets: React.PropTypes.array.isRequired
 };
 
-},{"../../components/moonlets/Moonlet":457,"react":376}],454:[function(require,module,exports){
+},{"../../components/moonlets/Moonlet":458,"react":376}],455:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -79396,15 +79421,15 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var React = require('react');
 
 function ProfilePanel(props) {
-  console.log(props);
-  return React.createElement('div', { id: 'profile-panel' }, React.createElement('div', { id: 'profile-panel-header' }, React.createElement('h2', { className: 'profile-username' }, props.user.display_name + '\'s Profile'), React.createElement('img', { src: '/assets/login-alien.png' })), React.createElement('div', { id: 'profile-panel-wallet' }, React.createElement('h3', { className: 'wallet-header' }, 'Astralux Galactic Account'), React.createElement('p', { className: 'wallet-balance' }, 'Current Balance: ' + props.user.balance + ' Credits'), React.createElement('p', { className: 'wallet-transactions' }, 'Recent Transactions: -2202 Credits')), React.createElement(_ProfileInventory2.default, { moonlets: props.user.moonlets }));
+  return React.createElement('div', { id: 'profile-panel' }, React.createElement('div', { id: 'profile-panel-header' }, React.createElement('h2', { className: 'profile-username' }, props.user.display_name + '\'s Profile'), React.createElement('img', { src: '/assets/login-alien.png' })), React.createElement('div', { id: 'profile-panel-wallet' }, React.createElement('h3', { className: 'wallet-header' }, 'Astralux Galactic Account'), React.createElement('p', { className: 'wallet-balance' }, 'Current Balance: ' + props.user.balance + ' Credits'), React.createElement('p', { className: 'wallet-transactions' }, 'Recent Transactions: -2202 Credits')), React.createElement(_ProfileInventory2.default, { user: props.user, moonlets: props.moonlets }));
 }
 
 ProfilePanel.propTypes = {
-  user: React.PropTypes.object.isRequired
+  user: React.PropTypes.object.isRequired,
+  moonlets: React.PropTypes.array.isRequired
 };
 
-},{"./ProfileInventory":453,"react":376}],455:[function(require,module,exports){
+},{"./ProfileInventory":454,"react":376}],456:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -79421,7 +79446,7 @@ SettingsPanel.propTypes = {
   user: React.PropTypes.object.isRequired
 };
 
-},{"react":376}],456:[function(require,module,exports){
+},{"react":376}],457:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -79431,14 +79456,17 @@ exports.default = TransactionsPanel;
 var React = require('react');
 
 function TransactionsPanel(props) {
-  return React.createElement('div', { id: 'transaction-panel' }, React.createElement('h2', { className: 'transaction-header' }, 'Your Transaction History'), React.createElement('div', { id: 'transaction-history' }));
+  var historyNodes = props.history.map(function (h, i) {
+    return React.createElement('p', { className: 'transaction', key: 'transacton-' + i }, React.createElement('span', { className: 'transaction-date' }, h.timestamp), React.createElement('span', { className: 'transaction-' + h.transaction }, h.transaction), React.createElement('span', { className: 'transaction-moonlet' }, h.moonlet), React.createElement('span', { className: 'transaction-reduction' }, '- 2000 Credits'));
+  });
+  return React.createElement('div', { id: 'transaction-panel' }, React.createElement('h2', { className: 'transaction-header' }, 'Your Transaction History'), React.createElement('div', { id: 'transaction-history' }, historyNodes));
 }
 
 TransactionsPanel.propTypes = {
-  history: React.PropTypes.object.isRequired
+  history: React.PropTypes.array.isRequired
 };
 
-},{"react":376}],457:[function(require,module,exports){
+},{"react":376}],458:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -79457,7 +79485,7 @@ function Moonlet(props) {
     var moonletID = props.moonlet.uri.split('/').pop();
     window.location.href = '/moonlet/' + moonletID + '/' + props.moonlet.display_name;
   }
-  return React.createElement('div', { className: 'moonlet-display', onClick: handleClick }, React.createElement('h2', { className: 'moonlet-display-name' }, props.moonlet.display_name), React.createElement('h3', { className: 'moonlet-display-class' }, 'Type: ' + props.moonlet.classification), React.createElement('img', { className: 'moonlet-display-img', src: props.moonlet.img_src }), React.createElement('p', { className: 'moonlet-display-desc' }, props.moonlet.description), React.createElement('p', { className: 'moonlet-display-price' }, 'Price: ' + props.moonlet.price), React.createElement('p', { className: 'moonlet-display-color' }, 'Color: ', React.createElement('span', { style: { color: '' + props.moonlet.color } }, props.moonlet.color)), React.createElement('input', { type: 'button', className: 'moonlet-display-btn',
+  return React.createElement('div', { className: 'moonlet-display', onClick: handleClick }, React.createElement('h2', { className: 'moonlet-display-name' }, props.moonlet.display_name), React.createElement('h3', { className: 'moonlet-display-class' }, 'Type: ' + props.moonlet.classification), React.createElement('img', { className: 'moonlet-display-img', src: props.moonlet.img_src }), React.createElement('p', { className: 'moonlet-display-desc' }, props.moonlet.description), React.createElement('p', { className: 'moonlet-display-price' }, 'Price: ' + props.moonlet.price), React.createElement('p', { className: 'moonlet-display-color' }, 'Color: ', React.createElement('span', { style: { color: '' + props.moonlet.color } }, props.moonlet.color)), React.createElement('p', { className: 'moonlet-display-inv' }, 'Inventory: ' + props.moonlet.inventory), React.createElement('input', { type: 'button', className: 'moonlet-display-btn',
     value: 'Explore', onClick: handleClick }));
 }
 
@@ -79465,7 +79493,7 @@ Moonlet.propTypes = {
   moonlet: React.PropTypes.object
 };
 
-},{"react":376}],458:[function(require,module,exports){
+},{"react":376}],459:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -79473,6 +79501,10 @@ var _createClass = function () { function defineProperties(target, props) { for 
 var _PageFooter = require('./components/PageFooter');
 
 var _PageFooter2 = _interopRequireDefault(_PageFooter);
+
+var _LoadingOverlay = require('./components/LoadingOverlay');
+
+var _LoadingOverlay2 = _interopRequireDefault(_LoadingOverlay);
 
 var _ProfilePanel = require('./components/dashboard/ProfilePanel');
 
@@ -79504,7 +79536,7 @@ var Tabs = ReactTabs.Tabs;
 var TabList = ReactTabs.TabList;
 var TabPanel = ReactTabs.TabPanel;
 
-var ASTRALUX_API = 'https://astralux-api.herokuapp.com/api/v1.0/users';
+var ASTRALUX_API = 'https://astralux-api.herokuapp.com/api/v1.0';
 
 var Dashboard = function (_React$Component) {
   _inherits(Dashboard, _React$Component);
@@ -79514,7 +79546,7 @@ var Dashboard = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Dashboard).call(this, props));
 
-    _this.state = { user: null };
+    _this.state = { user: null, moonlets: null };
     _this.handleButtonClick = _this.handleButtonClick.bind(_this);
     _this.handleTabClick = _this.handleTabClick.bind(_this);
     return _this;
@@ -79525,17 +79557,25 @@ var Dashboard = function (_React$Component) {
     value: function componentDidMount() {
       var username = this.props.apiCredentials.username;
       var password = this.props.apiCredentials.password;
-      var url = this.props.apiURL + '/' + this.props.username;
+      var userURL = this.props.apiURL + '/users/' + this.props.username;
+      var moonletsURL = this.props.apiURL + '/moonlets';
       var self = this;
 
-      function callback(error, response, body) {
-        if (error) window.location.href = '/error';
-        var result = JSON.parse(body);
+      function userCallback(userError, userResponse, userBody) {
+        if (userError) window.location.href = '/error';
+        var user = JSON.parse(userBody).user;
 
-        self.setState({ user: result.user });
+        function moonletsCallback(moonletsError, moonletsResponse, moonletsBody) {
+          if (moonletsError) window.location.href = '/error';
+          var moonlets = JSON.parse(moonletsBody).moonlets;
+
+          self.setState({ user: user, moonlets: moonlets });
+        }
+        // request info on all moonlets
+        Request.get(moonletsURL, moonletsCallback).auth(username, password, true);
       }
-
-      Request.get(url, callback).auth(username, password, true);
+      // request info on this user
+      Request.get(userURL, userCallback).auth(username, password, true);
     }
   }, {
     key: 'handleButtonClick',
@@ -79548,10 +79588,10 @@ var Dashboard = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      if (this.state.user !== null) {
-        return React.createElement('div', { id: 'dash-component' }, React.createElement(Tabs, { onSelect: this.handleTabClick, selectedIndex: 0 }, React.createElement(TabList, null, React.createElement(Tab, null, 'Profile'), React.createElement(Tab, null, 'History'), React.createElement(Tab, null, 'Settings')), React.createElement(TabPanel, {}, React.createElement(_ProfilePanel2.default, { user: this.state.user })), React.createElement(TabPanel, {}, React.createElement(_TransactionsPanel2.default, { history: this.state.user.transactions })), React.createElement(TabPanel, {}, React.createElement(_SettingsPanel2.default, { user: this.state.user }))), React.createElement(_PageFooter2.default, null));
+      if (this.state.user !== null && this.state.moonlets !== null) {
+        return React.createElement('div', { id: 'dash-component' }, React.createElement(Tabs, { onSelect: this.handleTabClick, selectedIndex: 0 }, React.createElement(TabList, null, React.createElement(Tab, null, 'Profile'), React.createElement(Tab, null, 'History'), React.createElement(Tab, null, 'Settings')), React.createElement(TabPanel, {}, React.createElement(_ProfilePanel2.default, { user: this.state.user, moonlets: this.state.moonlets })), React.createElement(TabPanel, {}, React.createElement(_TransactionsPanel2.default, { history: this.state.user.transactions.history })), React.createElement(TabPanel, {}, React.createElement(_SettingsPanel2.default, { user: this.state.user }))), React.createElement(_PageFooter2.default, null));
       }
-      return React.createElement('div', null);
+      return React.createElement(_LoadingOverlay2.default, null);
     }
   }]);
 
@@ -79569,4 +79609,4 @@ Dashboard.propTypes = {
 
 ReactDOM.render(React.createElement(Dashboard, { apiURL: ASTRALUX_API, apiCredentials: credentials, username: username }), document.getElementById('dashboard'));
 
-},{"./components/PageFooter":452,"./components/dashboard/ProfilePanel":454,"./components/dashboard/SettingsPanel":455,"./components/dashboard/TransactionsPanel":456,"react":376,"react-dom":239,"react-tabs":247,"request":387}]},{},[458]);
+},{"./components/LoadingOverlay":452,"./components/PageFooter":453,"./components/dashboard/ProfilePanel":455,"./components/dashboard/SettingsPanel":456,"./components/dashboard/TransactionsPanel":457,"react":376,"react-dom":239,"react-tabs":247,"request":387}]},{},[459]);

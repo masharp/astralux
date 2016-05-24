@@ -1,6 +1,7 @@
 'use strict';
 
 import PageFooter from './components/PageFooter';
+import LoadingOverlay from './components/LoadingOverlay';
 import ProfilePanel from './components/dashboard/ProfilePanel';
 import TransactionsPanel from './components/dashboard/TransactionsPanel';
 import SettingsPanel from './components/dashboard/SettingsPanel';
@@ -15,29 +16,37 @@ const Tabs = ReactTabs.Tabs;
 const TabList = ReactTabs.TabList;
 const TabPanel = ReactTabs.TabPanel;
 
-const ASTRALUX_API = 'https://astralux-api.herokuapp.com/api/v1.0/users';
+const ASTRALUX_API = 'https://astralux-api.herokuapp.com/api/v1.0';
 
 class Dashboard extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { user: null };
+    this.state = { user: null, moonlets: null };
     this.handleButtonClick = this.handleButtonClick.bind(this);
     this.handleTabClick = this.handleTabClick.bind(this);
   }
   componentDidMount() {
     const username = this.props.apiCredentials.username;
     const password = this.props.apiCredentials.password;
-    const url = `${this.props.apiURL}/${this.props.username}`;
+    const userURL = `${this.props.apiURL}/users/${this.props.username}`;
+    const moonletsURL = `${this.props.apiURL}/moonlets`;
     const self = this;
 
-    function callback(error, response, body) {
-      if (error) window.location.href = '/error';
-      const result = JSON.parse(body);
+    function userCallback(userError, userResponse, userBody) {
+      if (userError) window.location.href = '/error';
+      const user = JSON.parse(userBody).user;
 
-      self.setState({ user: result.user });
+      function moonletsCallback(moonletsError, moonletsResponse, moonletsBody) {
+        if (moonletsError) window.location.href = '/error';
+        const moonlets =  JSON.parse(moonletsBody).moonlets;
+
+        self.setState({ user, moonlets });
+      }
+      // request info on all moonlets
+      Request.get(moonletsURL, moonletsCallback).auth(username, password, true);
     }
-
-    Request.get(url, callback).auth(username, password, true);
+    // request info on this user
+    Request.get(userURL, userCallback).auth(username, password, true);
   }
   handleButtonClick() {
   }
@@ -45,7 +54,7 @@ class Dashboard extends React.Component {
     console.log(index, last);
   }
   render() {
-    if (this.state.user !== null) {
+    if (this.state.user !== null && this.state.moonlets !== null) {
       return (
         React.createElement('div', { id: 'dash-component' },
           React.createElement(Tabs, { onSelect: this.handleTabClick, selectedIndex: 0 },
@@ -55,10 +64,10 @@ class Dashboard extends React.Component {
               React.createElement(Tab, null, 'Settings')
             ),
             React.createElement(TabPanel, {},
-              React.createElement(ProfilePanel, { user: this.state.user })
+              React.createElement(ProfilePanel, { user: this.state.user, moonlets: this.state.moonlets })
             ),
             React.createElement(TabPanel, {},
-              React.createElement(TransactionsPanel, { history: this.state.user.transactions })
+              React.createElement(TransactionsPanel, { history: this.state.user.transactions.history })
             ),
             React.createElement(TabPanel, {},
               React.createElement(SettingsPanel, { user: this.state.user })
@@ -68,7 +77,7 @@ class Dashboard extends React.Component {
         )
       );
     }
-    return (React.createElement('div', null));
+    return (React.createElement(LoadingOverlay, null));
   }
 }
 

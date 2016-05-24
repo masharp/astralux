@@ -3,8 +3,8 @@
 #dashboard {
   #dash-component {
     margin-top: 8em;
-    padding-left: 3em;
-    padding-right: 3em;
+    padding-left: 5em;
+    padding-right: 5em;
 
     .ReactTabs__TabList {
       border-bottom: 2px solid $quadrary-color;
@@ -40,11 +40,12 @@
       }
       #profile-panel-wallet {
         float: right;
-        margin-right: 20em;
-        font-size: 1.2em;
 
+        .wallet-header {
+          font-size: 1.8em;
+        }
         p {
-          font-size: .8em;
+          font-size: 1.2em;
         }
       }
       #profile-panel-inventory {
@@ -55,13 +56,12 @@
         }
         #moonlet-inventory {
           display: table;
-          width: 100%;
-          table-layout: fixed;
           border-spacing: 1em;
 
           .moonlet-display {
             text-align: center;
             display: table-cell;
+            max-width: 33%;
             padding: 1em;
             font-size: 1em;
             margin-right: 2em;
@@ -88,8 +88,25 @@
       }
     }
     #transaction-panel {
-      .transaction-header {
-        
+      #transaction-history {
+        .transaction {
+          font-size: 1em;
+
+          .transacton-date, .transaction-purchase, .transaction-moonlet, .transaction-reduction {
+            margin-left: 10em;
+          }
+          .transaction-date {
+
+          }
+          .transaction-purchase {
+            color: green;
+          }
+          .transaction-moonlet {
+          }
+          .transaction-reduction {
+            color: red;
+          }
+        }
       }
     }
     .page-footer {

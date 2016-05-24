@@ -20,6 +20,7 @@ export default function Moonlet(props) {
       React.createElement('p', { className: 'moonlet-display-color' }, 'Color: ',
         React.createElement('span', { style: { color: `${props.moonlet.color}` } }, props.moonlet.color)
       ),
+      React.createElement('p', { className: 'moonlet-display-inv' }, `Inventory: ${props.moonlet.inventory}`),
       React.createElement('input', { type: 'button', className: 'moonlet-display-btn',
         value: 'Explore', onClick: handleClick })
     )

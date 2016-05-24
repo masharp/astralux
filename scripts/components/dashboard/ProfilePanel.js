@@ -5,7 +5,6 @@ import ProfileInventory from './ProfileInventory';
 const React = require('react');
 
 export default function ProfilePanel(props) {
-  console.log(props);
   return (
     React.createElement('div', { id: 'profile-panel' },
       React.createElement('div', { id: 'profile-panel-header' },
@@ -17,11 +16,12 @@ export default function ProfilePanel(props) {
         React.createElement('p', { className: 'wallet-balance' }, `Current Balance: ${props.user.balance} Credits`),
         React.createElement('p', { className: 'wallet-transactions' }, `Recent Transactions: -2202 Credits`)
       ),
-      React.createElement(ProfileInventory, { moonlets: props.user.moonlets })
+      React.createElement(ProfileInventory, { user: props.user, moonlets: props.moonlets })
     )
   );
 }
 
 ProfilePanel.propTypes = {
-  user: React.PropTypes.object.isRequired
+  user: React.PropTypes.object.isRequired,
+  moonlets: React.PropTypes.array.isRequired,
 };

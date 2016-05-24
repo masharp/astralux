@@ -78597,6 +78597,24 @@ function extend() {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.default = LoadingOverlay;
+/**
+ * Module that exports the reusable loading overlay React component
+ *
+ * @return {object} Component's React element
+ */
+var React = require('react');
+
+function LoadingOverlay() {
+  return React.createElement('div', { id: 'load-screen' }, React.createElement('i', { className: 'fa fa-spinner fa-pulse' }));
+}
+
+},{"react":366}],443:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 exports.default = PageFooter;
 /**
  * Module that exports the reusable Footer p element
@@ -78609,7 +78627,7 @@ function PageFooter() {
   return React.createElement('p', { className: 'page-footer' }, '\xA9 2016 Astralux | Alpha Release | ', React.createElement('a', { href: '/about' }, 'About '), '| ', React.createElement('a', { href: 'http://www.softwareontheshore.com' }, 'Software on the Shore'));
 }
 
-},{"react":366}],443:[function(require,module,exports){
+},{"react":366}],444:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -78628,7 +78646,7 @@ function Moonlet(props) {
     var moonletID = props.moonlet.uri.split('/').pop();
     window.location.href = '/moonlet/' + moonletID + '/' + props.moonlet.display_name;
   }
-  return React.createElement('div', { className: 'moonlet-display', onClick: handleClick }, React.createElement('h2', { className: 'moonlet-display-name' }, props.moonlet.display_name), React.createElement('h3', { className: 'moonlet-display-class' }, 'Type: ' + props.moonlet.classification), React.createElement('img', { className: 'moonlet-display-img', src: props.moonlet.img_src }), React.createElement('p', { className: 'moonlet-display-desc' }, props.moonlet.description), React.createElement('p', { className: 'moonlet-display-price' }, 'Price: ' + props.moonlet.price), React.createElement('p', { className: 'moonlet-display-color' }, 'Color: ', React.createElement('span', { style: { color: '' + props.moonlet.color } }, props.moonlet.color)), React.createElement('input', { type: 'button', className: 'moonlet-display-btn',
+  return React.createElement('div', { className: 'moonlet-display', onClick: handleClick }, React.createElement('h2', { className: 'moonlet-display-name' }, props.moonlet.display_name), React.createElement('h3', { className: 'moonlet-display-class' }, 'Type: ' + props.moonlet.classification), React.createElement('img', { className: 'moonlet-display-img', src: props.moonlet.img_src }), React.createElement('p', { className: 'moonlet-display-desc' }, props.moonlet.description), React.createElement('p', { className: 'moonlet-display-price' }, 'Price: ' + props.moonlet.price), React.createElement('p', { className: 'moonlet-display-color' }, 'Color: ', React.createElement('span', { style: { color: '' + props.moonlet.color } }, props.moonlet.color)), React.createElement('p', { className: 'moonlet-display-inv' }, 'Inventory: ' + props.moonlet.inventory), React.createElement('input', { type: 'button', className: 'moonlet-display-btn',
     value: 'Explore', onClick: handleClick }));
 }
 
@@ -78636,7 +78654,7 @@ Moonlet.propTypes = {
   moonlet: React.PropTypes.object
 };
 
-},{"react":366}],444:[function(require,module,exports){
+},{"react":366}],445:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -78644,6 +78662,10 @@ var _createClass = function () { function defineProperties(target, props) { for 
 var _PageFooter = require('./components/PageFooter');
 
 var _PageFooter2 = _interopRequireDefault(_PageFooter);
+
+var _LoadingOverlay = require('./components/LoadingOverlay');
+
+var _LoadingOverlay2 = _interopRequireDefault(_LoadingOverlay);
 
 var _Moonlet = require('./components/moonlets/Moonlet');
 
@@ -78707,7 +78729,7 @@ var Home = function (_React$Component) {
           value: 'Sign Up', onClick: this.handleButtonClick }), React.createElement('input', { type: 'button', className: 'home-btn',
           value: 'Login', onClick: this.handleButtonClick }))), React.createElement('h1', { className: 'featured-header' }, 'Today\'s Featured Moonlets'), React.createElement('div', { id: 'home-featured' }, React.createElement(_Moonlet2.default, { moonlet: this.state.featured[0] }), React.createElement(_Moonlet2.default, { moonlet: this.state.featured[1] }), React.createElement(_Moonlet2.default, { moonlet: this.state.featured[2] })), React.createElement(_PageFooter2.default, null));
       }
-      return React.createElement('div', null);
+      return React.createElement(_LoadingOverlay2.default, null);
     }
   }]);
 
@@ -78726,4 +78748,4 @@ window.onerror = function () {
 
 ReactDOM.render(React.createElement(Home, { apiURL: ASTRALUX_API, apiCredentials: credentials }), document.getElementById('home'));
 
-},{"./components/PageFooter":442,"./components/moonlets/Moonlet":443,"react":366,"react-dom":237,"request":377}]},{},[444]);
+},{"./components/LoadingOverlay":442,"./components/PageFooter":443,"./components/moonlets/Moonlet":444,"react":366,"react-dom":237,"request":377}]},{},[445]);

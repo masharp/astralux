@@ -1,7 +1,9 @@
 'use strict';
 
 import PageFooter from './components/PageFooter';
+import LoadingOverlay from './components/LoadingOverlay';
 import Moonlet from './components/moonlets/Moonlet';
+
 const React = require('react');
 const ReactDOM = require('react-dom');
 const Request = require('request');
@@ -63,7 +65,7 @@ class Home extends React.Component {
         )
       );
     }
-    return (React.createElement('div', null));
+    return (React.createElement(LoadingOverlay, null));
   }
 }
 
