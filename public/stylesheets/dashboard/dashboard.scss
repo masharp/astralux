@@ -89,15 +89,16 @@
     }
     #transaction-panel {
       #transaction-history {
-        margin-top: 5em;
+        margin-top: 3em;
 
         .transaction {
           font-size: 1em;
+          margin-top: 2.5em;
 
           .transaction-date, .transaction-purchase,
            .transaction-moonlet, .transaction-reduction,
            .transaction-addition, .transaction-refund, .refund-btn {
-            margin-left: 5em;
+            margin-left: 7em;
           }
           .transaction-date {
 
@@ -109,6 +110,10 @@
             color: red;
           }
           .transaction-moonlet {
+            color: $link-color;
+            text-decoration: none;
+            cursor: pointer;
+            &:hover { text-decoration: underline; }
           }
 
           .transaction-reduction {
@@ -119,6 +124,8 @@
           }
           .refund-btn {
             cursor: pointer;
+            background-color: $quadrary-color;
+            padding: .5em;
             &:hover { color: red; }
           }
         }

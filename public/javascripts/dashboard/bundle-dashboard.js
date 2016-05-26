@@ -79462,7 +79462,8 @@ function handleRefundClick(event) {
   var target = event.target.classList[1].split('-');
   var username = target[0];
   var transactionID = target[1];
-  console.log(target, username, transactionID);
+
+  var alertBox = window.alert('Are you sure you want to refund this transaction?');
 }
 
 // TODO: Sort by date in descending order

@@ -7,8 +7,10 @@ function handleRefundClick(event) {
   const target = event.target.classList[1].split('-');
   const username = target[0];
   const transactionID = target[1];
-  console.log(target, username, transactionID);
-}
+
+  let alertBox = window.alert('Are you sure you want to refund this transaction?');
+
+} 
 
 // TODO: Sort by date in descending order
 export default function TransactionsPanel(props) {
