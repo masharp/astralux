@@ -79376,16 +79376,17 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var React = require('react');
 
 function ProfileInventory(props) {
-  var userMoonlets = props.user.moonlets.moonlets;
+  var userMoonlets = props.user.moonlets;
   var moonletNodes = [];
-
   // populate inventory with moonlets that match the user's moonlets
-  if (userMoonlets.length > 0) {
-    for (var x in userMoonlets[0]) {
+  if (Object.keys(userMoonlets).length > 0) {
+    for (var x in userMoonlets) {
       for (var y = 0; y < props.moonlets.length; y++) {
+
+        // match the current moonlet id to the URI (which includes the id at the end)
         if (props.moonlets[y].uri.indexOf(x) >= 0) {
           var moonlet = props.moonlets[y];
-          moonlet.inventory = userMoonlets[0][x];
+          moonlet.inventory = userMoonlets[x];
 
           moonletNodes.push(React.createElement(_Moonlet2.default, { moonlet: moonlet, key: 'inv-' + x }));
         }
@@ -79453,20 +79454,36 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = TransactionsPanel;
+var Request = require('request');
 var React = require('react');
 
+function handleRefundClick(event) {
+  // get the username and id of the transaction to be refunded
+  var target = event.target.classList[1].split('-');
+  var username = target[0];
+  var transactionID = target[1];
+  console.log(target, username, transactionID);
+}
+
+// TODO: Sort by date in descending order
 function TransactionsPanel(props) {
-  var historyNodes = props.history.map(function (h, i) {
-    return React.createElement('p', { className: 'transaction', key: 'transacton-' + i }, React.createElement('span', { className: 'transaction-date' }, h.timestamp), React.createElement('span', { className: 'transaction-' + h.transaction }, h.transaction), React.createElement('span', { className: 'transaction-moonlet' }, h.moonlet), React.createElement('span', { className: 'transaction-reduction' }, '- 2000 Credits'));
+  var historyNodes = props.user.transactions.history.map(function (h, i) {
+    var priceType = h.transaction == 'purchase' ? 'reduction' : 'addition';
+    var price = h.transaction == 'purchase' ? '- ' + h.price : '+ ' + h.price;
+    var showRefund = h.transaction == 'purchase' ? '' : 'hidden';
+    var date = h.timestamp.split(' ')[0];
+
+    return React.createElement('p', { className: 'transaction', key: 'transacton-' + i }, React.createElement('span', { className: 'transaction-id' }, h.id), React.createElement('span', { className: 'transaction-date' }, date), React.createElement('span', { className: 'transaction-' + h.transaction }, h.transaction), React.createElement('a', { className: 'transaction-moonlet', href: '/moonlet/' + h.moonlet + '/' + h.moonlet }, 'Moonlet: ' + h.moonlet), React.createElement('span', { className: 'transaction-' + priceType }, price), React.createElement('a', { className: 'refund-btn ' + showRefund + ' ' + props.user.username + '-' + h.id,
+      onClick: handleRefundClick }, 'Refund'));
   });
   return React.createElement('div', { id: 'transaction-panel' }, React.createElement('h2', { className: 'transaction-header' }, 'Your Transaction History'), React.createElement('div', { id: 'transaction-history' }, historyNodes));
 }
 
 TransactionsPanel.propTypes = {
-  history: React.PropTypes.array.isRequired
+  user: React.PropTypes.object.isRequired
 };
 
-},{"react":376}],458:[function(require,module,exports){
+},{"react":376,"request":387}],458:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -79482,7 +79499,7 @@ var React = require('react');
 
 function Moonlet(props) {
   function handleClick() {
-    var moonletID = props.moonlet.uri.split('/').pop();
+    var moonletID = props.moonlet.uri.split('/')[6];
     window.location.href = '/moonlet/' + moonletID + '/' + props.moonlet.display_name;
   }
   return React.createElement('div', { className: 'moonlet-display', onClick: handleClick }, React.createElement('h2', { className: 'moonlet-display-name' }, props.moonlet.display_name), React.createElement('h3', { className: 'moonlet-display-class' }, 'Type: ' + props.moonlet.classification), React.createElement('img', { className: 'moonlet-display-img', src: props.moonlet.img_src }), React.createElement('p', { className: 'moonlet-display-desc' }, props.moonlet.description), React.createElement('p', { className: 'moonlet-display-price' }, 'Price: ' + props.moonlet.price), React.createElement('p', { className: 'moonlet-display-color' }, 'Color: ', React.createElement('span', { style: { color: '' + props.moonlet.color } }, props.moonlet.color)), React.createElement('p', { className: 'moonlet-display-inv' }, 'Inventory: ' + props.moonlet.inventory), React.createElement('input', { type: 'button', className: 'moonlet-display-btn',
@@ -79589,7 +79606,7 @@ var Dashboard = function (_React$Component) {
     key: 'render',
     value: function render() {
       if (this.state.user !== null && this.state.moonlets !== null) {
-        return React.createElement('div', { id: 'dash-component' }, React.createElement(Tabs, { onSelect: this.handleTabClick, selectedIndex: 0 }, React.createElement(TabList, null, React.createElement(Tab, null, 'Profile'), React.createElement(Tab, null, 'History'), React.createElement(Tab, null, 'Settings')), React.createElement(TabPanel, {}, React.createElement(_ProfilePanel2.default, { user: this.state.user, moonlets: this.state.moonlets })), React.createElement(TabPanel, {}, React.createElement(_TransactionsPanel2.default, { history: this.state.user.transactions.history })), React.createElement(TabPanel, {}, React.createElement(_SettingsPanel2.default, { user: this.state.user }))), React.createElement(_PageFooter2.default, null));
+        return React.createElement('div', { id: 'dash-component' }, React.createElement(Tabs, { onSelect: this.handleTabClick, selectedIndex: 0 }, React.createElement(TabList, null, React.createElement(Tab, null, 'Profile'), React.createElement(Tab, null, 'History'), React.createElement(Tab, null, 'Settings')), React.createElement(TabPanel, {}, React.createElement(_ProfilePanel2.default, { user: this.state.user, moonlets: this.state.moonlets })), React.createElement(TabPanel, {}, React.createElement(_TransactionsPanel2.default, { user: this.state.user })), React.createElement(TabPanel, {}, React.createElement(_SettingsPanel2.default, { user: this.state.user }))), React.createElement(_PageFooter2.default, null));
       }
       return React.createElement(_LoadingOverlay2.default, null);
     }

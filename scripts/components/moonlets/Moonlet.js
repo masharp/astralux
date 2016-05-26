@@ -7,7 +7,7 @@ const React = require('react');
 
 export default function Moonlet(props) {
   function handleClick() {
-    const moonletID = props.moonlet.uri.split('/').pop();
+    const moonletID = props.moonlet.uri.split('/')[6];
     window.location.href = `/moonlet/${moonletID}/${props.moonlet.display_name}`;
   }
   return (

@@ -67,7 +67,7 @@ class Dashboard extends React.Component {
               React.createElement(ProfilePanel, { user: this.state.user, moonlets: this.state.moonlets })
             ),
             React.createElement(TabPanel, {},
-              React.createElement(TransactionsPanel, { history: this.state.user.transactions.history })
+              React.createElement(TransactionsPanel, { user: this.state.user })
             ),
             React.createElement(TabPanel, {},
               React.createElement(SettingsPanel, { user: this.state.user })
