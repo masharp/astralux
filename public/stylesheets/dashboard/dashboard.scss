@@ -90,39 +90,32 @@
     #transaction-panel {
       #transaction-history {
         margin-top: 3em;
+        width: 100%;
+        text-align: center;
 
+        th {
+          font-size: 1.5em;
+        }
         .transaction {
           font-size: 1em;
-          margin-top: 2.5em;
 
-          .transaction-date, .transaction-purchase,
-           .transaction-moonlet, .transaction-reduction,
-           .transaction-addition, .transaction-refund, .refund-btn {
-            margin-left: 7em;
+          td {
+            padding-top: .6em;
+            padding-bottom: .6em;
           }
-          .transaction-date {
-
-          }
-          .transaction-purchase {
+          .transaction-purchase, .transaction-addition {
             color: green;
           }
-          .transaction-refund {
+          .transaction-refund, .transaction-reduction {
             color: red;
           }
           .transaction-moonlet {
             color: $link-color;
-            text-decoration: none;
+            text-decoration: underline;
             cursor: pointer;
-            &:hover { text-decoration: underline; }
-          }
-
-          .transaction-reduction {
-            color: red;
-          }
-          .transaction-addition {
-            color: green;
           }
           .refund-btn {
+            width: 2em;
             cursor: pointer;
             background-color: $quadrary-color;
             padding: .5em;
@@ -131,8 +124,61 @@
         }
       }
     }
+    #settings-panel {
+      .settings-header {
+
+      }
+      #email-update {
+        margin-top: 2em;
+        margin-left: 2em;
+        float: left;
+
+        .current-email {
+          .email {
+            color: $link-color;
+            margin-left: 1.5em;
+          }
+        }
+        .new-label {
+          margin-right: 2.7em;
+          margin-top: 1em;
+        }
+        .confirm-label {
+          margin-top: 1em;
+          margin-right: 1em;
+        }
+        #update-email-btn {
+          width: 2em;
+          cursor: pointer;
+          background-color: $quadrary-color;
+          padding: .5em;
+          &:hover { background-color: lighten($quadrary-color, 15); }
+        }
+      }
+      #danger-zone {
+        float: right;
+        margin-top: 2em;
+        margin-right: 5em;
+
+        .danger-zone-header {
+          color: red;
+        }
+        #refund-all-btn {
+          width: 2em;
+          cursor: pointer;
+          background-color: red;
+          color: $font-color;
+          padding: .5em;
+          &:hover { background-color: lighten(red, 15); }
+        }
+      }
+      .clear-filler {
+        clear: both;
+      }
+    }
     .page-footer {
       text-align: center;
+      margin-top: 5em;
     }
   }
 }

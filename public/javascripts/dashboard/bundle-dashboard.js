@@ -79438,16 +79438,21 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = SettingsPanel;
 var React = require('react');
+var Request = require('request');
 
 function SettingsPanel(props) {
-  return React.createElement('h2', {}, 'Settings');
+  function handleClicks(event) {
+    console.log(event.target);
+  }
+  var currentEmail = props.user.email.length > 0 ? props.user.email : 'N/A';
+  return React.createElement('div', { id: 'settings-panel' }, React.createElement('h2', { className: 'settings-header' }, 'Settings'), React.createElement('div', { id: 'email-update' }, React.createElement('h3', { className: 'email-update-header' }, 'Update Email'), React.createElement('p', { className: 'current-email' }, 'Current Email: ', React.createElement('span', { className: 'email' }, currentEmail)), React.createElement('label', { className: 'new-label' }, 'New Email: '), React.createElement('input', { type: 'text', id: 'new-email-input' }), React.createElement('br', null), React.createElement('br', null), React.createElement('label', { className: 'confirm-label' }, 'Confirm Email: '), React.createElement('input', { type: 'text', id: 'confirm-email-input' }), React.createElement('br', null), React.createElement('br', null), React.createElement('a', { id: 'update-email-btn', onClick: handleClicks }, 'Update')), React.createElement('div', { id: 'danger-zone' }, React.createElement('h3', { className: 'danger-zone-header' }, 'Danger Zone'), React.createElement('div', { id: 'delete-account' }, React.createElement('a', { id: 'refund-all-btn', onClick: handleClicks }, 'Delete Account'))), React.createElement('div', { className: 'clear-filler' }));
 }
 
 SettingsPanel.propTypes = {
   user: React.PropTypes.object.isRequired
 };
 
-},{"react":376}],457:[function(require,module,exports){
+},{"react":376,"request":387}],457:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -79457,27 +79462,31 @@ exports.default = TransactionsPanel;
 var Request = require('request');
 var React = require('react');
 
-function handleRefundClick(event) {
-  // get the username and id of the transaction to be refunded
-  var target = event.target.classList[1].split('-');
-  var username = target[0];
-  var transactionID = target[1];
-
-  var alertBox = window.alert('Are you sure you want to refund this transaction?');
-}
-
-// TODO: Sort by date in descending order
 function TransactionsPanel(props) {
+
+  /* click event for refunding a previous transaction */
+  function handleRefundClick(event) {
+    // get the username and id of the transaction to be refunded
+    var target = event.target.classList[1].split('-');
+    var username = props.user.username;
+    var transactionID = target[1];
+
+    var alertBox = window.confirm('Are you sure you want to refund this transaction?');
+    console.log(alertBox);
+  }
+
+  /* contruct each row of transaction history via table rows */
   var historyNodes = props.user.transactions.history.map(function (h, i) {
-    var priceType = h.transaction == 'purchase' ? 'reduction' : 'addition';
-    var price = h.transaction == 'purchase' ? '- ' + h.price : '+ ' + h.price;
-    var showRefund = h.transaction == 'purchase' ? '' : 'hidden';
+    var priceType = h.transaction != 'purchase' ? 'addition' : 'reduction'; // adjustment type (incr or decr)
+    var price = h.transaction != 'purchase' ? '+ ' + h.price : '- ' + h.price; // price adjustment (incr or decr)
+    var showRefund = h.transaction == 'refund' ? 'hidden' : ''; // if transaction is refundable - show a button to allow
     var date = h.timestamp.split(' ')[0];
 
-    return React.createElement('p', { className: 'transaction', key: 'transacton-' + i }, React.createElement('span', { className: 'transaction-id' }, h.id), React.createElement('span', { className: 'transaction-date' }, date), React.createElement('span', { className: 'transaction-' + h.transaction }, h.transaction), React.createElement('a', { className: 'transaction-moonlet', href: '/moonlet/' + h.moonlet + '/' + h.moonlet }, 'Moonlet: ' + h.moonlet), React.createElement('span', { className: 'transaction-' + priceType }, price), React.createElement('a', { className: 'refund-btn ' + showRefund + ' ' + props.user.username + '-' + h.id,
+    return React.createElement('tr', { className: 'transaction', key: 'transacton-' + i }, React.createElement('td', { className: 'transaction-id' }, h.id), React.createElement('td', { className: 'transaction-date' }, date), React.createElement('td', { className: 'transaction-' + h.transaction }, h.transaction), React.createElement('td', { className: 'transaction-moonlet', href: '/moonlet/' + h.moonlet + '/' + h.moonlet }, 'Moonlet: ' + h.moonlet), React.createElement('td', { className: 'transaction-' + priceType }, price), React.createElement('td', { className: 'refund-btn ' + showRefund + ' ' + props.user.username + '-' + h.id,
       onClick: handleRefundClick }, 'Refund'));
   });
-  return React.createElement('div', { id: 'transaction-panel' }, React.createElement('h2', { className: 'transaction-header' }, 'Your Transaction History'), React.createElement('div', { id: 'transaction-history' }, historyNodes));
+
+  return React.createElement('div', { id: 'transaction-panel' }, React.createElement('h2', { className: 'transaction-header' }, 'Your Transaction History'), React.createElement('table', { id: 'transaction-history' }, React.createElement('tr', null, React.createElement('th', null, 'ID'), React.createElement('th', null, 'Date'), React.createElement('th', null, 'Type'), React.createElement('th', null, 'Item'), React.createElement('th', null, 'Balance'), React.createElement('th', null, 'Actions')), historyNodes));
 }
 
 TransactionsPanel.propTypes = {
