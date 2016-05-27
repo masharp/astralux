@@ -46,28 +46,30 @@ header {
   left: 0;
 }
 #menu {
-  background-color: $quadrary-color;
-  padding: 1em;
+  #menu-bar {
+    background-color: $quadrary-color;
+    padding: 1em !important; 
 
-  .brand-img {
-    width: auto;
-    height: 50px;
-  }
-  .navlink {
-    margin-left: .5em;
-    margin-right: .5em;
-    color: $font-color;
-    text-decoration: none;
-  }
-  #link-nav {
-    float: right;
-    margin-top: 1em;
-    margin-right: 1em;
-    font-size: 1.2em;
-
-    .marketplace {
+    .brand-img {
+      width: auto;
+      height: 50px;
     }
-    .login {
+    .navlink {
+      margin-left: .5em;
+      margin-right: .5em;
+      color: $font-color;
+      text-decoration: none;
+    }
+    #link-nav {
+      float: right;
+      margin-top: 1em;
+      margin-right: 1em;
+      font-size: 1.2em;
+
+      .marketplace {
+      }
+      .login {
+      }
     }
   }
 }

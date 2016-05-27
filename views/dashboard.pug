@@ -1,10 +1,10 @@
 extends menu
 block content
   link(rel='stylesheet', href='/stylesheets/dashboard/dashboard.css')
-
   #dashboard
 
   script(type='text/javascript').
     const credentials = !{ JSON.stringify(credentials) };
     const username = !{ JSON.stringify(username) };
+  script(src='/javascripts/menu/bundle-menu.min.js')
   script(src='/javascripts/dashboard/bundle-dashboard.js')

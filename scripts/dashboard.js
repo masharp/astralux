@@ -18,6 +18,10 @@ const TabPanel = ReactTabs.TabPanel;
 
 const ASTRALUX_API = 'https://astralux-api.herokuapp.com/api/v1.0';
 
+// server side variables sent with render
+const appCredentials = credentials;
+const currentUser = username;
+
 class Dashboard extends React.Component {
   constructor(props) {
     super(props);
@@ -90,5 +94,5 @@ Dashboard.propTypes = {
 // front end global error handler -> redirect to error page for now
 // window.onerror = () => window.location.href = '/error';
 
-ReactDOM.render(React.createElement(Dashboard, { apiURL: ASTRALUX_API, apiCredentials: credentials, username }),
+ReactDOM.render(React.createElement(Dashboard, { apiURL: ASTRALUX_API, apiCredentials: appCredentials, username: currentUser }),
   document.getElementById('dashboard'));

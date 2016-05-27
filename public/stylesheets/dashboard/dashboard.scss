@@ -134,6 +134,7 @@
         float: left;
 
         .current-email {
+          font-size: 1.1em;
           .email {
             color: $link-color;
             margin-left: 1.5em;
@@ -146,6 +147,12 @@
         .confirm-label {
           margin-top: 1em;
           margin-right: 1em;
+        }
+        label, input {
+          font-size: 1.1em;
+        }
+        input {
+          padding: .2em;
         }
         #update-email-btn {
           width: 2em;
