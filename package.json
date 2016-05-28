@@ -20,10 +20,10 @@
     "bundle-login": "browserify ./scripts/login.js -t babelify --outfile ./public/javascripts/login/bundle-login.js && minify ./public/javascripts/login/bundle-login.js",
     "start": "node ./bin/www",
     "test": "jasmine JASMINE_CONFIG_PATH=test/jasmine.json",
-    "sass-global": "atom ./public/stylesheets/global/global.scss && sass --watch ./public/stylesheets/global/global.scss:./public/stylesheets/global/global.css --style compressed",
-    "sass-market": "atom ./public/stylesheets/marketplace/marketplace.scss && sass --watch ./public/stylesheets/marketplace/marketplace.scss:./public/stylesheets/marketplace/marketplace.css --style compressed",
-    "sass-moonlet": "atom ./public/stylesheets/moonlet/moonlet.scss && sass --watch ./public/stylesheets/moonlet/moonlet.scss:./public/stylesheets/moonlet/moonlet.css --style compressed",
-    "sass-dash": "atom ./public/stylesheets/dashboard/dashboard.scss && sass --watch ./public/stylesheets/dashboard/dashboard.scss:./public/stylesheets/dashboard/dashboard.css --style compressed"
+    "sass-global": "atom ./stylesheets/global/global.scss && sass --watch ./stylesheets/global.scss:./public/stylesheets/global.css --style compressed",
+    "sass-market": "atom ./stylesheets/marketplace.scss && sass --watch ./stylesheets/marketplace.scss:./public/stylesheets/marketplace.css --style compressed",
+    "sass-moonlet": "atom ./stylesheets/moonlet.scss && sass --watch ./stylesheets/moonlet.scss:./public/stylesheets/moonlet.css --style compressed",
+    "sass-dash": "atom ./stylesheets/dashboard.scss && sass --watch ./stylesheets/dashboard.scss:./public/stylesheets/dashboard.css --style compressed"
   },
   "engines": {
     "node": "~6.0.0",
@@ -68,8 +68,9 @@
     "eslint-config-airbnb": "^6.2.0",
     "eslint-plugin-react": "^4.2.3",
     "expect": "^1.16.0",
-    "frisby": "^0.8.5",
     "jasmine": "^2.4.1",
-    "jasmine-core": "^2.4.1"
+    "jasmine-core": "^2.4.1",
+    "minify": "^2.0.9",
+    "sass": "^0.5.0"
   }
 }
