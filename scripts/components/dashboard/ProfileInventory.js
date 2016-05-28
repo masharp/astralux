@@ -6,13 +6,13 @@ const React = require('react');
 export default function ProfileInventory(props) {
   const userMoonlets = props.user.moonlets;
   const moonletNodes = [];
+
   // populate inventory with moonlets that match the user's moonlets
   if (Object.keys(userMoonlets).length > 0) {
     for (let x in userMoonlets) {
       for (let y = 0; y < props.moonlets.length; y++) {
-        
         // match the current moonlet id to the URI (which includes the id at the end)
-        if (props.moonlets[y].uri.indexOf(x) >= 0) {
+        if (props.moonlets[y].id === Number(x)) {
           let moonlet = props.moonlets[y];
           moonlet.inventory = userMoonlets[x];
 

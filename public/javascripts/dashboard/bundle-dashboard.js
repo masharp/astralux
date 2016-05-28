@@ -79378,13 +79378,13 @@ var React = require('react');
 function ProfileInventory(props) {
   var userMoonlets = props.user.moonlets;
   var moonletNodes = [];
+
   // populate inventory with moonlets that match the user's moonlets
   if (Object.keys(userMoonlets).length > 0) {
     for (var x in userMoonlets) {
       for (var y = 0; y < props.moonlets.length; y++) {
-
         // match the current moonlet id to the URI (which includes the id at the end)
-        if (props.moonlets[y].uri.indexOf(x) >= 0) {
+        if (props.moonlets[y].id === Number(x)) {
           var moonlet = props.moonlets[y];
           moonlet.inventory = userMoonlets[x];
 
@@ -79472,6 +79472,7 @@ function TransactionsPanel(props) {
     var transactionID = target[1];
 
     var alertBox = window.confirm('Are you sure you want to refund this transaction?');
+    console.log(username, transactionID);
     console.log(alertBox);
   }
 
@@ -79486,7 +79487,7 @@ function TransactionsPanel(props) {
       onClick: handleRefundClick }, 'Refund'));
   });
 
-  return React.createElement('div', { id: 'transaction-panel' }, React.createElement('h2', { className: 'transaction-header' }, 'Your Transaction History'), React.createElement('table', { id: 'transaction-history' }, React.createElement('tr', null, React.createElement('th', null, 'ID'), React.createElement('th', null, 'Date'), React.createElement('th', null, 'Type'), React.createElement('th', null, 'Item'), React.createElement('th', null, 'Balance'), React.createElement('th', null, 'Actions')), historyNodes));
+  return React.createElement('div', { id: 'transaction-panel' }, React.createElement('h2', { className: 'transaction-header' }, 'Your Transaction History'), React.createElement('table', { id: 'transaction-history' }, React.createElement('thead', null, React.createElement('tr', null, React.createElement('th', null, 'ID'), React.createElement('th', null, 'Date'), React.createElement('th', null, 'Type'), React.createElement('th', null, 'Item'), React.createElement('th', null, 'Balance'), React.createElement('th', null, 'Actions'))), React.createElement('tbody', null, historyNodes)));
 }
 
 TransactionsPanel.propTypes = {
@@ -79563,7 +79564,11 @@ var Tabs = ReactTabs.Tabs;
 var TabList = ReactTabs.TabList;
 var TabPanel = ReactTabs.TabPanel;
 
-var ASTRALUX_API = 'https://astralux-api.herokuapp.com/api/v1.0';
+var ASTRALUX_API = 'https://astralux-api.herokuapp.com/api';
+
+// server side variables sent with render
+var appCredentials = credentials;
+var currentUser = username;
 
 var Dashboard = function (_React$Component) {
   _inherits(Dashboard, _React$Component);
@@ -79609,9 +79614,7 @@ var Dashboard = function (_React$Component) {
     value: function handleButtonClick() {}
   }, {
     key: 'handleTabClick',
-    value: function handleTabClick(index, last) {
-      console.log(index, last);
-    }
+    value: function handleTabClick(index, last) {}
   }, {
     key: 'render',
     value: function render() {
@@ -79634,6 +79637,6 @@ Dashboard.propTypes = {
 // front end global error handler -> redirect to error page for now
 // window.onerror = () => window.location.href = '/error';
 
-ReactDOM.render(React.createElement(Dashboard, { apiURL: ASTRALUX_API, apiCredentials: credentials, username: username }), document.getElementById('dashboard'));
+ReactDOM.render(React.createElement(Dashboard, { apiURL: ASTRALUX_API, apiCredentials: appCredentials, username: currentUser }), document.getElementById('dashboard'));
 
 },{"./components/LoadingOverlay":452,"./components/PageFooter":453,"./components/dashboard/ProfilePanel":455,"./components/dashboard/SettingsPanel":456,"./components/dashboard/TransactionsPanel":457,"react":376,"react-dom":239,"react-tabs":247,"request":387}]},{},[459]);

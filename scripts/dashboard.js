@@ -16,7 +16,7 @@ const Tabs = ReactTabs.Tabs;
 const TabList = ReactTabs.TabList;
 const TabPanel = ReactTabs.TabPanel;
 
-const ASTRALUX_API = 'https://astralux-api.herokuapp.com/api/v1.0';
+const ASTRALUX_API = 'https://astralux-api.herokuapp.com/api';
 
 // server side variables sent with render
 const appCredentials = credentials;
@@ -55,7 +55,6 @@ class Dashboard extends React.Component {
   handleButtonClick() {
   }
   handleTabClick(index, last) {
-    console.log(index, last);
   }
   render() {
     if (this.state.user !== null && this.state.moonlets !== null) {

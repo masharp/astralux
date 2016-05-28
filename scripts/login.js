@@ -5,7 +5,7 @@ const React = require('react');
 const ReactDOM = require('react-dom');
 const Request = require('request');
 
-const ASTRALUX_API = 'https://astralux-api.herokuapp.com/api/v1.0/users';
+const ASTRALUX_API = 'https://astralux-api.herokuapp.com/api/users';
 
 // server side variables sent with render
 const appCredentials = credentials;

@@ -41,12 +41,12 @@ router.get('/dashboard/:username', (request, response) => {
 
 /* Marketplace Page */
 router.get('/marketplace', (request, response) => {
-  response.render('marketplace', { title: 'Astralux Marketplace | A moonlet Marketplace of the Future' });
+  response.render('marketplace', { title: 'Astralux Marketplace | A moonlet Marketplace of the Future', credentials });
 });
 
 /* Marketplace Page */
 router.get('/about', (request, response) => {
-  response.render('about', { title: 'Astralux About | A moonlet Marketplace of the Future' });
+  response.render('about', { title: 'Astralux About | A moonlet Marketplace of the Future', credentials });
 });
 
 /* handle web crawlers */
@@ -64,7 +64,7 @@ router.get('/sitemap.txt', (request, response) => {
 /* Error Page */
 router.get('/error', (request, response) => {
   response.render('error', { message: 'Something went wrong here!', title: 'Astralux - Critical Error!',
-    error: { status: 500 } });
+    error: { status: 500 }, credentials });
 });
 
 module.exports = router;

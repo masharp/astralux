@@ -12,6 +12,7 @@ export default function TransactionsPanel(props) {
     const transactionID = target[1];
 
     let alertBox = window.confirm('Are you sure you want to refund this transaction?');
+    console.log(username, transactionID);
     console.log(alertBox);
   }
 
@@ -40,14 +41,17 @@ export default function TransactionsPanel(props) {
     React.createElement('div', { id: 'transaction-panel' },
       React.createElement('h2', { className: 'transaction-header' }, `Your Transaction History`),
       React.createElement('table', { id: 'transaction-history' },
-        React.createElement('tr', null,
-          React.createElement('th', null, 'ID'),
-          React.createElement('th', null, 'Date'),
-          React.createElement('th', null, 'Type'),
-          React.createElement('th', null, 'Item'),
-          React.createElement('th', null, 'Balance'),
-          React.createElement('th', null, 'Actions')
-        ), historyNodes
+        React.createElement('thead', null,
+          React.createElement('tr', null,
+            React.createElement('th', null, 'ID'),
+            React.createElement('th', null, 'Date'),
+            React.createElement('th', null, 'Type'),
+            React.createElement('th', null, 'Item'),
+            React.createElement('th', null, 'Balance'),
+            React.createElement('th', null, 'Actions')
+          )
+        ),
+        React.createElement('tbody', null, historyNodes)
       )
     )
   );

@@ -78683,7 +78683,10 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var Request = require('request');
 
-var ASTRALUX_API = 'https://astralux-api.herokuapp.com/api/v1.0/moonlets';
+var ASTRALUX_API = 'https://astralux-api.herokuapp.com/api/moonlets';
+
+// server side variables sent with render
+var appCredentials = credentials;
 
 var Home = function (_React$Component) {
   _inherits(Home, _React$Component);
@@ -78746,6 +78749,6 @@ window.onerror = function () {
   return window.location.href = '/error';
 };
 
-ReactDOM.render(React.createElement(Home, { apiURL: ASTRALUX_API, apiCredentials: credentials }), document.getElementById('home'));
+ReactDOM.render(React.createElement(Home, { apiURL: ASTRALUX_API, apiCredentials: appCredentials }), document.getElementById('home'));
 
 },{"./components/LoadingOverlay":442,"./components/PageFooter":443,"./components/moonlets/Moonlet":444,"react":366,"react-dom":237,"request":377}]},{},[445]);
