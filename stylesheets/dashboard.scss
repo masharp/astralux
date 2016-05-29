@@ -88,6 +88,17 @@
       }
     }
     #transaction-panel {
+      #refund-status {
+        text-align: center;
+        font-size: 1.1em;
+
+        #refund-success {
+          color: green;
+        }
+        #refund-failure {
+          color: red;
+        }
+      }
       #transaction-history {
         margin-top: 3em;
         width: 100%;
@@ -109,11 +120,6 @@
           .transaction-refund, .transaction-reduction {
             color: red;
           }
-          .transaction-moonlet {
-            color: $link-color;
-            text-decoration: underline;
-            cursor: pointer;
-          }
           .refund-btn {
             width: 2em;
             cursor: pointer;
@@ -125,17 +131,24 @@
       }
     }
     #settings-panel {
-      .settings-header {
+      #request-status {
+        text-align: center;
+        font-size: 1.1em;
 
+        #request-success {
+          color: green;
+        }
       }
       #email-update {
         margin-top: 2em;
         margin-left: 2em;
         float: left;
+        width: 50%;
 
         .current-email {
           font-size: 1.1em;
-          .email {
+
+          #email-selector {
             color: $link-color;
             margin-left: 1.5em;
           }
@@ -150,6 +163,7 @@
         }
         label, input {
           font-size: 1.1em;
+          width: 60%;
         }
         input {
           padding: .2em;
@@ -161,6 +175,9 @@
           padding: .5em;
           &:hover { background-color: lighten($quadrary-color, 15); }
         }
+        #email-failure {
+          color: yellow;
+        }
       }
       #danger-zone {
         float: right;
@@ -170,7 +187,7 @@
         .danger-zone-header {
           color: red;
         }
-        #refund-all-btn {
+        #delete-acct-btn {
           width: 2em;
           cursor: pointer;
           background-color: red;

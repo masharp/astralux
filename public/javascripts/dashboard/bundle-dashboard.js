@@ -80917,6 +80917,10 @@ function PageFooter() {
 }
 
 },{"react":377}],455:[function(require,module,exports){
+/* This is a module that contains a stateless react component, which constructs
+ * the user's inventory of moonlets for use in the profile panel of the dashboard
+ */
+
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80932,28 +80936,47 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var React = require('react');
 
+/**
+ * Function that takes the user prop and the global moonlets prop and construct a
+ * react module for use in the ProfilePanel
+ * @param {object} props - user: props.user, global moonlets: props.moonlets
+ */
 function ProfileInventory(props) {
-  var userMoonlets = props.user.moonlets;
-  var moonletNodes = [];
+  /**
+   * Function that takes the user's moonlet object and constructs a moonlet inventory
+   * @param {object} moonlets - object of moonlet inventory
+   * @param {array} availableMoonlets - list of moonlets to compare with the user's inventory
+   * @return {aray} - array of react components comprising the user's moonlet inventory
+   */
+  function constructInventory(moonlets, availableMoonlets) {
+    var userMoonlets = moonlets;
+    var allMoonlets = availableMoonlets;
+    var nodes = [];
 
-  // populate inventory with moonlets that match the user's moonlets
-  if (Object.keys(userMoonlets).length > 0) {
-    for (var x in userMoonlets) {
-      for (var y = 0; y < props.moonlets.length; y++) {
-        // match the current moonlet id to the URI (which includes the id at the end)
-        if (props.moonlets[y].id === Number(x)) {
-          var moonlet = props.moonlets[y];
-          moonlet.inventory = userMoonlets[x];
+    // populate inventory with moonlets that match the user's moonlets
+    if (Object.keys(userMoonlets).length > 0) {
+      for (var x in userMoonlets) {
+        for (var y = 0; y < allMoonlets.length; y++) {
+          // match the current moonlet id to the URI (which includes the id at the end)
+          if (allMoonlets[y].id === Number(x)) {
+            var moonlet = allMoonlets[y];
+            moonlet.inventory = userMoonlets[x]; // edit the moonlet object's inventory to reflect the user's inventory
 
-          moonletNodes.push(React.createElement(_Moonlet2.default, { moonlet: moonlet, key: 'inv-' + x }));
+            nodes.push(React.createElement(_Moonlet2.default, { moonlet: moonlet, key: 'inv-' + x }));
+          }
         }
       }
-    }
-    // handle an empty inventory
-  } else {
-      var emptyElement = React.createElement('p', { className: 'empty-invtentory' }, 'Your inventory is empty!');
-      moonletNodes.push(emptyElement);
-    }
+      // handle an empty inventory
+    } else {
+        var emptyElement = React.createElement('p', { className: 'empty-invtentory' }, 'Your inventory is empty!');
+        nodes.push(emptyElement);
+      }
+
+    return nodes;
+  }
+
+  var moonletNodes = constructInventory(props.user.moonlets, props.moonlets); // construct react components for inventory
+
   return React.createElement('div', { id: 'profile-panel-inventory' }, React.createElement('h2', { className: 'profile-inventory-header' }, 'Your Moonlets'), React.createElement('div', { id: 'moonlet-inventory' }, moonletNodes));
 }
 
@@ -80963,6 +80986,10 @@ ProfileInventory.propTypes = {
 };
 
 },{"../../components/moonlets/Moonlet":459,"react":377}],456:[function(require,module,exports){
+/* This is a module that contains a stateless react component, which constructs
+ * the user's profile panel in their dashboard. Includes a 'wallet' for balance info,
+ * a profile picture, and an inventory of the user's moonlets
+ */
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80978,8 +81005,38 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var React = require('react');
 
+/**
+ * Function that takes the user prop and the global moonlets prop and construct a
+ * react module for use in the dashboard component.
+ * @param {object} props - user: props.user, global moonlets: props.moonlets
+ */
 function ProfilePanel(props) {
-  return React.createElement('div', { id: 'profile-panel' }, React.createElement('div', { id: 'profile-panel-header' }, React.createElement('h2', { className: 'profile-username' }, props.user.display_name + '\'s Profile'), React.createElement('img', { src: '/assets/login-alien.png' })), React.createElement('div', { id: 'profile-panel-wallet' }, React.createElement('h3', { className: 'wallet-header' }, 'Astralux Galactic Account'), React.createElement('p', { className: 'wallet-balance' }, 'Current Balance: ' + props.user.balance + ' Credits'), React.createElement('p', { className: 'wallet-transactions' }, 'Recent Transactions: -2202 Credits')), React.createElement(_ProfileInventory2.default, { user: props.user, moonlets: props.moonlets }));
+  /**
+   * Function that takes the transactions array and parses each transaction for a
+   * recent transactions credit amount
+   * @param {array} transactions - array of transaction objects
+   * @return {number} - resulting recent transaction amount (positive or negative)
+   */
+  function parseTransactions(transactions) {
+    var history = transactions.history;
+    var recent = 0;
+
+    for (var x = 0; x < history.length; x++) {
+      var item = history[x];
+
+      if (item.transaction === 'purchase') {
+        // if a purchase, subtract
+        recent -= item.price;
+      } else if (item.transaction === 'refund' || item.transaction === 'credit') {
+        // if a credit or refund, add
+        recent += item.price;
+      }
+    }
+
+    return recent;
+  }
+
+  return React.createElement('div', { id: 'profile-panel' }, React.createElement('div', { id: 'profile-panel-header' }, React.createElement('h2', { className: 'profile-username' }, props.user.display_name + '\'s Profile'), React.createElement('img', { src: '/assets/login-alien.png' })), React.createElement('div', { id: 'profile-panel-wallet' }, React.createElement('h3', { className: 'wallet-header' }, 'Astralux Galactic Account'), React.createElement('p', { className: 'wallet-balance' }, 'Current Balance: ' + props.user.balance + ' Credits'), React.createElement('p', { className: 'wallet-transactions' }, 'Recent Transactions: ' + parseTransactions(props.user.transactions) + ' Credits')), React.createElement(_ProfileInventory2.default, { user: props.user, moonlets: props.moonlets }));
 }
 
 ProfilePanel.propTypes = {
@@ -80988,6 +81045,11 @@ ProfilePanel.propTypes = {
 };
 
 },{"./ProfileInventory":455,"react":377}],457:[function(require,module,exports){
+/* This is a module that contains a stateless react component, which constructs
+ * the user's settings panel. This allows the user to update their email or delete
+ * their account completely.
+ */
+
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80997,19 +81059,119 @@ exports.default = SettingsPanel;
 var React = require('react');
 var Request = require('request');
 
+/**
+ * Function that takes the user prop and the global moonlets prop and construct a
+ * react module for use in the dashboard component.
+ * @param {object} props - user: props.user, global moonlets: props.moonlets
+ */
 function SettingsPanel(props) {
-  function handleClicks(event) {
-    console.log(event.target);
+
+  /**
+   * Function that handles updating the user's email via a promise
+   * @param {string} username - username of the user
+   * @param {object} credentials - api credentials
+   * @param {string} url - api url
+   * @param {string} email - email to use when updating
+   * @return {boolean} - true or false for success or failure
+   */
+  function updateEmail(username, credentials, url, email) {
+    return new Promise(function (resolve, reject) {
+      var credentialsUsername = credentials.username;
+      var credentialsPassword = credentials.password;
+      var result = null;
+
+      var options = {
+        url: url + '/users/' + username,
+        method: 'PUT',
+        json: { email: email }
+      };
+      function updateCallback(error, response, body) {
+        if (error || body.error) {
+          error = body.error ? body.error : error;
+          reject(error);
+        }
+
+        resolve(true);
+      }
+
+      Request.put(options, updateCallback).auth(credentialsUsername, credentialsPassword, true);
+    });
   }
+  /**
+   * Function that handles deleting the user's account
+   * @param {string} username - username of the user
+   * @param {object} credentials - api credentials
+   * @param {string} url - api url
+   * @return {boolean} - true or false for success or failure
+   */
+  function deleteAccount(username, credentials, url) {}
+
+  /**
+   * Click handler for both the email update and account deletion buttons
+   * Issues a server request. upon success or failure, updates view
+   */
+  function handleClicks(event) {
+    var trigger = event.target.id;
+    var username = props.user.username;
+    var credentials = props.credentials;
+    var url = props.url;
+
+    var emailOne = document.getElementById('new-email-input');
+    var emailTwo = document.getElementById('confirm-email-input');
+    var emailFailure = document.getElementById('email-failure');
+    var requestSuccess = document.getElementById('request-success');
+    var requestHanging = document.getElementById('request-hanging');
+
+    // ensure request-status messages are hidden and trigger request-spinner
+    requestHanging.classList.remove('hidden');
+    requestSuccess.classList.add('hidden');
+    emailFailure.classList.add('hidden');
+
+    switch (trigger) {
+      case 'update-email-btn':
+        // get the email input values and validate them
+        var emailOneVal = emailOne.value;
+        var emailTwoVal = emailTwo.value;
+        var validationOne = emailOneVal.split('@');
+        var validationTwo = validationOne.length > 0 ? validationOne[1].split('.').length : 0;
+
+        if (emailOneVal !== emailTwoVal || validationOne.length < 2 || validationTwo < 2) {
+          emailFailure.classList.remove('hidden');
+          break;
+        }
+
+        // trigger update request
+        updateEmail(username, credentials, url, emailOneVal).then(function (result) {
+          if (result) {
+            requestHanging.classList.add('hidden');
+            requestSuccess.classList.remove('hidden');
+            document.getElementById('email-selector').innerHTML = emailOneVal;
+          }
+        });
+
+        break;
+      case 'delete-acct-btn':
+        break;
+    }
+  }
+
   var currentEmail = props.user.email.length > 0 ? props.user.email : 'N/A';
-  return React.createElement('div', { id: 'settings-panel' }, React.createElement('h2', { className: 'settings-header' }, 'Settings'), React.createElement('div', { id: 'email-update' }, React.createElement('h3', { className: 'email-update-header' }, 'Update Email'), React.createElement('p', { className: 'current-email' }, 'Current Email: ', React.createElement('span', { className: 'email' }, currentEmail)), React.createElement('label', { className: 'new-label' }, 'New Email: '), React.createElement('input', { type: 'text', id: 'new-email-input' }), React.createElement('br', null), React.createElement('br', null), React.createElement('label', { className: 'confirm-label' }, 'Confirm Email: '), React.createElement('input', { type: 'text', id: 'confirm-email-input' }), React.createElement('br', null), React.createElement('br', null), React.createElement('a', { id: 'update-email-btn', onClick: handleClicks }, 'Update')), React.createElement('div', { id: 'danger-zone' }, React.createElement('h3', { className: 'danger-zone-header' }, 'Danger Zone'), React.createElement('div', { id: 'delete-account' }, React.createElement('a', { id: 'refund-all-btn', onClick: handleClicks }, 'Delete Account'))), React.createElement('div', { className: 'clear-filler' }));
+
+  return React.createElement('div', { id: 'settings-panel' }, React.createElement('h2', { className: 'settings-header' }, 'Settings'), React.createElement('div', { id: 'request-status' }, React.createElement('p', { id: 'request-success', className: 'hidden' }, 'Your update was successful!'), React.createElement('i', { id: 'request-hanging', className: 'fa fa-spinner fa-pulse hidden' })), React.createElement('div', { id: 'email-update' }, React.createElement('h3', { className: 'email-update-header' }, 'Update Email'), React.createElement('p', { className: 'current-email' }, 'Current Email: ', React.createElement('span', { id: 'email-selector' }, currentEmail)), React.createElement('label', { className: 'new-label' }, 'New Email: '), React.createElement('input', { type: 'text', id: 'new-email-input' }), React.createElement('br', null), React.createElement('br', null), React.createElement('label', { className: 'confirm-label' }, 'Confirm Email: '), React.createElement('input', { type: 'text', id: 'confirm-email-input' }), React.createElement('br', null), React.createElement('br', null), React.createElement('a', { id: 'update-email-btn', onClick: handleClicks }, 'Update'), React.createElement('p', { id: 'email-failure', className: 'hidden' }, 'Input invalid!')), React.createElement('div', { id: 'danger-zone' }, React.createElement('h3', { className: 'danger-zone-header' }, 'Danger Zone'), React.createElement('div', { id: 'delete-account' }, React.createElement('a', { id: 'delete-acct-btn', onClick: handleClicks }, 'Delete Account'))), React.createElement('div', { className: 'clear-filler' }));
 }
 
 SettingsPanel.propTypes = {
-  user: React.PropTypes.object.isRequired
+  user: React.PropTypes.object.isRequired,
+  credentials: React.PropTypes.object.isRequired,
+  url: React.PropTypes.string.isRequired
 };
 
 },{"react":377,"request":388}],458:[function(require,module,exports){
+/* This is a module that contains a stateless react component, which constructs
+ * the user's transaction history for use in the user's dashboard. includes
+ * functionality for issuing refunds for past transactions
+ */
+
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -81019,13 +81181,48 @@ exports.default = TransactionsPanel;
 var Request = require('request');
 var React = require('react');
 
+/**
+ * Function that takes the user prop and constructs a react module that displays
+ * the user's past transactions as a table.
+ * @param {object} props - user: props.user
+ */
 function TransactionsPanel(props) {
+  /**
+   * Function that takes the user object and constructs a node for each transaction
+   * item
+   * @param {object} user - object containing user's transaction and profile information
+   * @return {array} - array of react components
+   */
+  function constructHistory(user) {
+    var history = user.transactions.history;
 
-  /* click event for refunding a previous transaction */
+    var nodes = history.map(function (h, i) {
+      var priceType = h.transaction != 'purchase' ? 'addition' : 'reduction'; // adjustment type (incr or decr)
+      var price = h.transaction != 'purchase' ? '+ ' + h.price : '- ' + h.price; // price adjustment (incr or decr)
+      var showRefund = h.transaction == 'refund' ? 'hidden' : ''; // if transaction is refundable - show a button to allow
+      var date = h.timestamp.split(' ')[0]; // only show the date part of the utc timestamp
+      var transactionMoonlets = h.moonlets.map(function (m, i) {
+        return m.id;
+      });
+
+      return React.createElement('tr', { className: 'transaction', key: 'transacton-' + i }, React.createElement('td', { className: 'transaction-id' }, h.id), React.createElement('td', { className: 'transaction-date' }, date), React.createElement('td', { className: 'transaction-' + h.transaction }, h.transaction), React.createElement('td', { className: 'transaction-moonlet' }, transactionMoonlets.join(', ')), React.createElement('td', { className: 'transaction-' + priceType }, price), React.createElement('td', { className: 'refund-btn ' + showRefund + ' ' + user.username + '-' + h.id,
+        onClick: handleRefundClick }, 'Refund'));
+    });
+
+    return nodes;
+  }
+
+  /**
+   * Click handler for issuing refunds. triggers a server request which then
+   * updates the view with success or failure. if success, adds a new line to
+   * transaction lists. Does not alter state. Upon user navigation, change should
+   * be reflected in the database and therefor the global state
+   * @param {object} - click event browser object
+   */
   function handleRefundClick(event) {
     // get the username and id of the transaction to be refunded
     var target = event.target.classList[1].split('-');
-    var username = props.user.username;
+    var username = target[0];
     var transactionID = target[1];
 
     var alertBox = window.confirm('Are you sure you want to refund this transaction?');
@@ -81034,21 +81231,15 @@ function TransactionsPanel(props) {
   }
 
   /* contruct each row of transaction history via table rows */
-  var historyNodes = props.user.transactions.history.map(function (h, i) {
-    var priceType = h.transaction != 'purchase' ? 'addition' : 'reduction'; // adjustment type (incr or decr)
-    var price = h.transaction != 'purchase' ? '+ ' + h.price : '- ' + h.price; // price adjustment (incr or decr)
-    var showRefund = h.transaction == 'refund' ? 'hidden' : ''; // if transaction is refundable - show a button to allow
-    var date = h.timestamp.split(' ')[0];
+  var historyNodes = constructHistory(props.user);
 
-    return React.createElement('tr', { className: 'transaction', key: 'transacton-' + i }, React.createElement('td', { className: 'transaction-id' }, h.id), React.createElement('td', { className: 'transaction-date' }, date), React.createElement('td', { className: 'transaction-' + h.transaction }, h.transaction), React.createElement('td', { className: 'transaction-moonlet', href: '/moonlet/' + h.moonlet + '/' + h.moonlet }, 'Moonlet: ' + h.moonlet), React.createElement('td', { className: 'transaction-' + priceType }, price), React.createElement('td', { className: 'refund-btn ' + showRefund + ' ' + props.user.username + '-' + h.id,
-      onClick: handleRefundClick }, 'Refund'));
-  });
-
-  return React.createElement('div', { id: 'transaction-panel' }, React.createElement('h2', { className: 'transaction-header' }, 'Your Transaction History'), React.createElement('table', { id: 'transaction-history' }, React.createElement('thead', null, React.createElement('tr', null, React.createElement('th', null, 'ID'), React.createElement('th', null, 'Date'), React.createElement('th', null, 'Type'), React.createElement('th', null, 'Item'), React.createElement('th', null, 'Balance'), React.createElement('th', null, 'Actions'))), React.createElement('tbody', null, historyNodes)));
+  return React.createElement('div', { id: 'transaction-panel' }, React.createElement('h2', { className: 'transaction-header' }, 'Your Transaction History'), React.createElement('div', { id: 'refund-status' }, React.createElement('p', { id: 'refund-success', className: 'hidden' }, 'Your refund was successful!'), React.createElement('p', { id: 'refund-failure', className: 'hidden' }, 'Your refund failed!')), React.createElement('table', { id: 'transaction-history' }, React.createElement('thead', null, React.createElement('tr', null, React.createElement('th', null, 'ID'), React.createElement('th', null, 'Date'), React.createElement('th', null, 'Type'), React.createElement('th', null, 'Items'), React.createElement('th', null, 'Balance'), React.createElement('th', null, 'Actions'))), React.createElement('tbody', null, historyNodes)));
 }
 
 TransactionsPanel.propTypes = {
-  user: React.PropTypes.object.isRequired
+  user: React.PropTypes.object.isRequired,
+  credentials: React.PropTypes.object.isRequired,
+  url: React.PropTypes.string.isRequired
 };
 
 },{"react":377,"request":388}],459:[function(require,module,exports){
@@ -81176,7 +81367,7 @@ var Dashboard = function (_React$Component) {
     key: 'render',
     value: function render() {
       if (this.state.user !== null && this.state.moonlets !== null) {
-        return React.createElement('div', { id: 'dash-component' }, React.createElement(Tabs, { onSelect: this.handleTabClick, selectedIndex: 0 }, React.createElement(TabList, null, React.createElement(Tab, null, 'Profile'), React.createElement(Tab, null, 'History'), React.createElement(Tab, null, 'Settings')), React.createElement(TabPanel, {}, React.createElement(_ProfilePanel2.default, { user: this.state.user, moonlets: this.state.moonlets })), React.createElement(TabPanel, {}, React.createElement(_TransactionsPanel2.default, { user: this.state.user })), React.createElement(TabPanel, {}, React.createElement(_SettingsPanel2.default, { user: this.state.user }))), React.createElement(_PageFooter2.default, null));
+        return React.createElement('div', { id: 'dash-component' }, React.createElement(Tabs, { onSelect: this.handleTabClick, selectedIndex: 0 }, React.createElement(TabList, null, React.createElement(Tab, null, 'Profile'), React.createElement(Tab, null, 'History'), React.createElement(Tab, null, 'Settings')), React.createElement(TabPanel, {}, React.createElement(_ProfilePanel2.default, { user: this.state.user, moonlets: this.state.moonlets })), React.createElement(TabPanel, {}, React.createElement(_TransactionsPanel2.default, { user: this.state.user, credentials: this.props.apiCredentials, url: this.props.apiURL })), React.createElement(TabPanel, {}, React.createElement(_SettingsPanel2.default, { user: this.state.user, credentials: this.props.apiCredentials, url: this.props.apiURL }))), React.createElement(_PageFooter2.default, null));
       }
       return React.createElement(_LoadingOverlay2.default, null);
     }
