@@ -71,10 +71,10 @@ export default function SettingsPanel(props) {
     const emailTwo = document.getElementById('confirm-email-input');
     const emailFailure = document.getElementById('email-failure');
     const requestSuccess = document.getElementById('request-success');
-    const requestHanging = document.getElementById('request-hanging');
+    const requestSpinner = document.getElementById('request-spinner');
 
     // ensure request-status messages are hidden and trigger request-spinner
-    requestHanging.classList.remove('hidden');
+    requestSpinner.classList.remove('hidden');
     requestSuccess.classList.add('hidden');
     emailFailure.classList.add('hidden');
 
@@ -94,11 +94,11 @@ export default function SettingsPanel(props) {
         // trigger update request
         updateEmail(username, credentials, url, emailOneVal).then((result) => {
           if (result) {
-            requestHanging.classList.add('hidden');
+            requestSpinner.classList.add('hidden');
             requestSuccess.classList.remove('hidden');
             document.getElementById('email-selector').innerHTML = emailOneVal;
           }
-        });
+        }).catch((error) => { window.location.href = '/error' });
 
         break;
       case 'delete-acct-btn':
@@ -113,7 +113,7 @@ export default function SettingsPanel(props) {
       React.createElement('h2', { className: 'settings-header' }, 'Settings'),
       React.createElement('div', { id: 'request-status' },
         React.createElement('p', { id: 'request-success', className: 'hidden' }, 'Your update was successful!'),
-        React.createElement('i', { id: 'request-hanging', className: 'fa fa-spinner fa-pulse hidden'})
+        React.createElement('i', { id: 'request-spinner', className: 'fa fa-spinner fa-pulse hidden'})
       ),
       React.createElement('div', { id: 'email-update' },
         React.createElement('h3', { className: 'email-update-header' }, 'Update Email'),

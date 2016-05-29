@@ -81120,10 +81120,10 @@ function SettingsPanel(props) {
     var emailTwo = document.getElementById('confirm-email-input');
     var emailFailure = document.getElementById('email-failure');
     var requestSuccess = document.getElementById('request-success');
-    var requestHanging = document.getElementById('request-hanging');
+    var requestSpinner = document.getElementById('request-spinner');
 
     // ensure request-status messages are hidden and trigger request-spinner
-    requestHanging.classList.remove('hidden');
+    requestSpinner.classList.remove('hidden');
     requestSuccess.classList.add('hidden');
     emailFailure.classList.add('hidden');
 
@@ -81143,10 +81143,12 @@ function SettingsPanel(props) {
         // trigger update request
         updateEmail(username, credentials, url, emailOneVal).then(function (result) {
           if (result) {
-            requestHanging.classList.add('hidden');
+            requestSpinner.classList.add('hidden');
             requestSuccess.classList.remove('hidden');
             document.getElementById('email-selector').innerHTML = emailOneVal;
           }
+        }).catch(function (error) {
+          window.location.href = '/error';
         });
 
         break;
@@ -81157,7 +81159,7 @@ function SettingsPanel(props) {
 
   var currentEmail = props.user.email.length > 0 ? props.user.email : 'N/A';
 
-  return React.createElement('div', { id: 'settings-panel' }, React.createElement('h2', { className: 'settings-header' }, 'Settings'), React.createElement('div', { id: 'request-status' }, React.createElement('p', { id: 'request-success', className: 'hidden' }, 'Your update was successful!'), React.createElement('i', { id: 'request-hanging', className: 'fa fa-spinner fa-pulse hidden' })), React.createElement('div', { id: 'email-update' }, React.createElement('h3', { className: 'email-update-header' }, 'Update Email'), React.createElement('p', { className: 'current-email' }, 'Current Email: ', React.createElement('span', { id: 'email-selector' }, currentEmail)), React.createElement('label', { className: 'new-label' }, 'New Email: '), React.createElement('input', { type: 'text', id: 'new-email-input' }), React.createElement('br', null), React.createElement('br', null), React.createElement('label', { className: 'confirm-label' }, 'Confirm Email: '), React.createElement('input', { type: 'text', id: 'confirm-email-input' }), React.createElement('br', null), React.createElement('br', null), React.createElement('a', { id: 'update-email-btn', onClick: handleClicks }, 'Update'), React.createElement('p', { id: 'email-failure', className: 'hidden' }, 'Input invalid!')), React.createElement('div', { id: 'danger-zone' }, React.createElement('h3', { className: 'danger-zone-header' }, 'Danger Zone'), React.createElement('div', { id: 'delete-account' }, React.createElement('a', { id: 'delete-acct-btn', onClick: handleClicks }, 'Delete Account'))), React.createElement('div', { className: 'clear-filler' }));
+  return React.createElement('div', { id: 'settings-panel' }, React.createElement('h2', { className: 'settings-header' }, 'Settings'), React.createElement('div', { id: 'request-status' }, React.createElement('p', { id: 'request-success', className: 'hidden' }, 'Your update was successful!'), React.createElement('i', { id: 'request-spinner', className: 'fa fa-spinner fa-pulse hidden' })), React.createElement('div', { id: 'email-update' }, React.createElement('h3', { className: 'email-update-header' }, 'Update Email'), React.createElement('p', { className: 'current-email' }, 'Current Email: ', React.createElement('span', { id: 'email-selector' }, currentEmail)), React.createElement('label', { className: 'new-label' }, 'New Email: '), React.createElement('input', { type: 'text', id: 'new-email-input' }), React.createElement('br', null), React.createElement('br', null), React.createElement('label', { className: 'confirm-label' }, 'Confirm Email: '), React.createElement('input', { type: 'text', id: 'confirm-email-input' }), React.createElement('br', null), React.createElement('br', null), React.createElement('a', { id: 'update-email-btn', onClick: handleClicks }, 'Update'), React.createElement('p', { id: 'email-failure', className: 'hidden' }, 'Input invalid!')), React.createElement('div', { id: 'danger-zone' }, React.createElement('h3', { className: 'danger-zone-header' }, 'Danger Zone'), React.createElement('div', { id: 'delete-account' }, React.createElement('a', { id: 'delete-acct-btn', onClick: handleClicks }, 'Delete Account'))), React.createElement('div', { className: 'clear-filler' }));
 }
 
 SettingsPanel.propTypes = {
@@ -81205,11 +81207,44 @@ function TransactionsPanel(props) {
         return m.id;
       });
 
-      return React.createElement('tr', { className: 'transaction', key: 'transacton-' + i }, React.createElement('td', { className: 'transaction-id' }, h.id), React.createElement('td', { className: 'transaction-date' }, date), React.createElement('td', { className: 'transaction-' + h.transaction }, h.transaction), React.createElement('td', { className: 'transaction-moonlet' }, transactionMoonlets.join(', ')), React.createElement('td', { className: 'transaction-' + priceType }, price), React.createElement('td', { className: 'refund-btn ' + showRefund + ' ' + user.username + '-' + h.id,
+      return React.createElement('tr', { className: 'transaction', key: 'transaction-' + i }, React.createElement('td', { className: 'transaction-id' }, h.id), React.createElement('td', { className: 'transaction-date' }, date), React.createElement('td', { className: 'transaction-' + h.transaction }, h.transaction), React.createElement('td', { className: 'transaction-moonlet' }, transactionMoonlets.join(', ')), React.createElement('td', { className: 'transaction-' + priceType }, price), React.createElement('td', { className: 'refund-btn ' + showRefund + ' ' + user.username + '-' + h.id,
         onClick: handleRefundClick }, 'Refund'));
     });
 
     return nodes;
+  }
+
+  /**
+   * Function that handles the refund request via a promise
+   * @param {string} username - username of the user
+   * @param {object} credentials - api credentials
+   * @param {string} url - api url
+   * @param {int} transaction - id of transaction to be refunded
+   * @return {object} - the new refund transaction
+   */
+
+  function refundTransaction(username, credentials, url, transaction) {
+    return new Promise(function (resolve, reject) {
+      var credentialsUsername = credentials.username;
+      var credentialsPassword = credentials.password;
+      var result = null;
+
+      var options = {
+        url: url + '/users/refund/' + username,
+        method: 'PUT',
+        json: { transaction: transaction }
+      };
+      function refundCallback(error, response, body) {
+        if (error || body.error) {
+          error = body.error ? body.error : error;
+          reject(error);
+        }
+
+        resolve(body.transaction);
+      }
+
+      Request.put(options, refundCallback).auth(credentialsUsername, credentialsPassword, true);
+    });
   }
 
   /**
@@ -81222,18 +81257,35 @@ function TransactionsPanel(props) {
   function handleRefundClick(event) {
     // get the username and id of the transaction to be refunded
     var target = event.target.classList[1].split('-');
-    var username = target[0];
+    var username = props.user.username;
     var transactionID = target[1];
+    var credentials = props.credentials;
+    var url = props.url;
+
+    var refundSpinner = document.getElementById('refund-spinner');
+    var refundSuccess = document.getElementById('refund-success');
+
+    refundSuccess.classList.add('hidden');
 
     var alertBox = window.confirm('Are you sure you want to refund this transaction?');
-    console.log(username, transactionID);
-    console.log(alertBox);
+
+    if (alertBox) {
+      refundSpinner.classList.remove('hidden');
+
+      // resolves an object containing the refund transaction object. may use in the future
+      refundTransaction(username, credentials, url, transactionID).then(function (result) {
+        refundSuccess.classList.remove('hidden');
+        refundSpinner.classList.add('hidden');
+      }).catch(function (error) {
+        window.location.href = '/error';
+      });
+    }
   }
 
   /* contruct each row of transaction history via table rows */
   var historyNodes = constructHistory(props.user);
 
-  return React.createElement('div', { id: 'transaction-panel' }, React.createElement('h2', { className: 'transaction-header' }, 'Your Transaction History'), React.createElement('div', { id: 'refund-status' }, React.createElement('p', { id: 'refund-success', className: 'hidden' }, 'Your refund was successful!'), React.createElement('p', { id: 'refund-failure', className: 'hidden' }, 'Your refund failed!')), React.createElement('table', { id: 'transaction-history' }, React.createElement('thead', null, React.createElement('tr', null, React.createElement('th', null, 'ID'), React.createElement('th', null, 'Date'), React.createElement('th', null, 'Type'), React.createElement('th', null, 'Items'), React.createElement('th', null, 'Balance'), React.createElement('th', null, 'Actions'))), React.createElement('tbody', null, historyNodes)));
+  return React.createElement('div', { id: 'transaction-panel' }, React.createElement('h2', { className: 'transaction-header' }, 'Your Transaction History'), React.createElement('div', { id: 'refund-status' }, React.createElement('p', { id: 'refund-success', className: 'hidden' }, 'Your refund was successful! It should be displayed the next time you visit your dashboard!'), React.createElement('i', { id: 'refund-spinner', className: 'fa fa-spinner fa-pulse hidden' })), React.createElement('table', { id: 'transaction-history' }, React.createElement('thead', null, React.createElement('tr', null, React.createElement('th', null, 'ID'), React.createElement('th', null, 'Date'), React.createElement('th', null, 'Type'), React.createElement('th', null, 'Items'), React.createElement('th', null, 'Balance'), React.createElement('th', null, 'Actions'))), React.createElement('tbody', null, historyNodes)));
 }
 
 TransactionsPanel.propTypes = {
