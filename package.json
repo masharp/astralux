@@ -20,7 +20,7 @@
     "bundle-login": "browserify ./scripts/login.js -t babelify --outfile ./public/javascripts/login/bundle-login.js && minify ./public/javascripts/login/bundle-login.js",
     "start": "node ./bin/www",
     "test": "jasmine JASMINE_CONFIG_PATH=test/jasmine.json",
-    "sass-global": "atom ./stylesheets/global/global.scss && sass --watch ./stylesheets/global.scss:./public/stylesheets/global.css --style compressed",
+    "sass-global": "atom ./stylesheets/global.scss && sass --watch ./stylesheets/global.scss:./public/stylesheets/global.css --style compressed",
     "sass-market": "atom ./stylesheets/marketplace.scss && sass --watch ./stylesheets/marketplace.scss:./public/stylesheets/marketplace.css --style compressed",
     "sass-moonlet": "atom ./stylesheets/moonlet.scss && sass --watch ./stylesheets/moonlet.scss:./public/stylesheets/moonlet.css --style compressed",
     "sass-dash": "atom ./stylesheets/dashboard.scss && sass --watch ./stylesheets/dashboard.scss:./public/stylesheets/dashboard.css --style compressed"

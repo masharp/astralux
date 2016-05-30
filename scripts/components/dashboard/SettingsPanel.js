@@ -27,7 +27,6 @@ export default function SettingsPanel(props) {
     return new Promise((resolve, reject) => {
       const credentialsUsername = credentials.username;
       const credentialsPassword = credentials.password;
-      let result = null;
 
       const options = {
         url: `${url}/users/${username}`,
@@ -47,14 +46,28 @@ export default function SettingsPanel(props) {
     });
   }
   /**
-   * Function that handles deleting the user's account
+   * Function that handles deleting the user's account via a promise
    * @param {string} username - username of the user
    * @param {object} credentials - api credentials
    * @param {string} url - api url
    * @return {boolean} - true or false for success or failure
    */
   function deleteAccount(username, credentials, url) {
+    return new Promise((resolve, reject) => {
+      const credentialsUsername = credentials.username;
+      const credentialsPassword = credentials.password;
+      const call = `${url}/users/${username}`;
 
+      function deleteCallback(error, response, body) {
+        if (error || body.error) {
+          error = body.error ? body.error : error;
+          reject(error);
+        }
+        resolve(true);
+      }
+
+      Request.delete(call, deleteCallback).auth(credentialsUsername, credentialsPassword, true);
+    });
   }
 
   /**
@@ -98,10 +111,20 @@ export default function SettingsPanel(props) {
             requestSuccess.classList.remove('hidden');
             document.getElementById('email-selector').innerHTML = emailOneVal;
           }
-        }).catch((error) => { window.location.href = '/error' });
+        }).catch((error) => { window.location.href = '/error'; });
 
         break;
       case 'delete-acct-btn':
+        let confirmBox = window.confirm('Are you sure!? This cannot be undone!');
+
+        if (confirmBox) {
+          deleteAccount(username, credentials, url).then((result) => {
+            if (result) {
+              let alert = window.alert('Your account has been deleted. We\'re sorry to see you go!');
+              window.location.href = '/';
+            }
+          }).catch((error) => { window.location.href = '/error'; });
+        }
         break;
     }
   }

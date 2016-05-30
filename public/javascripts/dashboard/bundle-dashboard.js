@@ -81078,7 +81078,6 @@ function SettingsPanel(props) {
     return new Promise(function (resolve, reject) {
       var credentialsUsername = credentials.username;
       var credentialsPassword = credentials.password;
-      var result = null;
 
       var options = {
         url: url + '/users/' + username,
@@ -81098,13 +81097,32 @@ function SettingsPanel(props) {
     });
   }
   /**
-   * Function that handles deleting the user's account
+   * Function that handles deleting the user's account via a promise
    * @param {string} username - username of the user
    * @param {object} credentials - api credentials
    * @param {string} url - api url
    * @return {boolean} - true or false for success or failure
    */
-  function deleteAccount(username, credentials, url) {}
+  function deleteAccount(username, credentials, url) {
+    return new Promise(function (resolve, reject) {
+      var credentialsUsername = credentials.username;
+      var credentialsPassword = credentials.password;
+      var call = url + '/users/' + username;
+
+      function deleteCallback(error, response, body) {
+        console.log(response);
+        console.log(body);
+        if (error || body.error) {
+          error = body.error ? body.error : error;
+          reject(error);
+        }
+        console.log(body);
+        resolve(true);
+      }
+
+      Request.delete(call, deleteCallback).auth(credentialsUsername, credentialsPassword, true);
+    });
+  }
 
   /**
    * Click handler for both the email update and account deletion buttons
@@ -81153,6 +81171,18 @@ function SettingsPanel(props) {
 
         break;
       case 'delete-acct-btn':
+        var confirmBox = window.confirm('Are you sure!? This cannot be undone!');
+
+        if (confirmBox) {
+          deleteAccount(username, credentials, url).then(function (result) {
+            if (result) {
+              var alert = window.alert('Your account has been deleted. We\'re sorry to see you go!');
+              if (alert) window.location.href = '/';
+            }
+          }).catch(function (error) {
+            console.log(error);
+          });
+        }
         break;
     }
   }

@@ -48,7 +48,7 @@ header {
 #menu {
   #menu-bar {
     background-color: $quadrary-color;
-    padding: 1em !important; 
+    padding: 1em !important;
 
     .brand-img {
       width: auto;
@@ -107,6 +107,7 @@ header {
     #home-featured {
       display: table;
       border-spacing: 1em;
+      margin: 0 auto;
 
       .moonlet-display {
         text-align: center;
