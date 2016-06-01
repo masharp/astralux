@@ -1,0 +1,118 @@
+@import 'global';
+
+#moonlet {
+  #moonlet-component {
+    margin-top: 8em;
+
+    #moonlet-header {
+      float: left;
+      text-align: center;
+      font-size: 1.2em;
+      padding-left: 20em;
+
+      .moonlet-header-img {
+        width: 17em;
+        height: auto;
+        margin-top: 1em;
+        margin-bottom: 1em;
+      }
+      .moonlet-header-pricepoint { color: $link-color; }
+      .moonlet-header-featured { color: gold; }
+    }
+    #moonlet-info {
+      float: right;
+      text-align: right;
+      font-size: 1.2em;
+      padding-right: 20em;
+
+      .moonlet-info-type {
+        .moonlet-type-class { color: $quadrary-color; }
+      }
+      .moonlet-info-desc, .moonlet-info-inventory, .moonlet-info-color { font-size: 1.4em; }
+      .moonlet-info-inventory {
+        .moonlet-inventory-point { color: $link-color; }
+      }
+      #moonlet-purchase {
+        margin-top: 6em;
+
+        #moonlet-amount {
+          margin-top: 1em;
+          margin-bottom: 2em;
+
+          .amount-decrement, .amount-increment {
+            cursor: pointer;
+            font-size: 1.7em;
+          }
+          .amount-decrement { margin-right: 1em; }
+          .amount-increment { margin-left: 1em; }
+          .amount-label {
+            color: $quadrary-color;
+            width: 6em;
+            height: 3em;
+            font-size: 1.5em;
+          }
+          .amount-decrement, .amount-increment, .amount-label {
+            /* thanks to u/Blowsie at StackOverflow */
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+          }
+        }
+        .moonlet-amount-cost {
+          font-size: 1.4em;
+          .moonlet-cost-point { color: red; }
+        }
+        .moonlet-purchase-btn {
+          border: 0 none;
+          border-radius: .3px;
+          padding: 1em 2em 1em 2em;
+          cursor: pointer;
+          background-color: $quadrary-color;
+          color: $font-color;
+          font-size: 1em;
+          font-weight: bold;
+          &:hover { background-color: lighten($quadrary-color, 10); }
+        }
+      }
+    }
+    #moonlet-similar {
+      display: table;
+      clear: both;
+      border-spacing: 1em;
+      margin: 0 auto;
+      padding-top: 5em;
+
+      .moonlet-display {
+        text-align: center;
+        display: table-cell;
+        max-width: 33.3%;
+        padding: 1em;
+        font-size: 1.2em;
+        margin-right: 2em;
+
+        &:hover {
+          box-shadow: .5px .5px .5px .5px #000;
+          cursor: pointer;
+        }
+        .moonlet-display-name {
+          color: $link-color;
+          font-size: 1.8em;
+        }
+        .moonlet-display-img {
+          width: auto;
+          height: 10em;
+          display: inline-block;
+          margin: 0 auto;
+        }
+      }
+    }
+    .hidden { display: none; }
+    .page-footer {
+      text-align: center;
+      margin-top: 5em;
+    }
+  }
+}

@@ -5,9 +5,9 @@
  */
 const React = require('react');
 
-export default function Moonlet(props) {
+export default function MoonletItem(props) {
   function handleClick() {
-    const moonletID = props.moonlet.uri.split('/')[6];
+    const moonletID = props.moonlet.id;
     window.location.href = `/moonlet/${moonletID}/${props.moonlet.display_name}`;
   }
   return (
@@ -27,6 +27,6 @@ export default function Moonlet(props) {
   );
 }
 
-Moonlet.propTypes = {
+MoonletItem.propTypes = {
   moonlet: React.PropTypes.object
 }

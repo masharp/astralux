@@ -3,7 +3,7 @@
  */
 
 'use strict';
-import Moonlet from '../../components/moonlets/Moonlet';
+import MoonletItem from '../../components/MoonletItem';
 
 const React = require('react');
 
@@ -33,7 +33,7 @@ export default function ProfileInventory(props) {
             let moonlet = allMoonlets[y];
             moonlet.inventory = userMoonlets[x]; // edit the moonlet object's inventory to reflect the user's inventory
 
-            nodes.push(React.createElement(Moonlet, { moonlet, key: `inv-${x}` }));
+            nodes.push(React.createElement(MoonletItem, { moonlet, key: `inv-${x}` }));
           }
         }
       }

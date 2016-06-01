@@ -16,8 +16,6 @@ class Login extends React.Component {
     this.state = { };
     this.handleButtonClick = this.handleButtonClick.bind(this);
   }
-  componentDidMount() {
-  }
   handleButtonClick(event) {
   }
   render() {

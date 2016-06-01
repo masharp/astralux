@@ -2,7 +2,7 @@
 
 import PageFooter from './components/PageFooter';
 import LoadingOverlay from './components/LoadingOverlay';
-import Moonlet from './components/moonlets/Moonlet';
+import MoonletItem from './components/MoonletItem';
 
 const React = require('react');
 const ReactDOM = require('react-dom');
@@ -60,9 +60,9 @@ class Home extends React.Component {
           ),
           React.createElement('h1', { className: 'featured-header'}, 'Today\'s Featured Moonlets'),
           React.createElement('div', { id: 'home-featured' },
-            React.createElement(Moonlet, { moonlet: this.state.featured[0] }),
-            React.createElement(Moonlet, { moonlet: this.state.featured[1] }),
-            React.createElement(Moonlet, { moonlet: this.state.featured[2] })
+            React.createElement(MoonletItem, { moonlet: this.state.featured[0] }),
+            React.createElement(MoonletItem, { moonlet: this.state.featured[1] }),
+            React.createElement(MoonletItem, { moonlet: this.state.featured[2] })
           ),
           React.createElement(PageFooter, null)
         )
