@@ -1,0 +1,24 @@
+@import 'global';
+
+#marketplace {
+  #marketplace-component {
+    padding: 2em;
+    margin-top: 7em;
+
+    #marketplace-header {
+      .tree {
+        cursor: pointer;
+        text-decoration: none;
+        color: $font-color;
+        &:hover { color: $link-color; }
+      }
+      #marketplace-display-tree {
+
+      }
+    }
+    .page-footer {
+      text-align: center;
+      margin-top: 5em;
+    }
+  }
+}

@@ -80204,7 +80204,7 @@ var Menu = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      return React.createElement('div', { id: 'menu-bar' }, React.createElement('a', { className: 'navlink', href: '/' }, React.createElement('img', { className: 'brand-img', src: '/assets/brand.png' })), React.createElement('div', { id: 'link-nav' }, React.createElement('a', { className: 'navlink hidden', href: '' }, 'Logout'), React.createElement('a', { className: 'navlink login', href: '/login' }, 'Login'), React.createElement('a', { className: 'navdrop navlink hidden', href: '' }, 'Menu')));
+      return React.createElement('div', { id: 'menu-bar' }, React.createElement('a', { className: 'navlink', href: '/' }, React.createElement('img', { className: 'brand-img', src: '/assets/brand.png' })), React.createElement('div', { id: 'link-nav' }, React.createElement('a', { className: 'navlink', href: '/marketplace' }, 'Marketplace'), React.createElement('a', { className: 'navlink hidden', href: '' }, 'Logout'), React.createElement('a', { className: 'navlink login', href: '/login' }, 'Login'), React.createElement('a', { className: 'navdrop navlink hidden', href: '' }, 'Menu')));
     }
   }]);
 

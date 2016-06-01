@@ -80208,7 +80208,7 @@ exports.default = PageFooter;
 var React = require('react');
 
 function PageFooter() {
-  return React.createElement('p', { className: 'page-footer' }, '\xA9 2016 Astralux | Alpha Release | ', React.createElement('a', { href: '/about' }, 'About '), '| ', React.createElement('a', { href: 'http://www.softwareontheshore.com' }, 'Software on the Shore'));
+  return React.createElement('p', { className: 'page-footer' }, '\xA9 2016 Astralux | ', React.createElement('a', { href: '/about' }, 'FAQ'), ' | Alpha Release | ', React.createElement('a', { href: 'http://www.softwareontheshore.com' }, 'Software on the Shore'));
 }
 
 },{"react":367}],446:[function(require,module,exports){

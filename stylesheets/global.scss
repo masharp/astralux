@@ -90,6 +90,7 @@ header {
         margin-right: 2em;
       }
       #home-copy {
+        text-align: center;
         .copy-header {
           font-size: 2.5em;
         }
@@ -182,7 +183,6 @@ header {
 }
 .moonlet-display-btn, .home-btn {
   border: 0 none;
-  border-radius: .3px;
   padding: 1em 2em 1em 2em;
   cursor: pointer;
   background-color: $quadrary-color;

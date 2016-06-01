@@ -39,6 +39,7 @@ class Menu extends React.Component {
           React.createElement('img', { className: 'brand-img', src: '/assets/brand.png' })
         ),
         React.createElement('div', { id: 'link-nav' },
+          React.createElement('a', { className: 'navlink', href: '/marketplace'}, 'Marketplace'),
           React.createElement('a', { className: 'navlink hidden', href: '' }, 'Logout'),
           React.createElement('a', { className: 'navlink login', href: '/login' }, 'Login'),
           React.createElement('a', { className: 'navdrop navlink hidden', href: '' }, 'Menu')
