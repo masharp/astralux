@@ -80185,7 +80185,11 @@ function MoonletItem(props) {
     var moonletID = props.moonlet.id;
     window.location.href = '/moonlet/' + moonletID + '/' + props.moonlet.display_name;
   }
-  return React.createElement('div', { className: 'moonlet-display', onClick: handleClick }, React.createElement('h2', { className: 'moonlet-display-name' }, props.moonlet.display_name), React.createElement('h3', { className: 'moonlet-display-class' }, 'Type: ' + props.moonlet.classification), React.createElement('img', { className: 'moonlet-display-img', src: props.moonlet.img_src }), React.createElement('p', { className: 'moonlet-display-desc' }, props.moonlet.description), React.createElement('p', { className: 'moonlet-display-price' }, 'Price: ' + props.moonlet.price), React.createElement('p', { className: 'moonlet-display-color' }, 'Color: ', React.createElement('span', { style: { color: '' + props.moonlet.color } }, props.moonlet.color)), React.createElement('p', { className: 'moonlet-display-inv' }, 'Inventory: ' + props.moonlet.inventory), React.createElement('input', { type: 'button', className: 'moonlet-display-btn',
+  /* handle price when moonlet is on sale -> calculate new price from discount percentage */
+  var price = props.moonlet.price;
+  if (props.moonlet.on_sale) price = props.moonlet.price * (1 - 1 / props.moonlet.discount);
+
+  return React.createElement('div', { className: 'moonlet-display', onClick: handleClick }, React.createElement('h2', { className: 'moonlet-display-name' }, props.moonlet.display_name), React.createElement('h3', { className: 'moonlet-display-class' }, 'Type: ' + props.moonlet.classification), React.createElement('img', { className: 'moonlet-display-img', src: props.moonlet.img_src }), React.createElement('p', { className: 'moonlet-display-desc' }, props.moonlet.description), React.createElement('p', { className: 'moonlet-display-price' }, 'Price: ' + price), React.createElement('p', { className: 'moonlet-display-color' }, 'Color: ', React.createElement('span', { style: { color: '' + props.moonlet.color } }, props.moonlet.color)), React.createElement('p', { className: 'moonlet-display-inv' }, 'Inventory: ' + props.moonlet.inventory), React.createElement('input', { type: 'button', className: 'moonlet-display-btn',
     value: 'Explore', onClick: handleClick }));
 }
 
@@ -80253,8 +80257,9 @@ var Home = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Home).call(this, props));
 
-    _this.state = { featured: null };
+    _this.state = { moonlets: null };
     _this.handleButtonClick = _this.handleButtonClick.bind(_this);
+    _this.constructFeatured = _this.constructFeatured.bind(_this);
     return _this;
   }
 
@@ -80268,10 +80273,9 @@ var Home = function (_React$Component) {
 
       function callback(error, response, body) {
         var content = JSON.parse(body);
-        if (error || !content.moonlets) window.location.href = '/error';
+        if (error) window.location.href = '/error';
 
-        var featured = content.moonlets.slice(0, 3);
-        self.setState({ featured: featured });
+        self.setState({ moonlets: content.moonlets });
       }
 
       Request.get(url, callback).auth(username, password, true);
@@ -80282,12 +80286,42 @@ var Home = function (_React$Component) {
       window.location.href = '/login';
     }
   }, {
+    key: 'constructFeatured',
+    value: function constructFeatured() {
+      var moonlets = this.state.moonlets;
+      console.log(moonlets);
+      var nodes = [];
+      var found = [];
+
+      /* check if any current moonlets are of limited quanitity */
+      for (var x = 0; x < moonlets.length; x++) {
+        if (nodes.length === 3) return nodes;
+        if (moonlets[x].limited) {
+          found.push(moonlets[x].id);
+          nodes.push(React.createElement(_MoonletItem2.default, { moonlet: moonlets[x], key: 'featured-' + x }));
+        }
+      }
+
+      /* if not enough to feature, pick others */
+      for (var y = 0; y < moonlets.length; y++) {
+        if (nodes.length === 3) return nodes;
+        if (found.indexOf(moonlets[y].id) < 0) {
+          found.push(moonlets[y].id);
+          nodes.push(React.createElement(_MoonletItem2.default, { moonlet: moonlets[y], key: 'featured-' + y }));
+        }
+      }
+
+      return nodes;
+    }
+  }, {
     key: 'render',
     value: function render() {
-      if (this.state.featured !== null) {
+      if (this.state.moonlets !== null) {
+        var featuredNodes = this.constructFeatured();
+
         return React.createElement('div', { id: 'home-component' }, React.createElement('div', { id: 'home-header' }, React.createElement('img', { src: '/assets/home.png', id: 'home-img' }), React.createElement('div', { id: 'home-copy' }, React.createElement('h1', { className: 'copy-header' }, 'Astralux Industries'), React.createElement('p', { className: 'copy' }, 'Brave space explorers have discovered Moonlets in the far reaches of the galaxy! ' + 'The United Nations Galactic Agency has commissioned Astralux to sell rights to these ' + 'countless wonders in hopes to fund colonization efforts. Stake your claim and grab your ' + 'moonlet today!'), React.createElement('input', { type: 'button', className: 'home-btn',
           value: 'Sign Up', onClick: this.handleButtonClick }), React.createElement('input', { type: 'button', className: 'home-btn',
-          value: 'Login', onClick: this.handleButtonClick }))), React.createElement('h1', { className: 'featured-header' }, 'Today\'s Featured Moonlets'), React.createElement('div', { id: 'home-featured' }, React.createElement(_MoonletItem2.default, { moonlet: this.state.featured[0] }), React.createElement(_MoonletItem2.default, { moonlet: this.state.featured[1] }), React.createElement(_MoonletItem2.default, { moonlet: this.state.featured[2] })), React.createElement(_PageFooter2.default, null));
+          value: 'Login', onClick: this.handleButtonClick }))), React.createElement('h1', { className: 'featured-header' }, 'Today\'s Featured Moonlets'), React.createElement('div', { id: 'home-featured' }, featuredNodes), React.createElement(_PageFooter2.default, null));
       }
       return React.createElement(_LoadingOverlay2.default, null);
     }

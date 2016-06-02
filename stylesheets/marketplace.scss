@@ -3,8 +3,10 @@
 #marketplace {
   #marketplace-component {
     padding: 2em;
+    padding-left: 4em;
     margin-top: 7em;
 
+    h1 { font-size: 2.8em; }
     #marketplace-header {
       .tree {
         cursor: pointer;
@@ -15,6 +17,36 @@
       #marketplace-display-tree {
 
       }
+    }
+    #marketplace-featured {
+
+    }
+    #marketplace-sales {
+
+    }
+    .moonlet-display {
+      text-align: center;
+      display: table-cell;
+      max-width: 33.3%;
+      padding: 1em;
+      font-size: 1.2em;
+      margin-right: 2em;
+
+      &:hover {
+        box-shadow: .5px .5px .5px .5px #000;
+        cursor: pointer;
+      }
+      .moonlet-display-name {
+        color: $link-color;
+        font-size: 1.8em;
+      }
+      .moonlet-display-img {
+        width: auto;
+        height: 10em;
+        display: inline-block;
+        margin: 0 auto;
+      }
+      .moonlet-display-desc { font-size: .8em; }
     }
     .page-footer {
       text-align: center;

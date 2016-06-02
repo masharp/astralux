@@ -1,5 +1,7 @@
 'use strict';
 
+import MarketplaceFeatured from './components/marketplace/MarketplaceFeatured';
+import MarketplaceSales from './components/marketplace/MarketplaceSales';
 import PageFooter from './components/PageFooter';
 import LoadingOverlay from './components/LoadingOverlay';
 import MoonletItem from './components/MoonletItem';
@@ -16,10 +18,10 @@ const appCredentials = credentials;
 class Marketplace extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { moonlets: null };
+    this.state = { moonlets: null, featured: null, sales: null };
     this.handleTreeClick = this.handleTreeClick.bind(this);
-    this.constructSales = this.constructSales.bind(this);
     this.constructFeatured = this.constructFeatured.bind(this);
+    this.constructSales = this.constructSales.bind(this);
   }
   componentDidMount() {
     const username = this.props.apiCredentials.username;
@@ -31,16 +33,33 @@ class Marketplace extends React.Component {
       const result = JSON.parse(body);
       if (error) console.log(error);//window.location.href = '/error';
 
-      self.setState({ moonlets: result });
+      const featured = self.constructFeatured(result.moonlets);
+      const sales = self.constructSales(result.moonlets);
+
+      self.setState({ moonlets: result.moonlets, featured, sales });
     }
 
     Request.get(url, callback).auth(username, password, true);
   }
-  constructSales() {
+  constructFeatured(moonlets) {
+    const currentMoonlets = moonlets;
+    const items = [];
 
+    for (let x = 0; x < currentMoonlets.length; x++) {
+      if (currentMoonlets[x].limited) items.push(currentMoonlets[x]);
+    }
+
+    return items;
   }
-  constructFeatured() {
+  constructSales(moonlets) {
+    const currentMoonlets = moonlets;
+    const items = [];
 
+    for (let y = 0; y < currentMoonlets.length; y++) {
+      if (currentMoonlets[y].on_sale) items.push(currentMoonlets[y]);
+    }
+
+    return items;
   }
   handleTreeClick() {
 
@@ -48,21 +67,15 @@ class Marketplace extends React.Component {
   render() {
     console.log(this.state.moonlets);
     if (this.state.moonlets !== null) {
-      const featuredNodes = this.constructFeatured();
-      const saleNodes = this.constructSales();
 
       return (
         React.createElement('div', { id: 'marketplace-component' },
           React.createElement('div', { id: 'marketplace-header' },
-            React.createElement('h2', { className: 'marketplace-title'}, 'Astralux Marketplace'),
+            React.createElement('h1', { className: 'marketplace-title'}, 'Astralux'),
             React.createElement('a', { id: 'marketplace-display-tree', className: 'tree all', href: '' }, 'All ->')
           ),
-          React.createElement('div', { id: 'marketplace-featured' },
-            React.createElement('h3', { className: 'marketplace-featured-header' }, 'Featured')
-          ),
-          React.createElement('div', { id: 'marketplace-sales' },
-            React.createElement('h3', { className: 'marketplace-sales-header' }, 'Sales')
-          ),
+          React.createElement(MarketplaceFeatured, { moonlets: this.state.featured }),
+          React.createElement(MarketplaceSales, { moonlets: this.state.sales }),
           React.createElement(PageFooter, null)
         )
       );

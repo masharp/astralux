@@ -80259,7 +80259,7 @@ var SimilarMoonlets = function (_React$Component) {
 
       /* check the available moonlets for the same type as current moonlet */
       for (var x = 0; x < moonletsLength; x++) {
-        if (nodes.length > 4) return nodes;
+        if (nodes.length === 3) return nodes;
 
         if (currentMoonlets[x].classification === currentType && currentMoonlets[x].id !== currentID) {
           nodes.push(React.createElement(_MoonletItem2.default, { moonlet: currentMoonlets[x], key: 'moonlet-' + x }));
@@ -80268,8 +80268,9 @@ var SimilarMoonlets = function (_React$Component) {
 
       /* if there are no similar moonlets - add the first three of the available moonlets */
       if (nodes.length < 1) {
-        for (var y = 0; y < 3; y++) {
-          if (currentType && currentMoonlets[y].id !== currentID) {
+        for (var y = 0; y < currentMoonlets.length; y++) {
+          if (nodes.length === 3) return nodes;
+          if (currentMoonlets[y].id !== currentID) {
             nodes.push(React.createElement(_MoonletItem2.default, { moonlet: currentMoonlets[y], key: 'moonlet-' + y }));
           }
         }

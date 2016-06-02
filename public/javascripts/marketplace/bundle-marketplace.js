@@ -80185,7 +80185,12 @@ function MoonletItem(props) {
     var moonletID = props.moonlet.id;
     window.location.href = '/moonlet/' + moonletID + '/' + props.moonlet.display_name;
   }
-  return React.createElement('div', { className: 'moonlet-display', onClick: handleClick }, React.createElement('h2', { className: 'moonlet-display-name' }, props.moonlet.display_name), React.createElement('h3', { className: 'moonlet-display-class' }, 'Type: ' + props.moonlet.classification), React.createElement('img', { className: 'moonlet-display-img', src: props.moonlet.img_src }), React.createElement('p', { className: 'moonlet-display-desc' }, props.moonlet.description), React.createElement('p', { className: 'moonlet-display-price' }, 'Price: ' + props.moonlet.price), React.createElement('p', { className: 'moonlet-display-color' }, 'Color: ', React.createElement('span', { style: { color: '' + props.moonlet.color } }, props.moonlet.color)), React.createElement('p', { className: 'moonlet-display-inv' }, 'Inventory: ' + props.moonlet.inventory), React.createElement('input', { type: 'button', className: 'moonlet-display-btn',
+
+  /* handle price when moonlet is on sale -> calculate new price from discount percentage */
+  var price = props.moonlet.price;
+  if (props.moonlet.on_sale) price = props.moonlet.price * (1 - 1 / props.moonlet.discount);
+
+  return React.createElement('div', { className: 'moonlet-display', onClick: handleClick }, React.createElement('h2', { className: 'moonlet-display-name' }, props.moonlet.display_name), React.createElement('h3', { className: 'moonlet-display-class' }, 'Type: ' + props.moonlet.classification), React.createElement('img', { className: 'moonlet-display-img', src: props.moonlet.img_src }), React.createElement('p', { className: 'moonlet-display-desc' }, props.moonlet.description), React.createElement('p', { className: 'moonlet-display-price' }, 'Price: ' + price), React.createElement('p', { className: 'moonlet-display-color' }, 'Color: ', React.createElement('span', { style: { color: '' + props.moonlet.color } }, props.moonlet.color)), React.createElement('p', { className: 'moonlet-display-inv' }, 'Inventory: ' + props.moonlet.inventory), React.createElement('input', { type: 'button', className: 'moonlet-display-btn',
     value: 'Explore', onClick: handleClick }));
 }
 
@@ -80214,7 +80219,89 @@ function PageFooter() {
 },{"react":367}],446:[function(require,module,exports){
 'use strict';
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = MarketplaceFeatured;
+
+var _MoonletItem = require('../../components/MoonletItem');
+
+var _MoonletItem2 = _interopRequireDefault(_MoonletItem);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var React = require('react');
+
+function MarketplaceFeatured(props) {
+  function constructMoonlets(moonlets) {
+    var featuredMoonlets = moonlets;
+    var nodes = [];
+
+    for (var x = 0; x < featuredMoonlets.length; x++) {
+      nodes.push(React.createElement(_MoonletItem2.default, { moonlet: featuredMoonlets[x], key: 'featuredMoonlet-' + x }));
+    }
+
+    return nodes;
+  }
+
+  var moonletNodes = constructMoonlets(props.moonlets);
+
+  return React.createElement('div', { id: 'marketplace-featured' }, React.createElement('h1', { className: 'marketplace-featured-title' }, 'Featured'), React.createElement('div', { id: 'marketplace-featured-moonlets' }, moonletNodes));
+}
+
+MarketplaceFeatured.propTypes = {
+  moonlets: React.PropTypes.array
+};
+
+},{"../../components/MoonletItem":444,"react":367}],447:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = MarketplaceSales;
+
+var _MoonletItem = require('../../components/MoonletItem');
+
+var _MoonletItem2 = _interopRequireDefault(_MoonletItem);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var React = require('react');
+
+function MarketplaceSales(props) {
+  function constructMoonlets(moonlets) {
+    var saleMoonlets = moonlets;
+    var nodes = [];
+
+    for (var x = 0; x < saleMoonlets.length; x++) {
+      nodes.push(React.createElement(_MoonletItem2.default, { moonlet: saleMoonlets[x], key: 'saleMoonlet-' + x }));
+    }
+
+    return nodes;
+  }
+
+  var moonletNodes = constructMoonlets(props.moonlets);
+
+  return React.createElement('div', { id: 'marketplace-sales' }, React.createElement('h1', { className: 'marketplace-sales-title' }, 'On Sale'), React.createElement('div', { id: 'marketplace-sales-moonlets' }, moonletNodes));
+}
+
+MarketplaceSales.propTypes = {
+  moonlets: React.PropTypes.array
+};
+
+},{"../../components/MoonletItem":444,"react":367}],448:[function(require,module,exports){
+'use strict';
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _MarketplaceFeatured = require('./components/marketplace/MarketplaceFeatured');
+
+var _MarketplaceFeatured2 = _interopRequireDefault(_MarketplaceFeatured);
+
+var _MarketplaceSales = require('./components/marketplace/MarketplaceSales');
+
+var _MarketplaceSales2 = _interopRequireDefault(_MarketplaceSales);
 
 var _PageFooter = require('./components/PageFooter');
 
@@ -80253,10 +80340,10 @@ var Marketplace = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Marketplace).call(this, props));
 
-    _this.state = { moonlets: null };
+    _this.state = { moonlets: null, featured: null, sales: null };
     _this.handleTreeClick = _this.handleTreeClick.bind(_this);
-    _this.constructSales = _this.constructSales.bind(_this);
     _this.constructFeatured = _this.constructFeatured.bind(_this);
+    _this.constructSales = _this.constructSales.bind(_this);
     return _this;
   }
 
@@ -80272,17 +80359,38 @@ var Marketplace = function (_React$Component) {
         var result = JSON.parse(body);
         if (error) console.log(error); //window.location.href = '/error';
 
-        self.setState({ moonlets: result });
+        var featured = self.constructFeatured(result.moonlets);
+        var sales = self.constructSales(result.moonlets);
+
+        self.setState({ moonlets: result.moonlets, featured: featured, sales: sales });
       }
 
       Request.get(url, callback).auth(username, password, true);
     }
   }, {
-    key: 'constructSales',
-    value: function constructSales() {}
-  }, {
     key: 'constructFeatured',
-    value: function constructFeatured() {}
+    value: function constructFeatured(moonlets) {
+      var currentMoonlets = moonlets;
+      var items = [];
+
+      for (var x = 0; x < currentMoonlets.length; x++) {
+        if (currentMoonlets[x].limited) items.push(currentMoonlets[x]);
+      }
+
+      return items;
+    }
+  }, {
+    key: 'constructSales',
+    value: function constructSales(moonlets) {
+      var currentMoonlets = moonlets;
+      var items = [];
+
+      for (var y = 0; y < currentMoonlets.length; y++) {
+        if (currentMoonlets[y].on_sale) items.push(currentMoonlets[y]);
+      }
+
+      return items;
+    }
   }, {
     key: 'handleTreeClick',
     value: function handleTreeClick() {}
@@ -80291,10 +80399,8 @@ var Marketplace = function (_React$Component) {
     value: function render() {
       console.log(this.state.moonlets);
       if (this.state.moonlets !== null) {
-        var featuredNodes = this.constructFeatured();
-        var saleNodes = this.constructSales();
 
-        return React.createElement('div', { id: 'marketplace-component' }, React.createElement('div', { id: 'marketplace-header' }, React.createElement('h2', { className: 'marketplace-title' }, 'Astralux Marketplace'), React.createElement('a', { id: 'marketplace-display-tree', className: 'tree all', href: '' }, 'All ->')), React.createElement('div', { id: 'marketplace-featured' }, React.createElement('h3', { className: 'marketplace-featured-header' }, 'Featured')), React.createElement('div', { id: 'marketplace-sales' }, React.createElement('h3', { className: 'marketplace-sales-header' }, 'Sales')), React.createElement(_PageFooter2.default, null));
+        return React.createElement('div', { id: 'marketplace-component' }, React.createElement('div', { id: 'marketplace-header' }, React.createElement('h1', { className: 'marketplace-title' }, 'Astralux'), React.createElement('a', { id: 'marketplace-display-tree', className: 'tree all', href: '' }, 'All ->')), React.createElement(_MarketplaceFeatured2.default, { moonlets: this.state.featured }), React.createElement(_MarketplaceSales2.default, { moonlets: this.state.sales }), React.createElement(_PageFooter2.default, null));
       }
       return React.createElement(_LoadingOverlay2.default, null);
     }
@@ -80313,4 +80419,4 @@ Marketplace.propTypes = {
 
 ReactDOM.render(React.createElement(Marketplace, { apiURL: ASTRALUX_API, apiCredentials: appCredentials }), document.getElementById('marketplace'));
 
-},{"./components/LoadingOverlay":443,"./components/MoonletItem":444,"./components/PageFooter":445,"react":367,"react-dom":238,"request":378}]},{},[446]);
+},{"./components/LoadingOverlay":443,"./components/MoonletItem":444,"./components/PageFooter":445,"./components/marketplace/MarketplaceFeatured":446,"./components/marketplace/MarketplaceSales":447,"react":367,"react-dom":238,"request":378}]},{},[448]);

@@ -19,22 +19,19 @@ export default class SimilarMoonlets extends React.Component {
 
     /* check the available moonlets for the same type as current moonlet */
     for (let x = 0; x < moonletsLength; x++) {
-      if (nodes.length > 4) return nodes;
+      if (nodes.length === 3) return nodes;
 
       if (currentMoonlets[x].classification === currentType && currentMoonlets[x].id !== currentID) {
-        nodes.push(
-          React.createElement(MoonletItem, { moonlet: currentMoonlets[x], key: `moonlet-${x}` })
-        )
+        nodes.push(React.createElement(MoonletItem, { moonlet: currentMoonlets[x], key: `moonlet-${x}` }))
       }
     }
 
     /* if there are no similar moonlets - add the first three of the available moonlets */
     if (nodes.length < 1) {
-      for (let y = 0; y < 3; y++) {
-        if (currentType && currentMoonlets[y].id !== currentID) {
-          nodes.push(
-            React.createElement(MoonletItem, { moonlet: currentMoonlets[y], key: `moonlet-${y}` })
-          )
+      for (let y = 0; y < currentMoonlets.length; y++) {
+        if (nodes.length === 3) return nodes;
+        if (currentMoonlets[y].id !== currentID) {
+          nodes.push(React.createElement(MoonletItem, { moonlet: currentMoonlets[y], key: `moonlet-${y}` }))
         }
       }
     }
