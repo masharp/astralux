@@ -80096,6 +80096,68 @@ function PageFooter() {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.default = MarketplaceClasses;
+
+var _MoonletItem = require('../../components/MoonletItem');
+
+var _MoonletItem2 = _interopRequireDefault(_MoonletItem);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var React = require('react');
+
+function MarketplaceClasses(props) {
+  return React.createElement('div', { id: 'marketplace-class' });
+}
+
+MarketplaceClasses.propTypes = {
+  moonlets: React.PropTypes.array
+};
+
+},{"../../components/MoonletItem":444,"react":367}],447:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = MarketplaceDisplay;
+
+var _MarketplaceFeatured = require('./MarketplaceFeatured');
+
+var _MarketplaceFeatured2 = _interopRequireDefault(_MarketplaceFeatured);
+
+var _MarketplaceSales = require('./MarketplaceSales');
+
+var _MarketplaceSales2 = _interopRequireDefault(_MarketplaceSales);
+
+var _MarketplaceClasses = require('./MarketplaceClasses');
+
+var _MarketplaceClasses2 = _interopRequireDefault(_MarketplaceClasses);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var React = require('react');
+
+function MarketplaceDisplay(props) {
+  function constructClasses(classTypes) {
+    console.log(classTypes);
+  }
+
+  var classNodes = constructClasses(props.categories.classTypes);
+
+  return React.createElement('div', { id: 'marketplace-display' }, React.createElement(_MarketplaceSales2.default, { moonlets: props.categories.sales }), React.createElement(_MarketplaceFeatured2.default, { moonlets: props.categories.featured }));
+}
+
+MarketplaceDisplay.propTypes = {
+  categories: React.PropTypes.object.isRequired
+};
+
+},{"./MarketplaceClasses":446,"./MarketplaceFeatured":448,"./MarketplaceSales":449,"react":367}],448:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 exports.default = MarketplaceFeatured;
 
 var _MoonletItem = require('../../components/MoonletItem');
@@ -80127,7 +80189,7 @@ MarketplaceFeatured.propTypes = {
   moonlets: React.PropTypes.array
 };
 
-},{"../../components/MoonletItem":444,"react":367}],447:[function(require,module,exports){
+},{"../../components/MoonletItem":444,"react":367}],449:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80164,18 +80226,14 @@ MarketplaceSales.propTypes = {
   moonlets: React.PropTypes.array
 };
 
-},{"../../components/MoonletItem":444,"react":367}],448:[function(require,module,exports){
+},{"../../components/MoonletItem":444,"react":367}],450:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _MarketplaceFeatured = require('./components/marketplace/MarketplaceFeatured');
+var _MarketplaceDisplay = require('./components/marketplace/MarketplaceDisplay');
 
-var _MarketplaceFeatured2 = _interopRequireDefault(_MarketplaceFeatured);
-
-var _MarketplaceSales = require('./components/marketplace/MarketplaceSales');
-
-var _MarketplaceSales2 = _interopRequireDefault(_MarketplaceSales);
+var _MarketplaceDisplay2 = _interopRequireDefault(_MarketplaceDisplay);
 
 var _PageFooter = require('./components/PageFooter');
 
@@ -80184,10 +80242,6 @@ var _PageFooter2 = _interopRequireDefault(_PageFooter);
 var _LoadingOverlay = require('./components/LoadingOverlay');
 
 var _LoadingOverlay2 = _interopRequireDefault(_LoadingOverlay);
-
-var _MoonletItem = require('./components/MoonletItem');
-
-var _MoonletItem2 = _interopRequireDefault(_MoonletItem);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -80214,10 +80268,8 @@ var Marketplace = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Marketplace).call(this, props));
 
-    _this.state = { moonlets: null, featured: null, sales: null };
+    _this.state = { moonlets: null, categories: null, tree: 0 };
     _this.handleTreeClick = _this.handleTreeClick.bind(_this);
-    _this.constructFeatured = _this.constructFeatured.bind(_this);
-    _this.constructSales = _this.constructSales.bind(_this);
     return _this;
   }
 
@@ -80233,17 +80285,40 @@ var Marketplace = function (_React$Component) {
         if (error || JSON.parse(body).hasOwnProperty('error')) window.location.href = '/error/455'; //window.location.href = '/error';
 
         var result = JSON.parse(body);
-        var featured = self.constructFeatured(result.moonlets);
-        var sales = self.constructSales(result.moonlets);
+        var featured = self.buildFeatured(result.moonlets);
+        var sales = self.buildSales(result.moonlets);
+        var classTypes = self.buildTypes(result.moonlets);
+        var categories = { sales: sales, featured: featured, classTypes: classTypes };
 
-        self.setState({ moonlets: result.moonlets, featured: featured, sales: sales });
+        self.setState({ moonlets: result.moonlets, categories: categories });
       }
 
       Request.get(url, callback).auth(username, password, true);
     }
+    /* function that constructs a category out of each moonlet classification */
+
   }, {
-    key: 'constructFeatured',
-    value: function constructFeatured(moonlets) {
+    key: 'buildTypes',
+    value: function buildTypes(moonlets) {
+      var currentMoonlets = moonlets;
+      var items = {};
+
+      for (var z = 0; z < currentMoonlets.length; z++) {
+        var currentClass = currentMoonlets[z].classification;
+
+        // assign an object key with an array that is the current list of the same classification
+        if (!items.hasOwnProperty(currentClass)) {
+          items[currentClass] = [currentMoonlets[z]];
+        } else items[currentClass].push(currentMoonlets[z]);
+      }
+
+      return items;
+    }
+    /* function that constructs a 'featured' section of moonlets */
+
+  }, {
+    key: 'buildFeatured',
+    value: function buildFeatured(moonlets) {
       var currentMoonlets = moonlets;
       var items = [];
 
@@ -80253,9 +80328,11 @@ var Marketplace = function (_React$Component) {
 
       return items;
     }
+    /* function that constructs a 'sales' section of moonlets */
+
   }, {
-    key: 'constructSales',
-    value: function constructSales(moonlets) {
+    key: 'buildSales',
+    value: function buildSales(moonlets) {
       var currentMoonlets = moonlets;
       var items = [];
 
@@ -80271,10 +80348,11 @@ var Marketplace = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      console.log(this.state.moonlets);
-      if (this.state.moonlets !== null) {
+      if (this.state.categories !== null) {
+        console.log(this.state.moonlets);
+        console.log(this.state.categories);
 
-        return React.createElement('div', { id: 'marketplace-component' }, React.createElement('div', { id: 'marketplace-header' }, React.createElement('h1', { className: 'marketplace-title' }, 'Astralux'), React.createElement('a', { id: 'marketplace-display-tree', className: 'tree all', href: '' }, 'All ->')), React.createElement(_MarketplaceFeatured2.default, { moonlets: this.state.featured }), React.createElement(_MarketplaceSales2.default, { moonlets: this.state.sales }), React.createElement(_PageFooter2.default, null));
+        return React.createElement('div', { id: 'marketplace-component' }, React.createElement('div', { id: 'marketplace-header' }, React.createElement('h1', { className: 'marketplace-title' }, 'Astralux'), React.createElement('a', { id: 'marketplace-display-tree', className: 'tree all', href: '', onClick: this.handleTreeClick }, 'All ->')), React.createElement(_MarketplaceDisplay2.default, { categories: this.state.categories }), React.createElement(_PageFooter2.default, null));
       }
       return React.createElement(_LoadingOverlay2.default, null);
     }
@@ -80293,4 +80371,4 @@ Marketplace.propTypes = {
 
 ReactDOM.render(React.createElement(Marketplace, { apiURL: ASTRALUX_API, apiCredentials: appCredentials }), document.getElementById('marketplace'));
 
-},{"./components/LoadingOverlay":443,"./components/MoonletItem":444,"./components/PageFooter":445,"./components/marketplace/MarketplaceFeatured":446,"./components/marketplace/MarketplaceSales":447,"react":367,"react-dom":238,"request":378}]},{},[448]);
+},{"./components/LoadingOverlay":443,"./components/PageFooter":445,"./components/marketplace/MarketplaceDisplay":447,"react":367,"react-dom":238,"request":378}]},{},[450]);

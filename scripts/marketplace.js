@@ -1,10 +1,8 @@
 'use strict';
 
-import MarketplaceFeatured from './components/marketplace/MarketplaceFeatured';
-import MarketplaceSales from './components/marketplace/MarketplaceSales';
+import MarketplaceDisplay from './components/marketplace/MarketplaceDisplay';
 import PageFooter from './components/PageFooter';
 import LoadingOverlay from './components/LoadingOverlay';
-import MoonletItem from './components/MoonletItem';
 
 const React = require('react');
 const ReactDOM = require('react-dom');
@@ -18,10 +16,8 @@ const appCredentials = credentials;
 class Marketplace extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { moonlets: null, featured: null, sales: null };
+    this.state = { moonlets: null, categories: null, tree: 0 };
     this.handleTreeClick = this.handleTreeClick.bind(this);
-    this.constructFeatured = this.constructFeatured.bind(this);
-    this.constructSales = this.constructSales.bind(this);
   }
   componentDidMount() {
     const username = this.props.apiCredentials.username;
@@ -33,15 +29,35 @@ class Marketplace extends React.Component {
       if (error || JSON.parse(body).hasOwnProperty('error')) window.location.href = '/error/455';//window.location.href = '/error';
 
       const result = JSON.parse(body);
-      const featured = self.constructFeatured(result.moonlets);
-      const sales = self.constructSales(result.moonlets);
+      const featured = self.buildFeatured(result.moonlets);
+      const sales = self.buildSales(result.moonlets);
+      const classTypes = self.buildTypes(result.moonlets);
+      const categories = { sales, featured, classTypes }
 
-      self.setState({ moonlets: result.moonlets, featured, sales });
+      self.setState({ moonlets: result.moonlets, categories });
     }
 
     Request.get(url, callback).auth(username, password, true);
   }
-  constructFeatured(moonlets) {
+  /* function that constructs a category out of each moonlet classification */
+  buildTypes(moonlets) {
+    const currentMoonlets = moonlets;
+    const items = {};
+
+    for (let z = 0; z < currentMoonlets.length; z++) {
+      const currentClass = currentMoonlets[z].classification;
+
+      // assign an object key with an array that is the current list of the same classification
+      if (!items.hasOwnProperty(currentClass)) {
+        items[currentClass] = [currentMoonlets[z]];
+      }
+      else items[currentClass].push(currentMoonlets[z]);
+    }
+
+    return items;
+  }
+  /* function that constructs a 'featured' section of moonlets */
+  buildFeatured(moonlets) {
     const currentMoonlets = moonlets;
     const items = [];
 
@@ -51,7 +67,8 @@ class Marketplace extends React.Component {
 
     return items;
   }
-  constructSales(moonlets) {
+  /* function that constructs a 'sales' section of moonlets */
+  buildSales(moonlets) {
     const currentMoonlets = moonlets;
     const items = [];
 
@@ -65,17 +82,17 @@ class Marketplace extends React.Component {
 
   }
   render() {
-    console.log(this.state.moonlets);
-    if (this.state.moonlets !== null) {
+    if (this.state.categories !== null) {
+      console.log(this.state.moonlets);
+      console.log(this.state.categories);
 
       return (
         React.createElement('div', { id: 'marketplace-component' },
           React.createElement('div', { id: 'marketplace-header' },
             React.createElement('h1', { className: 'marketplace-title'}, 'Astralux'),
-            React.createElement('a', { id: 'marketplace-display-tree', className: 'tree all', href: '' }, 'All ->')
+            React.createElement('a', { id: 'marketplace-display-tree', className: 'tree all', href: '', onClick: this.handleTreeClick }, 'All ->')
           ),
-          React.createElement(MarketplaceFeatured, { moonlets: this.state.featured }),
-          React.createElement(MarketplaceSales, { moonlets: this.state.sales }),
+          React.createElement(MarketplaceDisplay, { categories: this.state.categories }),
           React.createElement(PageFooter, null)
         )
       );

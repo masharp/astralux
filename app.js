@@ -1,8 +1,6 @@
 /**
  * Node Express Application that inludes our server-side middleware, route indexing,
- * and server-side error logging.
- */
-
+ * and server-side error logging. */
 'use strict';
 
 /* Module Dependencies */
@@ -38,16 +36,17 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 /* express.static for setting browser cache headers, currently cacheing all
- * public scripts, css, and images.
- */
-app.use(express.static(path.join(__dirname, 'public'), { maxAge: 0}));
+ * public scripts, css, and images. */
+app.use(express.static(path.join(__dirname, 'public'), { maxAge: 0 }));
 
 /* HTTP page routing */
 app.use('/', index);
 app.use('/login', index);
 app.use('/marketplace', index);
 app.use('/dashboard', index);
+app.use('/moonlet', index);
 app.use('/about', index);
+app.use('/error', index);
 app.use('/robots.txt', index);
 app.use('/sitemap.txt', index);
 
