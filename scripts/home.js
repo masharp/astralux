@@ -27,9 +27,9 @@ class Home extends React.Component {
     const self = this;
 
     function callback(error, response, body) {
-      const content = JSON.parse(body);
-      if (error) window.location.href = '/error';
+      if (error || JSON.parse(body).hasOwnProperty('error')) window.location.href = '/error/455';
 
+      const content = JSON.parse(body);
       self.setState({ moonlets: content.moonlets });
     }
 
@@ -102,7 +102,7 @@ Home.propTypes = {
 };
 
 // front end global error handler -> redirect to error page for now
-window.onerror = () => window.location.href = '/error';
+window.onerror = () => window.location.href = '/error/455';
 
 ReactDOM.render(React.createElement(Home, { apiURL: ASTRALUX_API, apiCredentials: appCredentials }),
   document.getElementById('home'));

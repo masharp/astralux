@@ -27,9 +27,9 @@ class Moonlet extends React.Component {
     const self = this;
 
     function callback(error, response, body) {
-      if (error) window.location.href = '/error';
-      const result = JSON.parse(body);
+      if (error || JSON.parse(body).hasOwnProperty('error')) window.location.href = '/error/455';
 
+      const result = JSON.parse(body);
       // add the featured class property in order to control display
       result.moonlet['featured_class'] = 'hidden';
 
@@ -115,7 +115,7 @@ Moonlet.propTypes = {
 };
 
 // front end global error handler -> redirect to error page for now
-// window.onerror = () => window.location.href = '/error';
+// window.onerror = () => window.location.href = '/error/455';
 
 ReactDOM.render(React.createElement(Moonlet, { apiURL: ASTRALUX_API, apiCredentials: appCredentials, moonletID: moonletTag }),
   document.getElementById('moonlet'));

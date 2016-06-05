@@ -52,7 +52,7 @@ Login.propTypes = {
 };
 
 // front end global error handler -> redirect to error page for now
-//window.onerror = () => window.location.href = '/error';
+//window.onerror = () => window.location.href = '/error/455';
 
 ReactDOM.render(React.createElement(Login, { apiURL: ASTRALUX_API, apiCredentials: appCredentials }),
   document.getElementById('login'));

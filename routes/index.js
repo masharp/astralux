@@ -62,9 +62,37 @@ router.get('/sitemap.txt', (request, response) => {
 });
 
 /* Error Page */
-router.get('/error', (request, response) => {
-  response.render('error', { message: 'Something went wrong here!', title: 'Astralux - Critical Error!',
-    error: { status: 500 }, credentials });
+router.get('/error/:code?', (request, response) => {
+  let code = request.params.code ? Number(request.params.code) : 500; // pull out the error code, if present
+  if (code < 400 || code > 501 || isNaN(code)) code = 500; // check if error code is valid
+  let message = '';
+
+  /* assign error message based on code */
+  switch (code) {
+      case 400:
+        message = 'Bad Request';
+        break;
+      case 403:
+        message = 'Unauthorized Access';
+        break;
+      case 404:
+        message = 'Not Found';
+        break;
+      case 405:
+        message = 'Request Not Allowed';
+        break;
+      // custom error response
+      case 455:
+        message = 'Our code is broken. Please forgive.';
+        break;
+      case 500:
+        message = 'Internal Server Error';
+        break;
+      default:
+        message = 'Internal Server Error';
+  }
+
+  response.render('error', { title: 'Astralux - Critical Error!', error: { status: code, message }, credentials });
 });
 
 module.exports = router;

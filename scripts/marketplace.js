@@ -30,9 +30,9 @@ class Marketplace extends React.Component {
     const self = this;
 
     function callback(error, response, body) {
-      const result = JSON.parse(body);
-      if (error) console.log(error);//window.location.href = '/error';
+      if (error || JSON.parse(body).hasOwnProperty('error')) window.location.href = '/error/455';//window.location.href = '/error';
 
+      const result = JSON.parse(body);
       const featured = self.constructFeatured(result.moonlets);
       const sales = self.constructSales(result.moonlets);
 
@@ -90,7 +90,7 @@ Marketplace.propTypes = {
 };
 
 // front end global error handler -> redirect to error page for now
-//window.onerror = () => window.location.href = '/error';
+//window.onerror = () => window.location.href = '/error/455';
 
 ReactDOM.render(React.createElement(Marketplace, { apiURL: ASTRALUX_API, apiCredentials: appCredentials }),
   document.getElementById('marketplace'));

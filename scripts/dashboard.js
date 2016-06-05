@@ -37,11 +37,11 @@ class Dashboard extends React.Component {
     const self = this;
 
     function userCallback(userError, userResponse, userBody) {
-      if (userError) window.location.href = '/error';
+      if (userError || JSON.parse(userBody).hasOwnProperty('error')) window.location.href = '/error/455';
       const user = JSON.parse(userBody).user;
 
       function moonletsCallback(moonletsError, moonletsResponse, moonletsBody) {
-        if (moonletsError) window.location.href = '/error';
+        if (moonletsError || JSON.parse(moonletsBody).hasOwnProperty('error')) window.location.href = '/error/455';
         const moonlets =  JSON.parse(moonletsBody).moonlets;
 
         self.setState({ user, moonlets });
@@ -93,7 +93,7 @@ Dashboard.propTypes = {
 };
 
 // front end global error handler -> redirect to error page for now
-// window.onerror = () => window.location.href = '/error';
+// window.onerror = () => window.location.href = '/error/455';
 
 ReactDOM.render(React.createElement(Dashboard, { apiURL: ASTRALUX_API, apiCredentials: appCredentials, username: currentUser }),
   document.getElementById('dashboard'));

@@ -4,9 +4,9 @@ block content
   #error
     h1 Error !{error.status}
     img(src='/assets/error-alien.png')
-    h2= message
+    h2= error.message
     p Goshdarn! There seems to problem!#[br]Try going back to your last page.
-    
+
   script(type='text/javascript').
     const credentials = !{ JSON.stringify(credentials) };
   script(src='/javascripts/menu/bundle-menu.min.js')
