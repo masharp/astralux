@@ -6,47 +6,52 @@
     padding-left: 4em;
     margin-top: 7em;
 
-    h1 { font-size: 2.8em; }
     #marketplace-header {
-      .tree {
-        cursor: pointer;
-        text-decoration: none;
-        color: $font-color;
-        &:hover { color: $link-color; }
-      }
       #marketplace-display-tree {
-
+        .tree {
+          cursor: pointer;
+          text-decoration: none;
+          color: $link-color;
+          font-size: 1.1em;
+          &:hover { color: $tertiary-color; }
+        }
       }
-    }
-    #marketplace-featured {
-
-    }
-    #marketplace-sales {
-
-    }
-    .moonlet-display {
-      text-align: center;
-      display: table-cell;
-      max-width: 33.3%;
-      padding: 1em;
-      font-size: 1.2em;
-      margin-right: 2em;
-
-      &:hover {
-        box-shadow: .5px .5px .5px .5px #000;
+      .marketplace-title {
+        font-size: 2.8em;
         cursor: pointer;
       }
-      .moonlet-display-name {
-        color: $link-color;
-        font-size: 1.8em;
+      .marketplace-click-info {
+        float: right;
+        font-size: .9em;
       }
-      .moonlet-display-img {
-        width: auto;
-        height: 10em;
-        display: inline-block;
-        margin: 0 auto;
+    }
+    #marketplace-display {
+      .marketplace-cat-title { cursor: pointer; }
+      .marketplace-category { margin-top: 3em; }
+      .moonlet-display {
+        text-align: center;
+        display: table-cell;
+        max-width: 33.3%;
+        padding: 1em;
+        font-size: 1.2em;
+        margin-right: 2em;
+
+        &:hover {
+          box-shadow: .5px .5px .5px .5px #000;
+          cursor: pointer;
+        }
+        .moonlet-display-name {
+          color: $link-color;
+          font-size: 1.5em;
+        }
+        .moonlet-display-img {
+          width: auto;
+          height: 10em;
+          display: inline-block;
+          margin: 0 auto;
+        }
+        .moonlet-display-desc { font-size: .8em; }
       }
-      .moonlet-display-desc { font-size: .8em; }
     }
     .page-footer {
       text-align: center;

@@ -10,7 +10,7 @@ export default function MoonletItem(props) {
     const moonletID = props.moonlet.id;
     window.location.href = `/moonlet/${moonletID}/${props.moonlet.display_name}`;
   }
-  
+
   /* handle price when moonlet is on sale -> calculate new price from discount percentage */
   let price = props.moonlet.price;
   if (props.moonlet.on_sale) price = props.moonlet.price * (1 - (1 / props.moonlet.discount));

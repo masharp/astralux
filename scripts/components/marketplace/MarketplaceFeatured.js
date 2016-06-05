@@ -18,13 +18,14 @@ export default function MarketplaceFeatured(props) {
   const moonletNodes = constructMoonlets(props.moonlets);
 
   return (
-    React.createElement('div', { id: 'marketplace-featured' },
-      React.createElement('h1', { className: 'marketplace-featured-title' }, 'Featured'),
+    React.createElement('div', { id: 'marketplace-class-2', className: 'marketplace-category' },
+      React.createElement('h2', { className: 'marketplace-cat-title header-2 featured', onClick: props.handleClick }, 'Featured'),
       React.createElement('div', { id: 'marketplace-featured-moonlets' }, moonletNodes)
     )
   );
 }
 
 MarketplaceFeatured.propTypes = {
-  moonlets: React.PropTypes.array
+  handleClick: React.PropTypes.func.isRequired,
+  moonlets: React.PropTypes.array,
 }

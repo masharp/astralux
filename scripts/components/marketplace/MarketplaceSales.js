@@ -18,13 +18,14 @@ export default function MarketplaceSales(props) {
   const moonletNodes = constructMoonlets(props.moonlets);
 
   return (
-    React.createElement('div', { id: 'marketplace-sales' },
-      React.createElement('h1', { className: 'marketplace-sales-title' }, 'On Sale'),
+    React.createElement('div', { id: 'marketplace-class-1', className: 'marketplace-category' },
+      React.createElement('h2', { className: 'marketplace-cat-title header-1 sales', onClick: props.handleClick }, 'Sales'),
       React.createElement('div', { id: 'marketplace-sales-moonlets' }, moonletNodes)
     )
   );
 }
 
 MarketplaceSales.propTypes = {
+  handleClick: React.PropTypes.func.isRequired,
   moonlets: React.PropTypes.array,
 }

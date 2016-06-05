@@ -80107,11 +80107,28 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var React = require('react');
 
 function MarketplaceClasses(props) {
-  return React.createElement('div', { id: 'marketplace-class' });
+  function constructMoonlets(moonlets) {
+    var currentMoonlets = moonlets;
+    var items = [];
+
+    for (var x = 0; x < currentMoonlets.length; x++) {
+      items.push(React.createElement(_MoonletItem2.default, { moonlet: currentMoonlets[x], key: 'classMoonlet-' + x }));
+    }
+
+    return items;
+  }
+
+  var moonletNodes = constructMoonlets(props.moonlets);
+
+  return React.createElement('div', { id: 'marketplace-class-' + props.num, className: 'marketplace-category' }, React.createElement('h2', { className: 'marketplace-cat-title header-' + props.num + ' ' + props.title,
+    onClick: props.handleClick }, props.title), React.createElement('div', { className: 'marketplace-class-moonlet' }, moonletNodes));
 }
 
 MarketplaceClasses.propTypes = {
-  moonlets: React.PropTypes.array
+  handleClick: React.PropTypes.func.isRequired,
+  num: React.PropTypes.number.isRequired,
+  moonlets: React.PropTypes.array,
+  title: React.PropTypes.string
 };
 
 },{"../../components/MoonletItem":444,"react":367}],447:[function(require,module,exports){
@@ -80140,16 +80157,27 @@ var React = require('react');
 
 function MarketplaceDisplay(props) {
   function constructClasses(classTypes) {
-    console.log(classTypes);
+    var classifications = classTypes;
+    var items = [];
+
+    // assign a category number that is index + 3 (0: all, 1: sale, 2: featured)
+    var index = 3;
+
+    for (var x in classifications) {
+      items.push(React.createElement(_MarketplaceClasses2.default, { moonlets: classTypes[x], title: x, key: 'type-' + x, handleClick: props.handleClick, num: index }));
+      index++;
+    }
+
+    return items;
   }
 
   var classNodes = constructClasses(props.categories.classTypes);
-
-  return React.createElement('div', { id: 'marketplace-display' }, React.createElement(_MarketplaceSales2.default, { moonlets: props.categories.sales }), React.createElement(_MarketplaceFeatured2.default, { moonlets: props.categories.featured }));
+  return React.createElement('div', { id: 'marketplace-display' }, React.createElement('div', { id: 'marketplace-classes' }, classNodes), React.createElement(_MarketplaceSales2.default, { moonlets: props.categories.sales, handleClick: props.handleClick }), React.createElement(_MarketplaceFeatured2.default, { moonlets: props.categories.featured, handleClick: props.handleClick }));
 }
 
 MarketplaceDisplay.propTypes = {
-  categories: React.PropTypes.object.isRequired
+  categories: React.PropTypes.object.isRequired,
+  handleClick: React.PropTypes.func.isRequired
 };
 
 },{"./MarketplaceClasses":446,"./MarketplaceFeatured":448,"./MarketplaceSales":449,"react":367}],448:[function(require,module,exports){
@@ -80182,10 +80210,11 @@ function MarketplaceFeatured(props) {
 
   var moonletNodes = constructMoonlets(props.moonlets);
 
-  return React.createElement('div', { id: 'marketplace-featured' }, React.createElement('h1', { className: 'marketplace-featured-title' }, 'Featured'), React.createElement('div', { id: 'marketplace-featured-moonlets' }, moonletNodes));
+  return React.createElement('div', { id: 'marketplace-class-2', className: 'marketplace-category' }, React.createElement('h2', { className: 'marketplace-cat-title header-2 featured', onClick: props.handleClick }, 'Featured'), React.createElement('div', { id: 'marketplace-featured-moonlets' }, moonletNodes));
 }
 
 MarketplaceFeatured.propTypes = {
+  handleClick: React.PropTypes.func.isRequired,
   moonlets: React.PropTypes.array
 };
 
@@ -80219,10 +80248,11 @@ function MarketplaceSales(props) {
 
   var moonletNodes = constructMoonlets(props.moonlets);
 
-  return React.createElement('div', { id: 'marketplace-sales' }, React.createElement('h1', { className: 'marketplace-sales-title' }, 'On Sale'), React.createElement('div', { id: 'marketplace-sales-moonlets' }, moonletNodes));
+  return React.createElement('div', { id: 'marketplace-class-1', className: 'marketplace-category' }, React.createElement('h2', { className: 'marketplace-cat-title header-1 sales', onClick: props.handleClick }, 'Sales'), React.createElement('div', { id: 'marketplace-sales-moonlets' }, moonletNodes));
 }
 
 MarketplaceSales.propTypes = {
+  handleClick: React.PropTypes.func.isRequired,
   moonlets: React.PropTypes.array
 };
 
@@ -80269,7 +80299,9 @@ var Marketplace = function (_React$Component) {
     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Marketplace).call(this, props));
 
     _this.state = { moonlets: null, categories: null, tree: 0 };
+
     _this.handleTreeClick = _this.handleTreeClick.bind(_this);
+    _this.handleCategoryClick = _this.handleCategoryClick.bind(_this);
     return _this;
   }
 
@@ -80342,17 +80374,63 @@ var Marketplace = function (_React$Component) {
 
       return items;
     }
+    /**
+     * Function that handles the tree being clicked and then updates the UI based
+     * on which part of the tree is clicked. uses the categoryClick by creating
+     * a new event as the header-all element 
+     */
+
   }, {
     key: 'handleTreeClick',
-    value: function handleTreeClick() {}
+    value: function handleTreeClick(event) {
+      var newEvent = { target: document.getElementById('marketplace-header-all') };
+      this.handleCategoryClick(newEvent);
+    }
+    /**
+     * Function that handles a category being clicked. Narrows the view to just that
+     * category. If the marketplace title is clicked, returns view to All. Also
+     * updates the tree display
+     */
+
+  }, {
+    key: 'handleCategoryClick',
+    value: function handleCategoryClick(event) {
+      /* pull out the current target element ID and all category divs */
+      var target = Number(event.target.classList[1].split('-')[1]);
+      var categoryElements = document.getElementsByClassName('marketplace-category');
+
+      /* call a function on each DOM element and hide what isn't the category click */
+      Array.prototype.map.call(categoryElements, function (element, index) {
+        var currentID = element.getAttribute('id');
+        var currentTarget = Number(currentID.split('-')[2]);
+        var currentElement = document.getElementById(currentID);
+
+        if (target === 0) currentElement.classList.remove('hidden');
+        if (currentTarget !== target && target !== 0) currentElement.classList.add('hidden');
+      });
+
+      /* update the directory tree text display with category div being viewed */
+      var treeElement = document.getElementById('marketplace-display-tree');
+      var categoryTitle = event.target.classList[2];
+      var treeContainsSub = treeElement.contains(document.getElementById('tree-sub'));
+
+      if (target === 0 && treeContainsSub) {
+        treeElement.removeChild(document.getElementById('tree-sub'));
+      } else if (target === 0 && !treeContainsSub) return;else if (target !== 0 && treeContainsSub) return;else {
+        var newSubTree = document.createElement('span');
+        newSubTree.appendChild(document.createTextNode(' ' + categoryTitle));
+        newSubTree.classList.add('tree');
+        newSubTree.setAttribute('id', 'tree-sub');
+        treeElement.appendChild(newSubTree);
+      }
+    }
   }, {
     key: 'render',
     value: function render() {
       if (this.state.categories !== null) {
-        console.log(this.state.moonlets);
-        console.log(this.state.categories);
-
-        return React.createElement('div', { id: 'marketplace-component' }, React.createElement('div', { id: 'marketplace-header' }, React.createElement('h1', { className: 'marketplace-title' }, 'Astralux'), React.createElement('a', { id: 'marketplace-display-tree', className: 'tree all', href: '', onClick: this.handleTreeClick }, 'All ->')), React.createElement(_MarketplaceDisplay2.default, { categories: this.state.categories }), React.createElement(_PageFooter2.default, null));
+        return React.createElement('div', { id: 'marketplace-component' }, React.createElement('div', { id: 'marketplace-header' }, React.createElement('h1', { id: 'marketplace-header-all', className: 'marketplace-title header-0',
+          onClick: this.handleCategoryClick }, 'Astralux'), React.createElement('span', { className: 'marketplace-click-info' }, 'Click Title to Narrow Results'), React.createElement('div', { id: 'marketplace-display-tree' }, React.createElement('span', { className: 'tree all', onClick: this.handleTreeClick }, 'All ', React.createElement('span', { className: 'fa fa-arrow-right' })))), React.createElement(_MarketplaceDisplay2.default, { categories: this.state.categories,
+          handleClick: this.handleCategoryClick }), React.createElement(_PageFooter2.default, null));
       }
       return React.createElement(_LoadingOverlay2.default, null);
     }
