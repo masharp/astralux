@@ -80087,10 +80087,13 @@ exports.default = PageFooter;
 var React = require('react');
 
 function PageFooter() {
-  return React.createElement('p', { className: 'page-footer' }, '\xA9 2016 Astralux | ', React.createElement('a', { href: '/about' }, 'FAQ'), ' | Alpha Release | ', React.createElement('a', { href: 'http://www.softwareontheshore.com' }, 'Software on the Shore'));
+  return React.createElement('p', { className: 'page-footer' }, '\xA9 2016 Astralux | ', React.createElement('a', { href: '/about' }, 'About'), ' | Alpha Release | ', React.createElement('a', { href: 'http://www.softwareontheshore.com' }, 'Software on the Shore'));
 }
 
 },{"react":367}],446:[function(require,module,exports){
+/* This is a module that contains a stateless React component, which constructs
+  a list of MoonletItem components comprising all moonlets under a unique classification */
+
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80107,11 +80110,18 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var React = require('react');
 
 function MarketplaceClasses(props) {
+  /**
+   * Function that takes the list of moonlets in a unique class and generates list
+   * of MoonletItem components
+   * @param {array} moonlets - array of moonlets in this classification
+   * @return {array} - array of react components
+   */
   function constructMoonlets(moonlets) {
     var currentMoonlets = moonlets;
     var items = [];
 
     for (var x = 0; x < currentMoonlets.length; x++) {
+      // construct a moonletItem from this moonlet and give it a key
       items.push(React.createElement(_MoonletItem2.default, { moonlet: currentMoonlets[x], key: 'classMoonlet-' + x }));
     }
 
@@ -80120,7 +80130,9 @@ function MarketplaceClasses(props) {
 
   var moonletNodes = constructMoonlets(props.moonlets);
 
-  return React.createElement('div', { id: 'marketplace-class-' + props.num, className: 'marketplace-category' }, React.createElement('h2', { className: 'marketplace-cat-title header-' + props.num + ' ' + props.title,
+  return React.createElement('div', { id: 'marketplace-class-' + props.num, className: 'marketplace-category' },
+  // header-num allows for future selection when clicked (always larger than 2)
+  React.createElement('h2', { className: 'marketplace-cat-title header-' + props.num + ' ' + props.title,
     onClick: props.handleClick }, props.title), React.createElement('div', { className: 'marketplace-class-moonlet' }, moonletNodes));
 }
 
@@ -80132,6 +80144,10 @@ MarketplaceClasses.propTypes = {
 };
 
 },{"../../components/MoonletItem":444,"react":367}],447:[function(require,module,exports){
+/* This is a module that contains a stateless React component, which constructs
+  a list all of the different list displays of moonlet types. Includes unique
+  classifications, sales, and featured. */
+
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80156,6 +80172,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var React = require('react');
 
 function MarketplaceDisplay(props) {
+  /**
+   * Function creates an array of MarketplaceCLasses components, which are
+   * a list of moonlets in a unique classification type
+   * @param {object} classTypes - object containing keys for each unique class - each key
+   * is an array of moonlets in that class
+   * @return {array} - array of react components
+   */
   function constructClasses(classTypes) {
     var classifications = classTypes;
     var items = [];
@@ -80164,7 +80187,8 @@ function MarketplaceDisplay(props) {
     var index = 3;
 
     for (var x in classifications) {
-      items.push(React.createElement(_MarketplaceClasses2.default, { moonlets: classTypes[x], title: x, key: 'type-' + x, handleClick: props.handleClick, num: index }));
+      items.push(React.createElement(_MarketplaceClasses2.default, { moonlets: classTypes[x], title: x, key: 'type-' + x, handleClick: props.handleClick, num: index } // num allows for assignment in the child component
+      ));
       index++;
     }
 
@@ -80172,6 +80196,7 @@ function MarketplaceDisplay(props) {
   }
 
   var classNodes = constructClasses(props.categories.classTypes);
+
   return React.createElement('div', { id: 'marketplace-display' }, React.createElement('div', { id: 'marketplace-classes' }, classNodes), React.createElement(_MarketplaceSales2.default, { moonlets: props.categories.sales, handleClick: props.handleClick }), React.createElement(_MarketplaceFeatured2.default, { moonlets: props.categories.featured, handleClick: props.handleClick }));
 }
 
@@ -80181,6 +80206,9 @@ MarketplaceDisplay.propTypes = {
 };
 
 },{"./MarketplaceClasses":446,"./MarketplaceFeatured":448,"./MarketplaceSales":449,"react":367}],448:[function(require,module,exports){
+/* This is a module that contains a stateless React component, which constructs
+  a list of MoonletItem components comprising all featured moonlets */
+
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80197,11 +80225,18 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var React = require('react');
 
 function MarketplaceFeatured(props) {
+  /**
+   * Function that takes the list of featured moonlets and generates list
+   * of MoonletItem components
+   * @param {array} moonlets - array of featured moonlets
+   * @return {array} - array of react components
+   */
   function constructMoonlets(moonlets) {
     var featuredMoonlets = moonlets;
     var nodes = [];
 
     for (var x = 0; x < featuredMoonlets.length; x++) {
+      // construct a moonletItem from this moonlet and give it a key
       nodes.push(React.createElement(_MoonletItem2.default, { moonlet: featuredMoonlets[x], key: 'featuredMoonlet-' + x }));
     }
 
@@ -80210,7 +80245,9 @@ function MarketplaceFeatured(props) {
 
   var moonletNodes = constructMoonlets(props.moonlets);
 
-  return React.createElement('div', { id: 'marketplace-class-2', className: 'marketplace-category' }, React.createElement('h2', { className: 'marketplace-cat-title header-2 featured', onClick: props.handleClick }, 'Featured'), React.createElement('div', { id: 'marketplace-featured-moonlets' }, moonletNodes));
+  return React.createElement('div', { id: 'marketplace-class-2', className: 'marketplace-category' },
+  // header-1 hardcoded for future selection when clicked
+  React.createElement('h2', { className: 'marketplace-cat-title header-2 featured', onClick: props.handleClick }, 'Featured'), React.createElement('div', { id: 'marketplace-featured-moonlets' }, moonletNodes));
 }
 
 MarketplaceFeatured.propTypes = {
@@ -80219,6 +80256,9 @@ MarketplaceFeatured.propTypes = {
 };
 
 },{"../../components/MoonletItem":444,"react":367}],449:[function(require,module,exports){
+/* This is a module that contains a stateless React component, which constructs
+  a list of MoonletItem components comprising all moonlets currently on sale */
+
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80235,11 +80275,18 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var React = require('react');
 
 function MarketplaceSales(props) {
+  /**
+   * Function that takes the list of moonlets on sale and generates list
+   * of MoonletItem components
+   * @param {array} moonlets - array of moonlets on sale
+   * @return {array} - array of react components
+   */
   function constructMoonlets(moonlets) {
     var saleMoonlets = moonlets;
     var nodes = [];
 
     for (var x = 0; x < saleMoonlets.length; x++) {
+      // construct a moonletItem from this moonlet and give it a key
       nodes.push(React.createElement(_MoonletItem2.default, { moonlet: saleMoonlets[x], key: 'saleMoonlet-' + x }));
     }
 
@@ -80248,7 +80295,9 @@ function MarketplaceSales(props) {
 
   var moonletNodes = constructMoonlets(props.moonlets);
 
-  return React.createElement('div', { id: 'marketplace-class-1', className: 'marketplace-category' }, React.createElement('h2', { className: 'marketplace-cat-title header-1 sales', onClick: props.handleClick }, 'Sales'), React.createElement('div', { id: 'marketplace-sales-moonlets' }, moonletNodes));
+  return React.createElement('div', { id: 'marketplace-class-1', className: 'marketplace-category' },
+  // header-1 hardcoded for future selection when clicked
+  React.createElement('h2', { className: 'marketplace-cat-title header-1 sales', onClick: props.handleClick }, 'Sales'), React.createElement('div', { id: 'marketplace-sales-moonlets' }, moonletNodes));
 }
 
 MarketplaceSales.propTypes = {
@@ -80257,6 +80306,11 @@ MarketplaceSales.propTypes = {
 };
 
 },{"../../components/MoonletItem":444,"react":367}],450:[function(require,module,exports){
+/* Stateful React Component that controls the marketplace view. Displays a list
+ * of all moonlets currently on sale, divided by subcategories - unique class,
+ * sale, and featured. Also includes click event handlers for narrowing the view
+ * by category. Passes down all handlers and state to stateless child components */
+
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -80298,8 +80352,9 @@ var Marketplace = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Marketplace).call(this, props));
 
-    _this.state = { moonlets: null, categories: null, tree: 0 };
+    _this.state = { moonlets: null, categories: null };
 
+    // bind functions to 'this'
     _this.handleTreeClick = _this.handleTreeClick.bind(_this);
     _this.handleCategoryClick = _this.handleCategoryClick.bind(_this);
     return _this;
@@ -80308,18 +80363,20 @@ var Marketplace = function (_React$Component) {
   _createClass(Marketplace, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
+      // pull out API credentials to validate GET HTTP request
       var username = this.props.apiCredentials.username;
       var password = this.props.apiCredentials.password;
       var url = this.props.apiURL;
       var self = this;
 
       function callback(error, response, body) {
-        if (error || JSON.parse(body).hasOwnProperty('error')) window.location.href = '/error/455'; //window.location.href = '/error';
+        if (error || JSON.parse(body).hasOwnProperty('error')) window.location.href = '/error/455';
 
         var result = JSON.parse(body);
-        var featured = self.buildFeatured(result.moonlets);
-        var sales = self.buildSales(result.moonlets);
-        var classTypes = self.buildTypes(result.moonlets);
+
+        var featured = self.buildFeatured(result.moonlets); // extract the featured moonlets
+        var sales = self.buildSales(result.moonlets); // extract the moonlets on sale
+        var classTypes = self.buildTypes(result.moonlets); // seperate moonlets by classification
         var categories = { sales: sales, featured: featured, classTypes: classTypes };
 
         self.setState({ moonlets: result.moonlets, categories: categories });
@@ -80327,7 +80384,12 @@ var Marketplace = function (_React$Component) {
 
       Request.get(url, callback).auth(username, password, true);
     }
-    /* function that constructs a category out of each moonlet classification */
+    /**
+     * Function that takes all current moonlets and parses them into an object
+     * containing classification keys and an array of moonlets that match that class
+     * @param {array} moonlets - array of all moonlets
+     * @return {object} - object containg each class and an array of moonlets in that class
+     */
 
   }, {
     key: 'buildTypes',
@@ -80346,7 +80408,12 @@ var Marketplace = function (_React$Component) {
 
       return items;
     }
-    /* function that constructs a 'featured' section of moonlets */
+    /**
+     * Function that takes all current moonlets and parses them into list of featured
+     * moonlet objects
+     * @param {array} moonlets - array of all moonlets
+     * @return {array} - array of featured moonlets
+     */
 
   }, {
     key: 'buildFeatured',
@@ -80360,7 +80427,12 @@ var Marketplace = function (_React$Component) {
 
       return items;
     }
-    /* function that constructs a 'sales' section of moonlets */
+    /**
+     * Function that takes all current moonlets and parses them in moonlet's that
+     * are on sale
+     * @param {array} moonlets - array of all moonlets
+     * @return {array} - array of moonlet objects on sale
+     */
 
   }, {
     key: 'buildSales',
@@ -80377,7 +80449,7 @@ var Marketplace = function (_React$Component) {
     /**
      * Function that handles the tree being clicked and then updates the UI based
      * on which part of the tree is clicked. uses the categoryClick by creating
-     * a new event as the header-all element 
+     * a new event as the header-all element
      */
 
   }, {
@@ -80405,24 +80477,29 @@ var Marketplace = function (_React$Component) {
         var currentTarget = Number(currentID.split('-')[2]);
         var currentElement = document.getElementById(currentID);
 
-        if (target === 0) currentElement.classList.remove('hidden');
-        if (currentTarget !== target && target !== 0) currentElement.classList.add('hidden');
+        if (target === 0) currentElement.classList.remove('hidden'); // if page header clicked - display all
+        if (currentTarget !== target && target !== 0) currentElement.classList.add('hidden'); // else hide all but clicked header
       });
 
       /* update the directory tree text display with category div being viewed */
       var treeElement = document.getElementById('marketplace-display-tree');
-      var categoryTitle = event.target.classList[2];
+      var categoryTitle = event.target.classList[2]; // extract category clicked
+      // check if tree has a currently displayed category
       var treeContainsSub = treeElement.contains(document.getElementById('tree-sub'));
 
       if (target === 0 && treeContainsSub) {
+        // if header clicked, change tree to root
         treeElement.removeChild(document.getElementById('tree-sub'));
-      } else if (target === 0 && !treeContainsSub) return;else if (target !== 0 && treeContainsSub) return;else {
-        var newSubTree = document.createElement('span');
-        newSubTree.appendChild(document.createTextNode(' ' + categoryTitle));
-        newSubTree.classList.add('tree');
-        newSubTree.setAttribute('id', 'tree-sub');
-        treeElement.appendChild(newSubTree);
-      }
+      } else if (target === 0 && !treeContainsSub) return; // if already at root
+      else if (target !== 0 && treeContainsSub) return; // if current category already displayed
+        // else append tree with new category
+        else {
+            var newSubTree = document.createElement('span');
+            newSubTree.appendChild(document.createTextNode(' ' + categoryTitle));
+            newSubTree.classList.add('tree');
+            newSubTree.setAttribute('id', 'tree-sub');
+            treeElement.appendChild(newSubTree);
+          }
     }
   }, {
     key: 'render',

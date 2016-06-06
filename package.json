@@ -10,8 +10,8 @@
   "license": "MIT",
   "scripts": {
     "lint-app": "eslint -c package.json app.js ./routes/index.js",
-    "lint-scripts": "eslint -c package.json ./scripts/market.js ./scripts/moonlet.js ./scripts/menu.js ./scripts/dashboard.js ./scripts/components",
-    "bundle-all": "npm run bundle-market && npm run bundle-moonlet && npm run bundle-dash && npm run bundle-menu && npm run bundle-home && npm run bundle-login && npm run bundle-about",
+    "lint-scripts": "eslint -c package.json ./scripts",
+    "bundle-all": "npm run bundle-market && npm run bundle-moonlet && npm run bundle-dash && npm run bundle-menu && npm run bundle-home && npm run bundle-login && npm run bundle-about && npm run bundle-cart",
     "bundle-market": "NODE_ENV=production browserify ./scripts/marketplace.js -t babelify -t envify -o ./public/javascripts/marketplace/bundle-marketplace.js && minify ./public/javascripts/marketplace/bundle-marketplace.js",
     "bundle-moonlet": "NODE_ENV=production browserify ./scripts/moonlet.js -t babelify -t envify -o ./public/javascripts/moonlet/bundle-moonlet.js && minify ./public/javascripts/moonlet/bundle-moonlet.js",
     "bundle-dash": "NODE_ENV=production browserify ./scripts/dashboard.js -t babelify -t envify -o ./public/javascripts/dashboard/bundle-dashboard.js && minify ./public/javascripts/dashboard/bundle-dashboard.js",
@@ -19,6 +19,7 @@
     "bundle-home": "NODE_ENV=production browserify ./scripts/home.js -t babelify -t envify -o ./public/javascripts/home/bundle-home.js && minify ./public/javascripts/home/bundle-home.js",
     "bundle-login": "NODE_ENV=production browserify ./scripts/login.js -t babelify -t envify -o ./public/javascripts/login/bundle-login.js && minify ./public/javascripts/login/bundle-login.js",
     "bundle-about": "NODE_ENV=production browserify ./scripts/about.js -t babelify -t envify -o ./public/javascripts/about/bundle-about.js && minify ./public/javascripts/about/bundle-about.js",
+    "bundle-cart": "NODE_ENV=production browserify ./scripts/cart.js -t babelify -t envify -o ./public/javascripts/cart/bundle-cart.js && minify ./public/javascripts/cart/bundle-cart.js",
     "start": "node ./bin/www",
     "test": "jasmine JASMINE_CONFIG_PATH=test/jasmine.json",
     "sass-global": "atom ./stylesheets/global.scss && sass --watch ./stylesheets/global.scss:./public/stylesheets/global.css --style compressed",

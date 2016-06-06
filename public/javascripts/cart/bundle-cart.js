@@ -80023,10 +80023,6 @@ function extend() {
 }
 
 },{}],443:[function(require,module,exports){
-/**
- * React Component that composes the About Page components. Includes FAQ and
- * information about the site. Currently stateless. */
-
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -80034,6 +80030,10 @@ var _createClass = function () { function defineProperties(target, props) { for 
 var _PageFooter = require('./components/PageFooter');
 
 var _PageFooter2 = _interopRequireDefault(_PageFooter);
+
+var _LoadingOverlay = require('./components/LoadingOverlay');
+
+var _LoadingOverlay2 = _interopRequireDefault(_LoadingOverlay);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -80049,34 +80049,84 @@ var Request = require('request');
 
 // server side variables sent with render
 var appCredentials = credentials;
+var currentUser = username;
 
-var About = function (_React$Component) {
-  _inherits(About, _React$Component);
+var ASTRALUX_API = 'https://astralux-api.herokuapp.com/api/users/' + username;
 
-  function About(props) {
-    _classCallCheck(this, About);
+var Cart = function (_React$Component) {
+  _inherits(Cart, _React$Component);
 
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(About).call(this, props));
+  function Cart(props) {
+    _classCallCheck(this, Cart);
+
+    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Cart).call(this, props));
+
+    _this.state = { user: null, cart: null };
+    return _this;
   }
 
-  _createClass(About, [{
+  _createClass(Cart, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      var username = this.props.apiCredentials.username;
+      var password = this.props.apiCredentials.password;
+      var url = this.props.apiURL;
+      var self = this;
+
+      function callback(error, response, body) {
+        if (error || JSON.parse(body).hasOwnProperty('error')) window.location.href = '/error/455';
+
+        var content = JSON.parse(body);
+        self.setState({ user: content.user, cart: content.user.cart });
+      }
+
+      Request.get(url, callback).auth(username, password, true);
+    }
+  }, {
     key: 'render',
     value: function render() {
-      return React.createElement('div', { id: 'about-component' }, React.createElement('img', { className: 'about-header-img', src: '/assets/brand.png' }), React.createElement('h1', { className: 'about-header' }, 'About'), React.createElement(_PageFooter2.default, null));
+      if (this.state.user !== null) {
+        console.log(this.state.user);
+        console.log(this.state.cart);
+
+        return React.createElement('div', { id: 'cart-component' }, React.createElement(_PageFooter2.default, null));
+      }
+      return React.createElement(_LoadingOverlay2.default, null);
     }
   }]);
 
-  return About;
+  return Cart;
 }(React.Component);
 
-About.propTypes = {};
+Cart.propTypes = {
+  apiURL: React.PropTypes.string.isRequired,
+  apiCredentials: React.PropTypes.object.isRequired
+};
 
 // front end global error handler -> redirect to error page for now
 //window.onerror = () => window.location.href = '/error/455';
 
-ReactDOM.render(React.createElement(About, null), document.getElementById('about'));
+ReactDOM.render(React.createElement(Cart, { apiURL: ASTRALUX_API, apiCredentials: appCredentials }), document.getElementById('cart'));
 
-},{"./components/PageFooter":444,"react":367,"react-dom":238,"request":378}],444:[function(require,module,exports){
+},{"./components/LoadingOverlay":444,"./components/PageFooter":445,"react":367,"react-dom":238,"request":378}],444:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = LoadingOverlay;
+/**
+ * Module that exports the reusable loading overlay React component
+ *
+ * @return {object} Component's React element
+ */
+var React = require('react');
+
+function LoadingOverlay() {
+  return React.createElement('div', { id: 'load-screen' }, React.createElement('i', { className: 'fa fa-spinner fa-pulse' }));
+}
+
+},{"react":367}],445:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {

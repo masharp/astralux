@@ -1,7 +1,7 @@
 /* This is a module that contains a stateless react component, which constructs
  * the user's profile panel in their dashboard. Includes a 'wallet' for balance info,
- * a profile picture, and an inventory of the user's moonlets
- */
+ * a profile picture, and an inventory of the user's moonlets */
+ 
 'use strict';
 
 import ProfileInventory from './ProfileInventory';

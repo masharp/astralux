@@ -8,7 +8,7 @@ const React = require('react');
 export default function PageFooter() {
   return (
     React.createElement('p', { className: 'page-footer' }, '\xA9 2016 Astralux | ',
-      React.createElement('a', { href: '/about' }, 'FAQ'),
+      React.createElement('a', { href: '/about' }, 'About'),
       ' | Alpha Release | ',
       React.createElement('a', { href: 'http://www.softwareontheshore.com' }, 'Software on the Shore')
     )

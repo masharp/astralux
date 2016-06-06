@@ -45,6 +45,7 @@ app.use('/login', index);
 app.use('/marketplace', index);
 app.use('/dashboard', index);
 app.use('/moonlet', index);
+app.use('/cart', index);
 app.use('/about', index);
 app.use('/error', index);
 app.use('/robots.txt', index);

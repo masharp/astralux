@@ -35,8 +35,12 @@ router.get('/login', (request, response) => {
 /* Dashboard Page */
 router.get('/dashboard/:username', (request, response) => {
   const username = request.params.username;
-
   response.render('dashboard', { title: 'Astralux Dashboard | A moonlet Marketplace of the Future', username, credentials });
+});
+
+router.get('/cart/:username', (request, response) => {
+  const username = request.params.username;
+  response.render('cart', { title: 'Astralux Cart | A moonlet Marketplace of the Future', username, credentials });
 });
 
 /* Marketplace Page */

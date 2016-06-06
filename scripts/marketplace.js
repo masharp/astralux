@@ -1,3 +1,8 @@
+/* Stateful React Component that controls the marketplace view. Displays a list
+ * of all moonlets currently on sale, divided by subcategories - unique class,
+ * sale, and featured. Also includes click event handlers for narrowing the view
+ * by category. Passes down all handlers and state to stateless child components */
+
 'use strict';
 
 import MarketplaceDisplay from './components/marketplace/MarketplaceDisplay';
@@ -16,24 +21,27 @@ const appCredentials = credentials;
 class Marketplace extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { moonlets: null, categories: null, tree: 0 };
+    this.state = { moonlets: null, categories: null };
 
+    // bind functions to 'this'
     this.handleTreeClick = this.handleTreeClick.bind(this);
     this.handleCategoryClick = this.handleCategoryClick.bind(this);
   }
   componentDidMount() {
+    // pull out API credentials to validate GET HTTP request
     const username = this.props.apiCredentials.username;
     const password = this.props.apiCredentials.password;
     const url = this.props.apiURL;
     const self = this;
 
     function callback(error, response, body) {
-      if (error || JSON.parse(body).hasOwnProperty('error')) window.location.href = '/error/455';//window.location.href = '/error';
+      if (error || JSON.parse(body).hasOwnProperty('error')) window.location.href = '/error/455';
 
       const result = JSON.parse(body);
-      const featured = self.buildFeatured(result.moonlets);
-      const sales = self.buildSales(result.moonlets);
-      const classTypes = self.buildTypes(result.moonlets);
+
+      const featured = self.buildFeatured(result.moonlets); // extract the featured moonlets
+      const sales = self.buildSales(result.moonlets); // extract the moonlets on sale
+      const classTypes = self.buildTypes(result.moonlets); // seperate moonlets by classification
       const categories = { sales, featured, classTypes }
 
       self.setState({ moonlets: result.moonlets, categories });
@@ -41,7 +49,12 @@ class Marketplace extends React.Component {
 
     Request.get(url, callback).auth(username, password, true);
   }
-  /* function that constructs a category out of each moonlet classification */
+  /**
+   * Function that takes all current moonlets and parses them into an object
+   * containing classification keys and an array of moonlets that match that class
+   * @param {array} moonlets - array of all moonlets
+   * @return {object} - object containg each class and an array of moonlets in that class
+   */
   buildTypes(moonlets) {
     const currentMoonlets = moonlets;
     const items = {};
@@ -58,7 +71,12 @@ class Marketplace extends React.Component {
 
     return items;
   }
-  /* function that constructs a 'featured' section of moonlets */
+  /**
+   * Function that takes all current moonlets and parses them into list of featured
+   * moonlet objects
+   * @param {array} moonlets - array of all moonlets
+   * @return {array} - array of featured moonlets
+   */
   buildFeatured(moonlets) {
     const currentMoonlets = moonlets;
     const items = [];
@@ -69,7 +87,12 @@ class Marketplace extends React.Component {
 
     return items;
   }
-  /* function that constructs a 'sales' section of moonlets */
+  /**
+   * Function that takes all current moonlets and parses them in moonlet's that
+   * are on sale
+   * @param {array} moonlets - array of all moonlets
+   * @return {array} - array of moonlet objects on sale
+   */
   buildSales(moonlets) {
     const currentMoonlets = moonlets;
     const items = [];
@@ -83,7 +106,7 @@ class Marketplace extends React.Component {
   /**
    * Function that handles the tree being clicked and then updates the UI based
    * on which part of the tree is clicked. uses the categoryClick by creating
-   * a new event as the header-all element 
+   * a new event as the header-all element
    */
   handleTreeClick(event) {
     const newEvent = { target: document.getElementById('marketplace-header-all') };
@@ -105,19 +128,21 @@ class Marketplace extends React.Component {
       const currentTarget = Number(currentID.split('-')[2]);
       const currentElement = document.getElementById(currentID);
 
-      if (target === 0) currentElement.classList.remove('hidden');
-      if (currentTarget !== target && target !== 0) currentElement.classList.add('hidden');
+      if (target === 0) currentElement.classList.remove('hidden'); // if page header clicked - display all
+      if (currentTarget !== target && target !== 0) currentElement.classList.add('hidden'); // else hide all but clicked header
     });
 
     /* update the directory tree text display with category div being viewed */
     const treeElement = document.getElementById('marketplace-display-tree');
-    const categoryTitle = event.target.classList[2];
+    const categoryTitle = event.target.classList[2]; // extract category clicked
+    // check if tree has a currently displayed category
     const treeContainsSub = treeElement.contains(document.getElementById('tree-sub'));
 
-    if (target === 0 && treeContainsSub) {
+    if (target === 0 && treeContainsSub) { // if header clicked, change tree to root
       treeElement.removeChild(document.getElementById('tree-sub'));
-    } else if (target === 0 && !treeContainsSub) return;
-    else if (target !== 0 && treeContainsSub) return;
+    } else if (target === 0 && !treeContainsSub) return; // if already at root
+    else if (target !== 0 && treeContainsSub) return; // if current category already displayed
+    // else append tree with new category 
     else {
       let newSubTree = document.createElement('span');
       newSubTree.appendChild(document.createTextNode(` ${categoryTitle}`));

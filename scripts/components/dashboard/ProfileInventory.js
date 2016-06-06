@@ -1,7 +1,6 @@
 /* This is a module that contains a stateless react component, which constructs
- * the user's inventory of moonlets for use in the profile panel of the dashboard
- */
-
+ * the user's inventory of moonlets for use in the profile panel of the dashboard */
+ 
 'use strict';
 import MoonletItem from '../../components/MoonletItem';
 

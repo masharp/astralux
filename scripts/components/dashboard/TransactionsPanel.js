@@ -1,9 +1,9 @@
 /* This is a module that contains a stateless react component, which constructs
  * the user's transaction history for use in the user's dashboard. includes
- * functionality for issuing refunds for past transactions
- */
+ * functionality for issuing refunds for past transactions */
 
 'use strict';
+
 const Request = require('request');
 const React = require('react');
 
@@ -29,6 +29,7 @@ export default function TransactionsPanel(props) {
        const date = h.timestamp.split(' ')[0]; // only show the date part of the utc timestamp
        const transactionMoonlets = h.moonlets.map((m, i) => m.id);
 
+       // components that compose a single transaction
        return (
          React.createElement('tr', { className: 'transaction', key: `transaction-${i}` },
            React.createElement('td', { className: 'transaction-id' }, h.id),
@@ -124,6 +125,7 @@ export default function TransactionsPanel(props) {
         React.createElement('i', { id: 'refund-spinner', className: 'fa fa-spinner fa-pulse hidden' })
       ),
       React.createElement('table', { id: 'transaction-history' },
+        // transaction table header
         React.createElement('thead', null,
           React.createElement('tr', null,
             React.createElement('th', null, 'ID'),

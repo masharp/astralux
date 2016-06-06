@@ -184,6 +184,23 @@ header {
     }
   }
 }
+#cart {
+  #cart-component {
+    text-align: center;
+    margin-top: 7em;
+  }
+}
+#about {
+  #about-component {
+    text-align: center;
+    margin-top: 7em;
+
+    .about-header-img {
+      width: 30em;
+      height: auto;
+    }
+  }
+}
 .moonlet-display-btn, .home-btn {
   border: 0 none;
   padding: 1em 2em 1em 2em;
