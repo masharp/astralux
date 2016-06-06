@@ -1,5 +1,6 @@
 'use strict';
 
+import CartList from './components/cart/CartList';
 import PageFooter from './components/PageFooter';
 import LoadingOverlay from './components/LoadingOverlay';
 
@@ -17,6 +18,9 @@ class Cart extends React.Component {
   constructor(props) {
     super(props);
     this.state = { user: null, cart: null };
+    this.handleItemRemove = this.handleItemRemove.bind(this);
+    this.handlePurchase = this.handlePurchase.bind(this);
+    this.handleEmptying = this.handleEmptying.bind(this);
   }
   componentDidMount() {
     const username = this.props.apiCredentials.username;
@@ -28,10 +32,19 @@ class Cart extends React.Component {
       if (error || JSON.parse(body).hasOwnProperty('error')) window.location.href = '/error/455';
 
       const content = JSON.parse(body);
-      self.setState({ user: content.user, cart: content.user.cart });
+      self.setState({ user: content.user, cart: content.user.cart.cart });
     }
 
     Request.get(url, callback).auth(username, password, true);
+  }
+  handleItemRemove(event) {
+    console.log(event.target);
+  }
+  handlePurchase(event) {
+
+  }
+  handleEmptying(event) {
+
   }
   render() {
     if (this.state.user !== null) {
@@ -40,6 +53,14 @@ class Cart extends React.Component {
 
       return (
         React.createElement('div', { id: 'cart-component' },
+          React.createElement(CartList, { cart: this.state.cart, handleItemRemove: this.handleItemRemove }),
+          // div for page buttons
+          React.createElement('div', { id: 'cart-buttons' },
+          React.createElement('input', { type: 'button', className: 'cart-empty-btn',
+            value: 'Empty Cart', onClick: this.handleEmptying }),
+            React.createElement('input', { type: 'button', className: 'cart-purchase-btn',
+              value: 'Purchase', onClick: this.handlePurchase })
+          ),
           React.createElement(PageFooter, null)
         )
       );

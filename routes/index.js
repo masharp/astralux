@@ -20,9 +20,9 @@ router.get('/', (request, response) => {
   response.render('home', { title: 'Astralux - A moonlet Marketplace of the Future', credentials });
 });
 
-router.get('/moonlet/:moonletID/:moonletName', (request, response) => {
+router.get('/moonlet/:moonletID/:moonletName?', (request, response) => {
   const moonletID = request.params.moonletID;
-  const moonletName = request.params.moonletName;
+  const moonletName = request.params.moonletName ? request.params.moonletName : 'Moonlet';
 
   response.render('moonlet', { title: `Astralux - ${moonletName} | A fancy space Moonlet!`, credentials, moonletID });
 });

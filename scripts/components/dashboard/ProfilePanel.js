@@ -1,10 +1,11 @@
 /* This is a module that contains a stateless react component, which constructs
  * the user's profile panel in their dashboard. Includes a 'wallet' for balance info,
  * a profile picture, and an inventory of the user's moonlets */
- 
+
 'use strict';
 
 import ProfileInventory from './ProfileInventory';
+import PageFooter from '../PageFooter';
 
 const React = require('react');
 
@@ -48,7 +49,8 @@ export default function ProfilePanel(props) {
         React.createElement('p', { className: 'wallet-balance' }, `Current Balance: ${props.user.balance} Credits`),
         React.createElement('p', { className: 'wallet-transactions' }, `Recent Transactions: ${parseTransactions(props.user.transactions)} Credits`)
       ),
-      React.createElement(ProfileInventory, { user: props.user, moonlets: props.moonlets })
+      React.createElement(ProfileInventory, { user: props.user, moonlets: props.moonlets }),
+      React.createElement(PageFooter, null)
     )
   );
 }

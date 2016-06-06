@@ -1,6 +1,5 @@
 'use strict';
 
-import PageFooter from './components/PageFooter';
 import LoadingOverlay from './components/LoadingOverlay';
 import ProfilePanel from './components/dashboard/ProfilePanel';
 import TransactionsPanel from './components/dashboard/TransactionsPanel';
@@ -77,8 +76,7 @@ class Dashboard extends React.Component {
               React.createElement(SettingsPanel,
                 { user: this.state.user, credentials: this.props.apiCredentials, url: this.props.apiURL })
             )
-          ),
-          React.createElement(PageFooter, null)
+          )
         )
       );
     }

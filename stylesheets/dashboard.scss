@@ -30,7 +30,6 @@
         .profile-username {
           font-size: 1.8em;
         }
-
         img {
           width: auto;
           height: 12em;
@@ -41,19 +40,12 @@
       #profile-panel-wallet {
         float: right;
 
-        .wallet-header {
-          font-size: 1.8em;
-        }
-        p {
-          font-size: 1.2em;
-        }
+        .wallet-header { font-size: 1.8em; }
+        p { font-size: 1.2em; }
       }
       #profile-panel-inventory {
         clear: both;
 
-        .profile-inventory-header {
-
-        }
         #moonlet-inventory {
           display: table;
           border-spacing: 1em;
@@ -86,27 +78,22 @@
           }
         }
       }
+      .page-footer { text-align: center; }
     }
     #transaction-panel {
       #refund-status {
         text-align: center;
         font-size: 1.1em;
 
-        #refund-success {
-          color: green;
-        }
-        #refund-failure {
-          color: red;
-        }
+        #refund-success { color: green; }
+        #refund-failure { color: red; }
       }
       #transaction-history {
         margin-top: 3em;
         width: 100%;
         text-align: center;
 
-        th {
-          font-size: 1.5em;
-        }
+        th { font-size: 1.5em; }
         .transaction {
           font-size: 1em;
 
@@ -114,12 +101,8 @@
             padding-top: .6em;
             padding-bottom: .6em;
           }
-          .transaction-purchase, .transaction-addition {
-            color: green;
-          }
-          .transaction-refund, .transaction-reduction {
-            color: red;
-          }
+          .transaction-purchase, .transaction-addition { color: green; }
+          .transaction-refund, .transaction-reduction { color: red; }
           .refund-btn {
             width: 2em;
             cursor: pointer;
@@ -128,6 +111,13 @@
             &:hover { color: red; }
           }
         }
+      }
+      .page-footer {
+        text-align: center;
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        height: 3em;
       }
     }
     #settings-panel {
@@ -196,13 +186,14 @@
           &:hover { background-color: lighten(red, 15); }
         }
       }
-      .clear-filler {
-        clear: both;
+      .clear-filler { clear: both; }
+      .page-footer {
+        text-align: center;
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        height: 3em;
       }
-    }
-    .page-footer {
-      text-align: center;
-      margin-top: 5em;
     }
   }
 }

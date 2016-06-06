@@ -4,6 +4,8 @@
 
 'use strict';
 
+import PageFooter from '../PageFooter';
+
 const Request = require('request');
 const React = require('react');
 
@@ -54,7 +56,6 @@ export default function TransactionsPanel(props) {
     * @param {int} transaction - id of transaction to be refunded
     * @return {object} - the new refund transaction
     */
-
     function refundTransaction(username, credentials, url, transaction) {
       return new Promise((resolve, reject) => {
         const credentialsUsername = credentials.username;
@@ -137,7 +138,8 @@ export default function TransactionsPanel(props) {
           )
         ),
         React.createElement('tbody', null, historyNodes)
-      )
+      ),
+      React.createElement(PageFooter, null)
     )
   );
 }

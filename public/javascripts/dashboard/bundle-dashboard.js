@@ -80906,6 +80906,10 @@ var _ProfileInventory = require('./ProfileInventory');
 
 var _ProfileInventory2 = _interopRequireDefault(_ProfileInventory);
 
+var _PageFooter = require('../PageFooter');
+
+var _PageFooter2 = _interopRequireDefault(_PageFooter);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var React = require('react');
@@ -80941,7 +80945,7 @@ function ProfilePanel(props) {
     return recent;
   }
 
-  return React.createElement('div', { id: 'profile-panel' }, React.createElement('div', { id: 'profile-panel-header' }, React.createElement('h2', { className: 'profile-username' }, props.user.display_name + '\'s Profile'), React.createElement('img', { src: '/assets/login-alien.png' })), React.createElement('div', { id: 'profile-panel-wallet' }, React.createElement('h3', { className: 'wallet-header' }, 'Astralux Galactic Account'), React.createElement('p', { className: 'wallet-balance' }, 'Current Balance: ' + props.user.balance + ' Credits'), React.createElement('p', { className: 'wallet-transactions' }, 'Recent Transactions: ' + parseTransactions(props.user.transactions) + ' Credits')), React.createElement(_ProfileInventory2.default, { user: props.user, moonlets: props.moonlets }));
+  return React.createElement('div', { id: 'profile-panel' }, React.createElement('div', { id: 'profile-panel-header' }, React.createElement('h2', { className: 'profile-username' }, props.user.display_name + '\'s Profile'), React.createElement('img', { src: '/assets/login-alien.png' })), React.createElement('div', { id: 'profile-panel-wallet' }, React.createElement('h3', { className: 'wallet-header' }, 'Astralux Galactic Account'), React.createElement('p', { className: 'wallet-balance' }, 'Current Balance: ' + props.user.balance + ' Credits'), React.createElement('p', { className: 'wallet-transactions' }, 'Recent Transactions: ' + parseTransactions(props.user.transactions) + ' Credits')), React.createElement(_ProfileInventory2.default, { user: props.user, moonlets: props.moonlets }), React.createElement(_PageFooter2.default, null));
 }
 
 ProfilePanel.propTypes = {
@@ -80949,7 +80953,7 @@ ProfilePanel.propTypes = {
   moonlets: React.PropTypes.array.isRequired
 };
 
-},{"./ProfileInventory":456,"react":377}],458:[function(require,module,exports){
+},{"../PageFooter":455,"./ProfileInventory":456,"react":377}],458:[function(require,module,exports){
 /* This is a module that contains a stateless react component, which constructs
  * the user's settings panel. This allows the user to update their email or delete
  * their account completely. */
@@ -80960,6 +80964,13 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = SettingsPanel;
+
+var _PageFooter = require('../PageFooter');
+
+var _PageFooter2 = _interopRequireDefault(_PageFooter);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 var React = require('react');
 var Request = require('request');
 
@@ -81105,7 +81116,7 @@ function SettingsPanel(props) {
   // delete account area
   React.createElement('div', { id: 'danger-zone' }, React.createElement('h3', { className: 'danger-zone-header' }, 'Danger Zone'), React.createElement('div', { id: 'delete-account' }, React.createElement('a', { id: 'delete-acct-btn', onClick: handleClicks }, 'Delete Account'))),
   // empty div in order to clear floating and display footer
-  React.createElement('div', { className: 'clear-filler' }));
+  React.createElement('div', { className: 'clear-filler' }), React.createElement(_PageFooter2.default, null));
 }
 
 SettingsPanel.propTypes = {
@@ -81114,7 +81125,7 @@ SettingsPanel.propTypes = {
   url: React.PropTypes.string.isRequired
 };
 
-},{"react":377,"request":388}],459:[function(require,module,exports){
+},{"../PageFooter":455,"react":377,"request":388}],459:[function(require,module,exports){
 /* This is a module that contains a stateless react component, which constructs
  * the user's transaction history for use in the user's dashboard. includes
  * functionality for issuing refunds for past transactions */
@@ -81125,6 +81136,13 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = TransactionsPanel;
+
+var _PageFooter = require('../PageFooter');
+
+var _PageFooter2 = _interopRequireDefault(_PageFooter);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 var Request = require('request');
 var React = require('react');
 
@@ -81168,7 +81186,6 @@ function TransactionsPanel(props) {
    * @param {int} transaction - id of transaction to be refunded
    * @return {object} - the new refund transaction
    */
-
   function refundTransaction(username, credentials, url, transaction) {
     return new Promise(function (resolve, reject) {
       var credentialsUsername = credentials.username;
@@ -81233,7 +81250,7 @@ function TransactionsPanel(props) {
 
   return React.createElement('div', { id: 'transaction-panel' }, React.createElement('h2', { className: 'transaction-header' }, 'Your Transaction History'), React.createElement('div', { id: 'refund-status' }, React.createElement('p', { id: 'refund-success', className: 'hidden' }, 'Your refund was successful! It should be displayed the next time you visit your dashboard!'), React.createElement('i', { id: 'refund-spinner', className: 'fa fa-spinner fa-pulse hidden' })), React.createElement('table', { id: 'transaction-history' },
   // transaction table header
-  React.createElement('thead', null, React.createElement('tr', null, React.createElement('th', null, 'ID'), React.createElement('th', null, 'Date'), React.createElement('th', null, 'Type'), React.createElement('th', null, 'Items'), React.createElement('th', null, 'Balance'), React.createElement('th', null, 'Actions'))), React.createElement('tbody', null, historyNodes)));
+  React.createElement('thead', null, React.createElement('tr', null, React.createElement('th', null, 'ID'), React.createElement('th', null, 'Date'), React.createElement('th', null, 'Type'), React.createElement('th', null, 'Items'), React.createElement('th', null, 'Balance'), React.createElement('th', null, 'Actions'))), React.createElement('tbody', null, historyNodes)), React.createElement(_PageFooter2.default, null));
 }
 
 TransactionsPanel.propTypes = {
@@ -81242,14 +81259,10 @@ TransactionsPanel.propTypes = {
   url: React.PropTypes.string.isRequired
 };
 
-},{"react":377,"request":388}],460:[function(require,module,exports){
+},{"../PageFooter":455,"react":377,"request":388}],460:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _PageFooter = require('./components/PageFooter');
-
-var _PageFooter2 = _interopRequireDefault(_PageFooter);
 
 var _LoadingOverlay = require('./components/LoadingOverlay');
 
@@ -81340,7 +81353,7 @@ var Dashboard = function (_React$Component) {
     key: 'render',
     value: function render() {
       if (this.state.user !== null && this.state.moonlets !== null) {
-        return React.createElement('div', { id: 'dash-component' }, React.createElement(Tabs, { onSelect: this.handleTabClick, selectedIndex: 0 }, React.createElement(TabList, null, React.createElement(Tab, null, 'Profile'), React.createElement(Tab, null, 'History'), React.createElement(Tab, null, 'Settings')), React.createElement(TabPanel, {}, React.createElement(_ProfilePanel2.default, { user: this.state.user, moonlets: this.state.moonlets })), React.createElement(TabPanel, {}, React.createElement(_TransactionsPanel2.default, { user: this.state.user, credentials: this.props.apiCredentials, url: this.props.apiURL })), React.createElement(TabPanel, {}, React.createElement(_SettingsPanel2.default, { user: this.state.user, credentials: this.props.apiCredentials, url: this.props.apiURL }))), React.createElement(_PageFooter2.default, null));
+        return React.createElement('div', { id: 'dash-component' }, React.createElement(Tabs, { onSelect: this.handleTabClick, selectedIndex: 0 }, React.createElement(TabList, null, React.createElement(Tab, null, 'Profile'), React.createElement(Tab, null, 'History'), React.createElement(Tab, null, 'Settings')), React.createElement(TabPanel, {}, React.createElement(_ProfilePanel2.default, { user: this.state.user, moonlets: this.state.moonlets })), React.createElement(TabPanel, {}, React.createElement(_TransactionsPanel2.default, { user: this.state.user, credentials: this.props.apiCredentials, url: this.props.apiURL })), React.createElement(TabPanel, {}, React.createElement(_SettingsPanel2.default, { user: this.state.user, credentials: this.props.apiCredentials, url: this.props.apiURL }))));
       }
       return React.createElement(_LoadingOverlay2.default, null);
     }
@@ -81360,4 +81373,4 @@ Dashboard.propTypes = {
 
 ReactDOM.render(React.createElement(Dashboard, { apiURL: ASTRALUX_API, apiCredentials: appCredentials, username: currentUser }), document.getElementById('dashboard'));
 
-},{"./components/LoadingOverlay":453,"./components/PageFooter":455,"./components/dashboard/ProfilePanel":457,"./components/dashboard/SettingsPanel":458,"./components/dashboard/TransactionsPanel":459,"react":377,"react-dom":240,"react-tabs":248,"request":388}]},{},[460]);
+},{"./components/LoadingOverlay":453,"./components/dashboard/ProfilePanel":457,"./components/dashboard/SettingsPanel":458,"./components/dashboard/TransactionsPanel":459,"react":377,"react-dom":240,"react-tabs":248,"request":388}]},{},[460]);

@@ -4,6 +4,8 @@
 
 'use strict';
 
+import PageFooter from '../PageFooter';
+
 const React = require('react');
 const Request = require('request');
 
@@ -168,7 +170,8 @@ export default function SettingsPanel(props) {
         )
       ),
       // empty div in order to clear floating and display footer
-      React.createElement('div', { className: 'clear-filler' })
+      React.createElement('div', { className: 'clear-filler' }),
+      React.createElement(PageFooter, null)
     )
   );
 }

@@ -80027,6 +80027,10 @@ function extend() {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _CartList = require('./components/cart/CartList');
+
+var _CartList2 = _interopRequireDefault(_CartList);
+
 var _PageFooter = require('./components/PageFooter');
 
 var _PageFooter2 = _interopRequireDefault(_PageFooter);
@@ -80062,6 +80066,9 @@ var Cart = function (_React$Component) {
     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Cart).call(this, props));
 
     _this.state = { user: null, cart: null };
+    _this.handleItemRemove = _this.handleItemRemove.bind(_this);
+    _this.handlePurchase = _this.handlePurchase.bind(_this);
+    _this.handleEmptying = _this.handleEmptying.bind(_this);
     return _this;
   }
 
@@ -80077,11 +80084,22 @@ var Cart = function (_React$Component) {
         if (error || JSON.parse(body).hasOwnProperty('error')) window.location.href = '/error/455';
 
         var content = JSON.parse(body);
-        self.setState({ user: content.user, cart: content.user.cart });
+        self.setState({ user: content.user, cart: content.user.cart.cart });
       }
 
       Request.get(url, callback).auth(username, password, true);
     }
+  }, {
+    key: 'handleItemRemove',
+    value: function handleItemRemove(event) {
+      console.log(event.target);
+    }
+  }, {
+    key: 'handlePurchase',
+    value: function handlePurchase(event) {}
+  }, {
+    key: 'handleEmptying',
+    value: function handleEmptying(event) {}
   }, {
     key: 'render',
     value: function render() {
@@ -80089,7 +80107,11 @@ var Cart = function (_React$Component) {
         console.log(this.state.user);
         console.log(this.state.cart);
 
-        return React.createElement('div', { id: 'cart-component' }, React.createElement(_PageFooter2.default, null));
+        return React.createElement('div', { id: 'cart-component' }, React.createElement(_CartList2.default, { cart: this.state.cart, handleItemRemove: this.handleItemRemove }),
+        // div for page buttons
+        React.createElement('div', { id: 'cart-buttons' }, React.createElement('input', { type: 'button', className: 'cart-empty-btn',
+          value: 'Empty Cart', onClick: this.handleEmptying }), React.createElement('input', { type: 'button', className: 'cart-purchase-btn',
+          value: 'Purchase', onClick: this.handlePurchase })), React.createElement(_PageFooter2.default, null));
       }
       return React.createElement(_LoadingOverlay2.default, null);
     }
@@ -80108,7 +80130,7 @@ Cart.propTypes = {
 
 ReactDOM.render(React.createElement(Cart, { apiURL: ASTRALUX_API, apiCredentials: appCredentials }), document.getElementById('cart'));
 
-},{"./components/LoadingOverlay":444,"./components/PageFooter":445,"react":367,"react-dom":238,"request":378}],444:[function(require,module,exports){
+},{"./components/LoadingOverlay":444,"./components/PageFooter":445,"./components/cart/CartList":446,"react":367,"react-dom":238,"request":378}],444:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80143,5 +80165,54 @@ var React = require('react');
 function PageFooter() {
   return React.createElement('p', { className: 'page-footer' }, '\xA9 2016 Astralux | ', React.createElement('a', { href: '/about' }, 'About'), ' | Alpha Release | ', React.createElement('a', { href: 'http://www.softwareontheshore.com' }, 'Software on the Shore'));
 }
+
+},{"react":367}],446:[function(require,module,exports){
+/* This is a module that contains a stateless react component, which constructs
+ * the user's current cart. Includes functionality for removing an item from the cart
+ */
+
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = CartList;
+var React = require('react');
+
+function CartList(props) {
+  /**
+   * Function that takes the user's cart object and constructs a React node for
+   * each item in the cart and the total cart cost
+   * @param {object} cart - object containing user's current cart
+   * @return {object} - array of react components and total cost of cart items
+   */
+  function constructItems(cart) {
+    var currentCart = cart;
+    var cartCost = 0;
+
+    var items = currentCart.map(function (c, i) {
+      var currentCost = c.amount * c.price;
+      cartCost += currentCost; // track the total cost of what's in the cart
+
+      // components that compose a single transaction
+      return React.createElement('tr', { className: 'cart-item', key: 'cart-item-' + i }, React.createElement('td', { className: 'cart-item-moonlet' }, React.createElement('a', { className: 'cart-moonlet-a',
+        href: '/moonlet/' + c.item, target: '_blank' }, c.item)), React.createElement('td', { className: 'cart-item-price' }, c.price + ' C'), React.createElement('td', { className: 'cart-item-amount' }, c.amount), React.createElement('td', { className: 'cart-item-cost' }, currentCost), React.createElement('td', { className: 'cart-item-remove' }, React.createElement('a', { id: 'item-remove-btn', onClick: props.handleItemRemove }, React.createElement('i', { className: 'fa fa-times ' + c.item }))));
+    });
+
+    return { items: items, cost: cartCost };
+  }
+
+  /* contruct each row of transaction history via table rows */
+  var cartNodes = constructItems(props.cart);
+
+  return React.createElement('div', { id: 'cart-list' }, React.createElement('h2', { className: 'cart-list-header' }, 'Your Current Cart'), React.createElement('table', { id: 'cart-list-display' },
+  // cart list table header
+  React.createElement('thead', null, React.createElement('tr', null, React.createElement('th', null, 'Moonlet'), React.createElement('th', null, 'Price'), React.createElement('th', null, 'Amount'), React.createElement('th', null, 'Cost'), React.createElement('th', null, 'Remove'))), React.createElement('tbody', null, cartNodes.items)), React.createElement('div', { className: 'clear-filler' }), React.createElement('h2', { className: 'cart-cost-final' }, 'Total Cost: ', React.createElement('span', { className: 'cart-cost-point' }, cartNodes.cost + ' Credits')));
+}
+
+CartList.propTypes = {
+  cart: React.PropTypes.object,
+  handleItemRemove: React.PropTypes.func.isRequired
+};
 
 },{"react":367}]},{},[443]);
