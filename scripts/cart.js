@@ -9,9 +9,9 @@ const ReactDOM = require('react-dom');
 const Request = require('request');
 
 // server side variables sent with render
-const appCredentials = credentials;
 const currentUser = username;
 
+const LOCAL_URL = 'http://localhost:3000/credentials';
 const ASTRALUX_API = `https://astralux-api.herokuapp.com/api/users/${username}`;
 
 class Cart extends React.Component {
@@ -23,19 +23,25 @@ class Cart extends React.Component {
     this.handleEmptying = this.handleEmptying.bind(this);
   }
   componentDidMount() {
-    const username = this.props.apiCredentials.username;
-    const password = this.props.apiCredentials.password;
+    const localURL = this.props.localURL;
     const url = this.props.apiURL;
     const self = this;
 
-    function callback(error, response, body) {
-      if (error || JSON.parse(body).hasOwnProperty('error')) window.location.href = '/error/455';
+    // query local server for API credentials
+    Request.get(localURL, (error, response, body) => {
+      if (error) window.location.href = '/error/455';
+      const credentials = JSON.parse(body);
 
-      const content = JSON.parse(body);
-      self.setState({ user: content.user, cart: content.user.cart.cart });
-    }
+      function callback(error, response, body) {
+        if (error || JSON.parse(body).hasOwnProperty('error')) window.location.href = '/error/455';
 
-    Request.get(url, callback).auth(username, password, true);
+        const content = JSON.parse(body);
+        self.setState({ user: content.user, cart: content.user.cart.cart });
+      }
+
+      // request data from API
+      Request.get(url, callback).auth(credentials.username, credentials.password, true);
+    });
   }
   handleItemRemove(event) {
     console.log(event.target);
@@ -71,11 +77,11 @@ class Cart extends React.Component {
 
 Cart.propTypes = {
   apiURL: React.PropTypes.string.isRequired,
-  apiCredentials: React.PropTypes.object.isRequired,
+  localURL: React.PropTypes.string.isRequired,
 };
 
 // front end global error handler -> redirect to error page for now
 //window.onerror = () => window.location.href = '/error/455';
 
-ReactDOM.render(React.createElement(Cart, { apiURL: ASTRALUX_API, apiCredentials: appCredentials }),
+ReactDOM.render(React.createElement(Cart, { apiURL: ASTRALUX_API, localURL: LOCAL_URL }),
   document.getElementById('cart'));

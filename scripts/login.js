@@ -6,9 +6,7 @@ const ReactDOM = require('react-dom');
 const Request = require('request');
 
 const ASTRALUX_API = 'https://astralux-api.herokuapp.com/api/users';
-
-// server side variables sent with render
-const appCredentials = credentials;
+const LOCAL_URL = 'http://localhost:3000/credentials';
 
 class Login extends React.Component {
   constructor(props) {
@@ -48,11 +46,11 @@ class Login extends React.Component {
 
 Login.propTypes = {
   apiURL: React.PropTypes.string.isRequired,
-  apiCredentials: React.PropTypes.object.isRequired,
+  localURL: React.PropTypes.string.isRequired,
 };
 
 // front end global error handler -> redirect to error page for now
 //window.onerror = () => window.location.href = '/error/455';
 
-ReactDOM.render(React.createElement(Login, { apiURL: ASTRALUX_API, apiCredentials: appCredentials }),
+ReactDOM.render(React.createElement(Login, { apiURL: ASTRALUX_API, localURL: LOCAL_URL }),
   document.getElementById('login'));

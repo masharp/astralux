@@ -8,40 +8,48 @@ const React = require('react');
 const ReactDOM = require('react-dom');
 const Request = require('request');
 
+const LOCAL_URL = 'http://localhost:3000/credentials';
 const ASTRALUX_API = 'https://astralux-api.herokuapp.com/api';
+
 // server side variables sent with render
-const appCredentials = credentials;
 const moonletTag = Number(moonletID);
 
 class Moonlet extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { moonlet: null, amount: 0, cost: 0 };
+    this.state = { moonlet: null, amount: 0, cost: 0, credentials: null };
     this.handleCartClick = this.handleCartClick.bind(this);
     this.handleAmountClick = this.handleAmountClick.bind(this);
   }
   componentDidMount() {
-    const username = this.props.apiCredentials.username;
-    const password = this.props.apiCredentials.password;
+    const localURL = this.props.localURL;
     const url = `${this.props.apiURL}/moonlets/${this.props.moonletID}`;
     const self = this;
 
-    function callback(error, response, body) {
-      if (error || JSON.parse(body).hasOwnProperty('error')) window.location.href = '/error/455';
+    // query local server for API credentials
+    Request.get(localURL, (error, response, body) => {
+      if (error) window.location.href = '/error/455';
+      const credentials = JSON.parse(body);
+      this.setState({ credentials });
 
-      const result = JSON.parse(body);
-      // add the featured class property in order to control display
-      result.moonlet['featured_class'] = 'hidden';
+      function callback(error, response, body) {
+        if (error || JSON.parse(body).hasOwnProperty('error')) window.location.href = '/error/455';
 
-      // if the item is on sale - calculate the new price based on the discount percentage
-      if (result.moonlet.sale) result.moonlet.price = result.moonlet.price * (1 - (1 / result.moonlet.discount));
-      // if the item is featured - show the featured message
-      if (result.moonlet.featured) result.moonlet.featured_class = '';
+        const result = JSON.parse(body);
+        // add the featured class property in order to control display
+        result.moonlet['featured_class'] = 'hidden';
 
-      self.setState({ moonlet: result.moonlet });
-    }
+        // if the item is on sale - calculate the new price based on the discount percentage
+        if (result.moonlet.sale) result.moonlet.price = result.moonlet.price * (1 - (1 / result.moonlet.discount));
+        // if the item is featured - show the featured message
+        if (result.moonlet.featured) result.moonlet.featured_class = '';
 
-    Request.get(url, callback).auth(username, password, true);
+        self.setState({ moonlet: result.moonlet });
+      }
+
+      // request data from API
+      Request.get(url, callback).auth(credentials.username, credentials.password, true);
+    });
   }
   handleAmountClick(event) {
     const target = event.target.classList[0];
@@ -98,7 +106,7 @@ class Moonlet extends React.Component {
             )
           ),
           React.createElement(SimilarMoonlets,
-            { apiURL: this.props.apiURL, apiCredentials: this.props.apiCredentials,
+            { apiURL: this.props.apiURL, apiCredentials: this.state.credentials,
                moonletType: this.state.moonlet.classification, moonletID: this.props.moonletID }),
           React.createElement(PageFooter, null)
         )
@@ -110,12 +118,12 @@ class Moonlet extends React.Component {
 
 Moonlet.propTypes = {
   apiURL: React.PropTypes.string.isRequired,
-  apiCredentials: React.PropTypes.object.isRequired,
+  localURL: React.PropTypes.string.isRequired,
   moonletID: React.PropTypes.number.isRequired,
 };
 
 // front end global error handler -> redirect to error page for now
 // window.onerror = () => window.location.href = '/error/455';
 
-ReactDOM.render(React.createElement(Moonlet, { apiURL: ASTRALUX_API, apiCredentials: appCredentials, moonletID: moonletTag }),
+ReactDOM.render(React.createElement(Moonlet, { apiURL: ASTRALUX_API, localURL: LOCAL_URL, moonletID: moonletTag }),
   document.getElementById('moonlet'));

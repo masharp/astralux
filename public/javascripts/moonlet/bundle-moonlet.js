@@ -80228,9 +80228,10 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var Request = require('request');
 
+var LOCAL_URL = 'http://localhost:3000/credentials';
 var ASTRALUX_API = 'https://astralux-api.herokuapp.com/api';
+
 // server side variables sent with render
-var appCredentials = credentials;
 var moonletTag = Number(moonletID);
 
 var Moonlet = function (_React$Component) {
@@ -80241,7 +80242,7 @@ var Moonlet = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Moonlet).call(this, props));
 
-    _this.state = { moonlet: null, amount: 0, cost: 0 };
+    _this.state = { moonlet: null, amount: 0, cost: 0, credentials: null };
     _this.handleCartClick = _this.handleCartClick.bind(_this);
     _this.handleAmountClick = _this.handleAmountClick.bind(_this);
     return _this;
@@ -80250,27 +80251,36 @@ var Moonlet = function (_React$Component) {
   _createClass(Moonlet, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
-      var username = this.props.apiCredentials.username;
-      var password = this.props.apiCredentials.password;
+      var _this2 = this;
+
+      var localURL = this.props.localURL;
       var url = this.props.apiURL + '/moonlets/' + this.props.moonletID;
       var self = this;
 
-      function callback(error, response, body) {
-        if (error || JSON.parse(body).hasOwnProperty('error')) window.location.href = '/error/455';
+      // query local server for API credentials
+      Request.get(localURL, function (error, response, body) {
+        if (error) window.location.href = '/error/455';
+        var credentials = JSON.parse(body);
+        _this2.setState({ credentials: credentials });
 
-        var result = JSON.parse(body);
-        // add the featured class property in order to control display
-        result.moonlet['featured_class'] = 'hidden';
+        function callback(error, response, body) {
+          if (error || JSON.parse(body).hasOwnProperty('error')) window.location.href = '/error/455';
 
-        // if the item is on sale - calculate the new price based on the discount percentage
-        if (result.moonlet.sale) result.moonlet.price = result.moonlet.price * (1 - 1 / result.moonlet.discount);
-        // if the item is featured - show the featured message
-        if (result.moonlet.featured) result.moonlet.featured_class = '';
+          var result = JSON.parse(body);
+          // add the featured class property in order to control display
+          result.moonlet['featured_class'] = 'hidden';
 
-        self.setState({ moonlet: result.moonlet });
-      }
+          // if the item is on sale - calculate the new price based on the discount percentage
+          if (result.moonlet.sale) result.moonlet.price = result.moonlet.price * (1 - 1 / result.moonlet.discount);
+          // if the item is featured - show the featured message
+          if (result.moonlet.featured) result.moonlet.featured_class = '';
 
-      Request.get(url, callback).auth(username, password, true);
+          self.setState({ moonlet: result.moonlet });
+        }
+
+        // request data from API
+        Request.get(url, callback).auth(credentials.username, credentials.password, true);
+      });
     }
   }, {
     key: 'handleAmountClick',
@@ -80296,7 +80306,7 @@ var Moonlet = function (_React$Component) {
     value: function render() {
       if (this.state.moonlet !== null) {
         return React.createElement('div', { id: 'moonlet-component' }, React.createElement('div', { id: 'moonlet-header' }, React.createElement('h1', { className: 'moonlet-header-name' }, this.state.moonlet.display_name), React.createElement('img', { className: 'moonlet-header-img', src: this.state.moonlet.img_src }), React.createElement('h2', { className: 'moonlet-header-price' }, React.createElement('span', { className: 'moonlet-header-pricepoint' }, this.state.moonlet.price), ' Credits'), React.createElement('h3', { className: 'moonlet-header-featured ' + this.state.moonlet.featured_class }, 'SPECIAL!')), React.createElement('div', { id: 'moonlet-info' }, React.createElement('h2', { className: 'moonlet-info-type' }, 'Classification: ', React.createElement('span', { className: 'moonlet-type-class' }, this.state.moonlet.classification)), React.createElement('p', { className: 'moonlet-info-desc' }, this.state.moonlet.description), React.createElement('p', { className: 'moonlet-info-color' }, 'Color: ', React.createElement('span', { className: 'moonlet-color-point', style: { color: this.state.moonlet.color } }, this.state.moonlet.color)), React.createElement('p', { className: 'moonlet-info-inventory' }, 'Astralux Inventory: ', React.createElement('span', { className: 'moonlet-inventory-point' }, this.state.moonlet.inventory)), React.createElement('div', { id: 'moonlet-purchase' }, React.createElement('div', { id: 'moonlet-amount' }, React.createElement('a', { className: 'amount-decrement', onClick: this.handleAmountClick }, '-'), React.createElement('label', { className: 'amount-label' }, this.state.amount), React.createElement('a', { className: 'amount-increment', onClick: this.handleAmountClick }, '+')), React.createElement('p', { className: 'moonlet-amount-cost' }, 'Cost: ', React.createElement('span', { className: 'moonlet-cost-point' }, this.state.cost)), React.createElement('input', { type: 'button', className: 'moonlet-purchase-btn',
-          value: 'Add to Cart', onClick: this.handleCartClick }))), React.createElement(_SimilarMoonlets2.default, { apiURL: this.props.apiURL, apiCredentials: this.props.apiCredentials,
+          value: 'Add to Cart', onClick: this.handleCartClick }))), React.createElement(_SimilarMoonlets2.default, { apiURL: this.props.apiURL, apiCredentials: this.state.credentials,
           moonletType: this.state.moonlet.classification, moonletID: this.props.moonletID }), React.createElement(_PageFooter2.default, null));
       }
       return React.createElement(_LoadingOverlay2.default, null);
@@ -80308,13 +80318,13 @@ var Moonlet = function (_React$Component) {
 
 Moonlet.propTypes = {
   apiURL: React.PropTypes.string.isRequired,
-  apiCredentials: React.PropTypes.object.isRequired,
+  localURL: React.PropTypes.string.isRequired,
   moonletID: React.PropTypes.number.isRequired
 };
 
 // front end global error handler -> redirect to error page for now
 // window.onerror = () => window.location.href = '/error/455';
 
-ReactDOM.render(React.createElement(Moonlet, { apiURL: ASTRALUX_API, apiCredentials: appCredentials, moonletID: moonletTag }), document.getElementById('moonlet'));
+ReactDOM.render(React.createElement(Moonlet, { apiURL: ASTRALUX_API, localURL: LOCAL_URL, moonletID: moonletTag }), document.getElementById('moonlet'));
 
 },{"./components/LoadingOverlay":443,"./components/PageFooter":445,"./components/moonlet/SimilarMoonlets":446,"react":367,"react-dom":238,"request":378}]},{},[447]);

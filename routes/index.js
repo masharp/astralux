@@ -15,6 +15,18 @@ const credentials = {
   password: process.env.MASTER_PASSWORD
 };
 
+/* handle web crawlers */
+router.get('/robots.txt', (request, response) => {
+  response.type('text/plain');
+  response.send('User-agent: *\nDisallow:');
+});
+
+/* displays the sitemap */
+router.get('/sitemap.txt', (request, response) => {
+  response.type('text/plain');
+  response.send('/s+itemap.txt');
+});
+
 /* Home Page */
 router.get('/', (request, response) => {
   response.render('home', { title: 'Astralux - A moonlet Marketplace of the Future', credentials });
@@ -53,18 +65,6 @@ router.get('/about', (request, response) => {
   response.render('about', { title: 'Astralux About | A moonlet Marketplace of the Future', credentials });
 });
 
-/* handle web crawlers */
-router.get('/robots.txt', (request, response) => {
-  response.type('text/plain');
-  response.send('User-agent: *\nDisallow:');
-});
-
-/* displays the sitemap */
-router.get('/sitemap.txt', (request, response) => {
-  response.type('text/plain');
-  response.send('/sitemap.txt');
-});
-
 /* Error Page */
 router.get('/error/:code?', (request, response) => {
   let code = request.params.code ? Number(request.params.code) : 500; // pull out the error code, if present
@@ -97,6 +97,14 @@ router.get('/error/:code?', (request, response) => {
   }
 
   response.render('error', { title: 'Astralux - Critical Error!', error: { status: code, message }, credentials });
+});
+
+/* Credentials Route - returns credentials for calling the Flask API
+   TODO: Add local validation via host variable. match it to production server? */
+router.get('/credentials', (request, response) => {
+  const host = request.get('host');
+
+  response.json(credentials);
 });
 
 module.exports = router;

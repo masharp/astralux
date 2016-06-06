@@ -16,40 +16,48 @@ const TabList = ReactTabs.TabList;
 const TabPanel = ReactTabs.TabPanel;
 
 const ASTRALUX_API = 'https://astralux-api.herokuapp.com/api';
+const LOCAL_URL = 'http://localhost:3000/credentials';
 
 // server side variables sent with render
-const appCredentials = credentials;
 const currentUser = username;
 
 class Dashboard extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { user: null, moonlets: null };
+    this.state = { user: null, moonlets: null, credentials: null };
+
     this.handleButtonClick = this.handleButtonClick.bind(this);
     this.handleTabClick = this.handleTabClick.bind(this);
   }
   componentDidMount() {
-    const username = this.props.apiCredentials.username;
-    const password = this.props.apiCredentials.password;
     const userURL = `${this.props.apiURL}/users/${this.props.username}`;
+    const localURL = this.props.localURL;
     const moonletsURL = `${this.props.apiURL}/moonlets`;
     const self = this;
 
-    function userCallback(userError, userResponse, userBody) {
-      if (userError || JSON.parse(userBody).hasOwnProperty('error')) window.location.href = '/error/455';
-      const user = JSON.parse(userBody).user;
+    // query local server for API credentials
+    Request.get(localURL, (error, response, body) => {
+      if (error) window.location.href = '/error/455';
 
-      function moonletsCallback(moonletsError, moonletsResponse, moonletsBody) {
-        if (moonletsError || JSON.parse(moonletsBody).hasOwnProperty('error')) window.location.href = '/error/455';
-        const moonlets =  JSON.parse(moonletsBody).moonlets;
+      const credentials = JSON.parse(body);
+      this.setState({ credentials });
 
-        self.setState({ user, moonlets });
+      function userCallback(userError, userResponse, userBody) {
+        if (userError || JSON.parse(userBody).hasOwnProperty('error')) window.location.href = '/error/455';
+        const user = JSON.parse(userBody).user;
+
+        function moonletsCallback(moonletsError, moonletsResponse, moonletsBody) {
+          if (moonletsError || JSON.parse(moonletsBody).hasOwnProperty('error')) window.location.href = '/error/455';
+          const moonlets =  JSON.parse(moonletsBody).moonlets;
+
+          self.setState({ user, moonlets });
+        }
+        // request info on all moonlets
+        Request.get(moonletsURL, moonletsCallback).auth(credentials.username, credentials.password, true);
       }
-      // request info on all moonlets
-      Request.get(moonletsURL, moonletsCallback).auth(username, password, true);
-    }
-    // request info on this user
-    Request.get(userURL, userCallback).auth(username, password, true);
+      // request info on this user
+      Request.get(userURL, userCallback).auth(credentials.username, credentials.password, true);
+    });
   }
   handleButtonClick() {
   }
@@ -70,11 +78,11 @@ class Dashboard extends React.Component {
             ),
             React.createElement(TabPanel, {},
               React.createElement(TransactionsPanel,
-                { user: this.state.user, credentials: this.props.apiCredentials, url: this.props.apiURL })
+                { user: this.state.user, credentials: this.state.credentials, url: this.props.apiURL })
             ),
             React.createElement(TabPanel, {},
               React.createElement(SettingsPanel,
-                { user: this.state.user, credentials: this.props.apiCredentials, url: this.props.apiURL })
+                { user: this.state.user, credentials: this.state.credentials, url: this.props.apiURL })
             )
           )
         )
@@ -86,12 +94,12 @@ class Dashboard extends React.Component {
 
 Dashboard.propTypes = {
   apiURL: React.PropTypes.string.isRequired,
-  apiCredentials: React.PropTypes.object.isRequired,
+  localURL: React.PropTypes.string.isRequired,
   username: React.PropTypes.string
 };
 
 // front end global error handler -> redirect to error page for now
 // window.onerror = () => window.location.href = '/error/455';
 
-ReactDOM.render(React.createElement(Dashboard, { apiURL: ASTRALUX_API, apiCredentials: appCredentials, username: currentUser }),
+ReactDOM.render(React.createElement(Dashboard, { apiURL: ASTRALUX_API, localURL: LOCAL_URL, username: currentUser }),
   document.getElementById('dashboard'));

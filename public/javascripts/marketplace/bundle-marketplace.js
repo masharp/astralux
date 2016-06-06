@@ -80340,9 +80340,7 @@ var ReactDOM = require('react-dom');
 var Request = require('request');
 
 var ASTRALUX_API = 'https://astralux-api.herokuapp.com/api/moonlets';
-
-// server side variables sent with render
-var appCredentials = credentials;
+var LOCAL_URL = 'http://localhost:3000/credentials';
 
 var Marketplace = function (_React$Component) {
   _inherits(Marketplace, _React$Component);
@@ -80363,26 +80361,30 @@ var Marketplace = function (_React$Component) {
   _createClass(Marketplace, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
-      // pull out API credentials to validate GET HTTP request
-      var username = this.props.apiCredentials.username;
-      var password = this.props.apiCredentials.password;
       var url = this.props.apiURL;
+      var localURL = this.props.localURL;
       var self = this;
 
-      function callback(error, response, body) {
-        if (error || JSON.parse(body).hasOwnProperty('error')) window.location.href = '/error/455';
+      // query local server for API credentials
+      Request.get(localURL, function (error, response, body) {
+        if (error) window.location.href = '/error/455';
+        var credentials = JSON.parse(body);
 
-        var result = JSON.parse(body);
+        function callback(error, response, body) {
+          if (error || JSON.parse(body).hasOwnProperty('error')) window.location.href = '/error/455';
 
-        var featured = self.buildFeatured(result.moonlets); // extract the featured moonlets
-        var sales = self.buildSales(result.moonlets); // extract the moonlets on sale
-        var classTypes = self.buildTypes(result.moonlets); // seperate moonlets by classification
-        var categories = { sales: sales, featured: featured, classTypes: classTypes };
+          var result = JSON.parse(body);
 
-        self.setState({ moonlets: result.moonlets, categories: categories });
-      }
+          var featured = self.buildFeatured(result.moonlets); // extract the featured moonlets
+          var sales = self.buildSales(result.moonlets); // extract the moonlets on sale
+          var classTypes = self.buildTypes(result.moonlets); // seperate moonlets by classification
+          var categories = { sales: sales, featured: featured, classTypes: classTypes };
 
-      Request.get(url, callback).auth(username, password, true);
+          self.setState({ moonlets: result.moonlets, categories: categories });
+        }
+
+        Request.get(url, callback).auth(credentials.username, credentials.password, true);
+      });
     }
     /**
      * Function that takes all current moonlets and parses them into an object
@@ -80518,12 +80520,12 @@ var Marketplace = function (_React$Component) {
 
 Marketplace.propTypes = {
   apiURL: React.PropTypes.string.isRequired,
-  apiCredentials: React.PropTypes.object.isRequired
+  localURL: React.PropTypes.string.isRequired
 };
 
 // front end global error handler -> redirect to error page for now
 //window.onerror = () => window.location.href = '/error/455';
 
-ReactDOM.render(React.createElement(Marketplace, { apiURL: ASTRALUX_API, apiCredentials: appCredentials }), document.getElementById('marketplace'));
+ReactDOM.render(React.createElement(Marketplace, { apiURL: ASTRALUX_API, localURL: LOCAL_URL }), document.getElementById('marketplace'));
 
 },{"./components/LoadingOverlay":443,"./components/PageFooter":445,"./components/marketplace/MarketplaceDisplay":447,"react":367,"react-dom":238,"request":378}]},{},[450]);

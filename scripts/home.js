@@ -9,9 +9,7 @@ const ReactDOM = require('react-dom');
 const Request = require('request');
 
 const ASTRALUX_API = 'https://astralux-api.herokuapp.com/api/moonlets';
-
-// server side variables sent with render
-const appCredentials = credentials;
+const LOCAL_URL = 'http://localhost:3000/credentials';
 
 class Home extends React.Component {
   constructor(props) {
@@ -21,26 +19,32 @@ class Home extends React.Component {
     this.constructFeatured = this.constructFeatured.bind(this);
   }
   componentDidMount() {
-    const username = this.props.apiCredentials.username;
-    const password = this.props.apiCredentials.password;
     const url = this.props.apiURL;
+    const localURL = this.props.localURL;
     const self = this;
 
-    function callback(error, response, body) {
-      if (error || JSON.parse(body).hasOwnProperty('error')) window.location.href = '/error/455';
+    // query local server for API credentials
+    Request.get(localURL, (error, response, body) => {
+      if (error) window.location.href = '/error/455';
+      const credentials = JSON.parse(body);
 
-      const content = JSON.parse(body);
-      self.setState({ moonlets: content.moonlets });
-    }
+      function callback(error, response, body) {
+        if (error || JSON.parse(body).hasOwnProperty('error')) window.location.href = '/error/455';
 
-    Request.get(url, callback).auth(username, password, true);
+        const content = JSON.parse(body);
+        self.setState({ moonlets: content.moonlets });
+      }
+
+      // request data from API
+      Request.get(url, callback).auth(credentials.username, credentials.password, true);
+    });
+
   }
   handleButtonClick() {
     window.location.href = '/login';
   }
   constructFeatured() {
     const moonlets = this.state.moonlets;
-    console.log(moonlets);
     const nodes = [];
     const found = [];
 
@@ -98,11 +102,10 @@ class Home extends React.Component {
 
 Home.propTypes = {
   apiURL: React.PropTypes.string.isRequired,
-  apiCredentials: React.PropTypes.object.isRequired,
+  localURL: React.PropTypes.string.isRequired,
 };
 
 // front end global error handler -> redirect to error page for now
 window.onerror = () => window.location.href = '/error/455';
 
-ReactDOM.render(React.createElement(Home, { apiURL: ASTRALUX_API, apiCredentials: appCredentials }),
-  document.getElementById('home'));
+ReactDOM.render(React.createElement(Home, { apiURL: ASTRALUX_API, localURL: LOCAL_URL }), document.getElementById('home'));

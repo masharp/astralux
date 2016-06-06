@@ -80062,9 +80062,7 @@ var ReactDOM = require('react-dom');
 var Request = require('request');
 
 var ASTRALUX_API = 'https://astralux-api.herokuapp.com/api/users';
-
-// server side variables sent with render
-var appCredentials = credentials;
+var LOCAL_URL = 'http://localhost:3000/credentials';
 
 var Login = function (_React$Component) {
   _inherits(Login, _React$Component);
@@ -80094,12 +80092,12 @@ var Login = function (_React$Component) {
 
 Login.propTypes = {
   apiURL: React.PropTypes.string.isRequired,
-  apiCredentials: React.PropTypes.object.isRequired
+  localURL: React.PropTypes.string.isRequired
 };
 
 // front end global error handler -> redirect to error page for now
 //window.onerror = () => window.location.href = '/error/455';
 
-ReactDOM.render(React.createElement(Login, { apiURL: ASTRALUX_API, apiCredentials: appCredentials }), document.getElementById('login'));
+ReactDOM.render(React.createElement(Login, { apiURL: ASTRALUX_API, localURL: LOCAL_URL }), document.getElementById('login'));
 
 },{"./components/PageFooter":443,"react":367,"react-dom":238,"request":378}]},{},[444]);

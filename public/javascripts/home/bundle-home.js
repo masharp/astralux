@@ -80120,9 +80120,7 @@ var ReactDOM = require('react-dom');
 var Request = require('request');
 
 var ASTRALUX_API = 'https://astralux-api.herokuapp.com/api/moonlets';
-
-// server side variables sent with render
-var appCredentials = credentials;
+var LOCAL_URL = 'http://localhost:3000/credentials';
 
 var Home = function (_React$Component) {
   _inherits(Home, _React$Component);
@@ -80141,19 +80139,25 @@ var Home = function (_React$Component) {
   _createClass(Home, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
-      var username = this.props.apiCredentials.username;
-      var password = this.props.apiCredentials.password;
       var url = this.props.apiURL;
+      var localURL = this.props.localURL;
       var self = this;
 
-      function callback(error, response, body) {
-        if (error || JSON.parse(body).hasOwnProperty('error')) window.location.href = '/error/455';
+      // query local server for API credentials
+      Request.get(localURL, function (error, response, body) {
+        if (error) window.location.href = '/error/455';
+        var credentials = JSON.parse(body);
 
-        var content = JSON.parse(body);
-        self.setState({ moonlets: content.moonlets });
-      }
+        function callback(error, response, body) {
+          if (error || JSON.parse(body).hasOwnProperty('error')) window.location.href = '/error/455';
 
-      Request.get(url, callback).auth(username, password, true);
+          var content = JSON.parse(body);
+          self.setState({ moonlets: content.moonlets });
+        }
+
+        // request data from API
+        Request.get(url, callback).auth(credentials.username, credentials.password, true);
+      });
     }
   }, {
     key: 'handleButtonClick',
@@ -80164,7 +80168,6 @@ var Home = function (_React$Component) {
     key: 'constructFeatured',
     value: function constructFeatured() {
       var moonlets = this.state.moonlets;
-      console.log(moonlets);
       var nodes = [];
       var found = [];
 
@@ -80207,7 +80210,7 @@ var Home = function (_React$Component) {
 
 Home.propTypes = {
   apiURL: React.PropTypes.string.isRequired,
-  apiCredentials: React.PropTypes.object.isRequired
+  localURL: React.PropTypes.string.isRequired
 };
 
 // front end global error handler -> redirect to error page for now
@@ -80215,6 +80218,6 @@ window.onerror = function () {
   return window.location.href = '/error/455';
 };
 
-ReactDOM.render(React.createElement(Home, { apiURL: ASTRALUX_API, apiCredentials: appCredentials }), document.getElementById('home'));
+ReactDOM.render(React.createElement(Home, { apiURL: ASTRALUX_API, localURL: LOCAL_URL }), document.getElementById('home'));
 
 },{"./components/LoadingOverlay":443,"./components/MoonletItem":444,"./components/PageFooter":445,"react":367,"react-dom":238,"request":378}]},{},[446]);

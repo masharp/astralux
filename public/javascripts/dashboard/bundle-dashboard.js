@@ -81299,9 +81299,9 @@ var TabList = ReactTabs.TabList;
 var TabPanel = ReactTabs.TabPanel;
 
 var ASTRALUX_API = 'https://astralux-api.herokuapp.com/api';
+var LOCAL_URL = 'http://localhost:3000/credentials';
 
 // server side variables sent with render
-var appCredentials = credentials;
 var currentUser = username;
 
 var Dashboard = function (_React$Component) {
@@ -81312,7 +81312,8 @@ var Dashboard = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Dashboard).call(this, props));
 
-    _this.state = { user: null, moonlets: null };
+    _this.state = { user: null, moonlets: null, credentials: null };
+
     _this.handleButtonClick = _this.handleButtonClick.bind(_this);
     _this.handleTabClick = _this.handleTabClick.bind(_this);
     return _this;
@@ -81321,27 +81322,36 @@ var Dashboard = function (_React$Component) {
   _createClass(Dashboard, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
-      var username = this.props.apiCredentials.username;
-      var password = this.props.apiCredentials.password;
+      var _this2 = this;
+
       var userURL = this.props.apiURL + '/users/' + this.props.username;
+      var localURL = this.props.localURL;
       var moonletsURL = this.props.apiURL + '/moonlets';
       var self = this;
 
-      function userCallback(userError, userResponse, userBody) {
-        if (userError || JSON.parse(userBody).hasOwnProperty('error')) window.location.href = '/error/455';
-        var user = JSON.parse(userBody).user;
+      // query local server for API credentials
+      Request.get(localURL, function (error, response, body) {
+        if (error) window.location.href = '/error/455';
 
-        function moonletsCallback(moonletsError, moonletsResponse, moonletsBody) {
-          if (moonletsError || JSON.parse(moonletsBody).hasOwnProperty('error')) window.location.href = '/error/455';
-          var moonlets = JSON.parse(moonletsBody).moonlets;
+        var credentials = JSON.parse(body);
+        _this2.setState({ credentials: credentials });
 
-          self.setState({ user: user, moonlets: moonlets });
+        function userCallback(userError, userResponse, userBody) {
+          if (userError || JSON.parse(userBody).hasOwnProperty('error')) window.location.href = '/error/455';
+          var user = JSON.parse(userBody).user;
+
+          function moonletsCallback(moonletsError, moonletsResponse, moonletsBody) {
+            if (moonletsError || JSON.parse(moonletsBody).hasOwnProperty('error')) window.location.href = '/error/455';
+            var moonlets = JSON.parse(moonletsBody).moonlets;
+
+            self.setState({ user: user, moonlets: moonlets });
+          }
+          // request info on all moonlets
+          Request.get(moonletsURL, moonletsCallback).auth(credentials.username, credentials.password, true);
         }
-        // request info on all moonlets
-        Request.get(moonletsURL, moonletsCallback).auth(username, password, true);
-      }
-      // request info on this user
-      Request.get(userURL, userCallback).auth(username, password, true);
+        // request info on this user
+        Request.get(userURL, userCallback).auth(credentials.username, credentials.password, true);
+      });
     }
   }, {
     key: 'handleButtonClick',
@@ -81353,7 +81363,7 @@ var Dashboard = function (_React$Component) {
     key: 'render',
     value: function render() {
       if (this.state.user !== null && this.state.moonlets !== null) {
-        return React.createElement('div', { id: 'dash-component' }, React.createElement(Tabs, { onSelect: this.handleTabClick, selectedIndex: 0 }, React.createElement(TabList, null, React.createElement(Tab, null, 'Profile'), React.createElement(Tab, null, 'History'), React.createElement(Tab, null, 'Settings')), React.createElement(TabPanel, {}, React.createElement(_ProfilePanel2.default, { user: this.state.user, moonlets: this.state.moonlets })), React.createElement(TabPanel, {}, React.createElement(_TransactionsPanel2.default, { user: this.state.user, credentials: this.props.apiCredentials, url: this.props.apiURL })), React.createElement(TabPanel, {}, React.createElement(_SettingsPanel2.default, { user: this.state.user, credentials: this.props.apiCredentials, url: this.props.apiURL }))));
+        return React.createElement('div', { id: 'dash-component' }, React.createElement(Tabs, { onSelect: this.handleTabClick, selectedIndex: 0 }, React.createElement(TabList, null, React.createElement(Tab, null, 'Profile'), React.createElement(Tab, null, 'History'), React.createElement(Tab, null, 'Settings')), React.createElement(TabPanel, {}, React.createElement(_ProfilePanel2.default, { user: this.state.user, moonlets: this.state.moonlets })), React.createElement(TabPanel, {}, React.createElement(_TransactionsPanel2.default, { user: this.state.user, credentials: this.state.credentials, url: this.props.apiURL })), React.createElement(TabPanel, {}, React.createElement(_SettingsPanel2.default, { user: this.state.user, credentials: this.state.credentials, url: this.props.apiURL }))));
       }
       return React.createElement(_LoadingOverlay2.default, null);
     }
@@ -81364,13 +81374,13 @@ var Dashboard = function (_React$Component) {
 
 Dashboard.propTypes = {
   apiURL: React.PropTypes.string.isRequired,
-  apiCredentials: React.PropTypes.object.isRequired,
+  localURL: React.PropTypes.string.isRequired,
   username: React.PropTypes.string
 };
 
 // front end global error handler -> redirect to error page for now
 // window.onerror = () => window.location.href = '/error/455';
 
-ReactDOM.render(React.createElement(Dashboard, { apiURL: ASTRALUX_API, apiCredentials: appCredentials, username: currentUser }), document.getElementById('dashboard'));
+ReactDOM.render(React.createElement(Dashboard, { apiURL: ASTRALUX_API, localURL: LOCAL_URL, username: currentUser }), document.getElementById('dashboard'));
 
 },{"./components/LoadingOverlay":453,"./components/dashboard/ProfilePanel":457,"./components/dashboard/SettingsPanel":458,"./components/dashboard/TransactionsPanel":459,"react":377,"react-dom":240,"react-tabs":248,"request":388}]},{},[460]);
