@@ -80037,7 +80037,7 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var Request = require('request');
 
-var ASTRALUX_API = 'https://astralux-api.herokuapp.com/api/v1.0';
+var ASTRALUX_API = 'https://astralux-api.herokuapp.com/api/users';
 var LOCAL_URL = 'http://localhost:3000/credentials';
 
 var Menu = function (_React$Component) {
@@ -80048,25 +80048,53 @@ var Menu = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Menu).call(this, props));
 
-    _this.state = { user: null };
+    _this.state = { user: null, credentials: null, size: 0, balance: 0 };
+
+    _this.beginServerQuery = _this.beginServerQuery.bind(_this);
     return _this;
   }
 
   _createClass(Menu, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
-      var userURL = this.props.apiURL + '/users/' + this.props.username;
+      var localURL = this.props.localURL;
       var self = this;
 
-      function userCallback(userError, userResponse, userBody) {
-        if (userError) window.location.href = '/error';
-        var user = JSON.parse(userBody).user;
-        self.setState({ user: user });
+      Request.get(localURL, function (error, response, body) {
+        if (error) window.location.href = '/error/455';
+        var credentials = JSON.parse(body);
+
+        self.setState({ credentials: credentials });
+        self.beginServerQuery(); // load initial state and query every 3 seconds thereafter
+      });
+    }
+    /* Function that updates the menu bar with the current user's profile state.
+     * calls itself every 3 seconds and checks if the current stored state has changed.
+     * updates as necessary */
+
+  }, {
+    key: 'beginServerQuery',
+    value: function beginServerQuery() {
+      var credentials = this.state.credentials;
+      var url = this.props.apiURL + '/admin';
+      var self = this;
+
+      function queryCallback(error, response, body) {
+        var updatedState = JSON.parse(body).user;
+        // turn json into quicky/dirty strings in order to compare equality (must be the same order)
+        var updatedStateStr = JSON.stringify(updatedState);
+        var currentStateStr = JSON.stringify(self.state.user);
+
+        if (updatedStateStr !== currentStateStr) {
+          var size = updatedState.cart.cart.length; // pull out cart size
+          var balance = updatedState.balance; // pull out user's balance
+
+          self.setState({ user: updatedState, balance: balance, size: size });
+        }
+
+        setTimeout(self.beginServerQuery, 3000);
       }
-      // request info on this user
-      if (this.props.username !== null) {
-        // Request.get(userURL, userCallback).auth(username, password, true);
-      }
+      Request.get(url, queryCallback).auth(credentials.username, credentials.password, true);
     }
   }, {
     key: 'handleButtonClick',
@@ -80074,7 +80102,8 @@ var Menu = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      return React.createElement('div', { id: 'menu-bar' }, React.createElement('a', { className: 'navlink', href: '/' }, React.createElement('img', { className: 'brand-img', src: '/assets/brand.png' })), React.createElement('div', { id: 'link-nav' }, React.createElement('a', { className: 'navlink', href: '/marketplace' }, 'Marketplace'), React.createElement('a', { className: 'navlink hidden', href: '' }, 'Logout'), React.createElement('a', { className: 'navlink login', href: '/login' }, 'Login'), React.createElement('a', { className: 'navdrop navlink hidden', href: '' }, 'Menu')));
+
+      return React.createElement('div', { id: 'menu-bar' }, React.createElement('a', { className: 'navlink', href: '/' }, React.createElement('img', { className: 'menu-brand', src: '/assets/brand.png' })), React.createElement('div', { id: 'link-nav' }, React.createElement('a', { className: 'navlink menu-marketplace', href: '/marketplace' }, 'Marketplace'), React.createElement('a', { className: 'menu-logout navlink', href: '/' }, 'Logout'), React.createElement('span', { className: 'navlink menu-balance' }, 'Balance: ', React.createElement('span', { className: 'balance-amount-point' }, this.state.balance)), React.createElement('a', { id: 'menu-cart', className: 'navlink', href: '/cart/admin' }, React.createElement('i', { className: 'fa fa-shopping-cart' }), React.createElement('span', { id: 'menu-cart-updater' }, ' ' + this.state.size + ' ')), React.createElement('a', { className: 'menu-account navlink', href: '/dashboard/admin' }, 'Dashboard'), React.createElement('a', { className: 'navlink menu-login', href: '/login' }, 'Login')));
     }
   }]);
 

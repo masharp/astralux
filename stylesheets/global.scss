@@ -48,7 +48,7 @@ header {
     background-color: $quadrary-color;
     padding: 1em !important;
 
-    .brand-img {
+    .menu-brand {
       width: auto;
       height: 50px;
     }
@@ -58,15 +58,27 @@ header {
       color: $font-color;
       text-decoration: none;
     }
+    .menu-balance {
+      .balance-amount-point { color: darken($font-color, 25); }
+    }
     #link-nav {
       float: right;
       margin-top: 1em;
       margin-right: 1em;
       font-size: 1.2em;
+    }
+    #menu-cart {
+      color: $font-color;
+      text-decoration: none;
+      padding: .2em;
+      &:hover { background-color: lighten($quadrary-color, 15); }
 
-      .marketplace {
-      }
-      .login {
+      #menu-cart-updater {
+        border-radius: 1em;
+        margin-left: .3em;
+        padding: .1em;
+        background-color: $primary-color;
+        color: $font-color;
       }
     }
   }
