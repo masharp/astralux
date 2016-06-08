@@ -80228,7 +80228,7 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var Request = require('request');
 
-var LOCAL_URL = 'http://localhost:3000/credentials';
+var LOCAL_URL = 'https://astralux.herokuapp.com/credentials';
 var ASTRALUX_API = 'https://astralux-api.herokuapp.com/api';
 
 // server side variables sent with render

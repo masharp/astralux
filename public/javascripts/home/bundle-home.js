@@ -80120,7 +80120,7 @@ var ReactDOM = require('react-dom');
 var Request = require('request');
 
 var ASTRALUX_API = 'https://astralux-api.herokuapp.com/api/moonlets';
-var LOCAL_URL = 'http://localhost:3000/credentials';
+var LOCAL_URL = 'https://astralux.herokuapp.com/credentials';
 
 var Home = function (_React$Component) {
   _inherits(Home, _React$Component);
