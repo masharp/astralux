@@ -37,7 +37,7 @@ class Cart extends React.Component {
         if (error || body.hasOwnProperty('error')) window.location.href = '/error/455';
         else {
           const content = JSON.parse(body);
-          self.setState({ user: content.user, cart: content.user.cart.cart, credentials });
+          self.setState({ user: content.user, cart: content.user.cart.current, credentials });
         }
       }
 
@@ -133,18 +133,21 @@ class Cart extends React.Component {
     }
     /* finish PUT route options object */
     options.json = { cart: currentCart, balance: currentBalance, cost: currentCost };
+    console.log(options);
 
     function callback(error, response, body) {
-      if (error) console.log(error);
-      if (body.hasOwnProperty('error')) console.log(body); //failureMsgElement2.classList.remove('hidden');
-      const receipt = JSON.parse(body).transaction;
-      console.log(receipt);
+      if (error) window.location.href = '/error/455';
+      else if (body.hasOwnProperty('error')) failureMsgElement2.classList.remove('hidden');
+      else {
+        const receipt = body.transaction;
+        console.log(receipt);
 
-      /* show success message then the receipt after 5 seconds */
-      successMsgElement.classList.remove('hidden');
-      setTimeout(() => {
-        self.setState({ receipt })
-      }, 3000);
+        /* show success message then the receipt after 5 seconds */
+        successMsgElement.classList.remove('hidden');
+        setTimeout(() => {
+          self.setState({ receipt })
+        }, 3000);
+      }
     }
 
     Request.put(options, callback).auth(this.state.credentials.username, this.state.credentials.password, true);

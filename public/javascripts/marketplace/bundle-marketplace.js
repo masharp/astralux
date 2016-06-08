@@ -80197,7 +80197,7 @@ function MarketplaceDisplay(props) {
 
   var classNodes = constructClasses(props.categories.classTypes);
 
-  return React.createElement('div', { id: 'marketplace-display' }, React.createElement('div', { id: 'marketplace-classes' }, classNodes), React.createElement(_MarketplaceSales2.default, { moonlets: props.categories.sales, handleClick: props.handleClick }), React.createElement(_MarketplaceFeatured2.default, { moonlets: props.categories.featured, handleClick: props.handleClick }));
+  return React.createElement('div', { id: 'marketplace-display' }, React.createElement(_MarketplaceSales2.default, { moonlets: props.categories.sales, handleClick: props.handleClick }), React.createElement(_MarketplaceFeatured2.default, { moonlets: props.categories.featured, handleClick: props.handleClick }), React.createElement('div', { id: 'marketplace-classes' }, classNodes));
 }
 
 MarketplaceDisplay.propTypes = {

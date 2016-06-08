@@ -41,9 +41,9 @@ export default function MarketplaceDisplay(props) {
 
   return (
     React.createElement('div', { id: 'marketplace-display' },
-      React.createElement('div', { id: 'marketplace-classes' }, classNodes),
       React.createElement(MarketplaceSales, { moonlets: props.categories.sales, handleClick: props.handleClick }),
-      React.createElement(MarketplaceFeatured, { moonlets: props.categories.featured, handleClick: props.handleClick })
+      React.createElement(MarketplaceFeatured, { moonlets: props.categories.featured, handleClick: props.handleClick }),
+      React.createElement('div', { id: 'marketplace-classes' }, classNodes)
     )
   );
 }

@@ -80150,8 +80150,8 @@ var Home = function (_React$Component) {
 
         function callback(error, response, body) {
           if (error || body.hasOwnProperty('error')) window.location.href = '/error/455';else {
-            var content = JSON.parse(body);
-            self.setState({ moonlets: content.moonlets });
+            var content = JSON.parse(body).moonlets;
+            self.setState({ moonlets: content });
           }
         }
 

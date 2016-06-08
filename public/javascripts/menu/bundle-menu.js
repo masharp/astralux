@@ -80070,7 +80070,7 @@ var Menu = function (_React$Component) {
       });
     }
     /* Function that updates the menu bar with the current user's profile state.
-     * calls itself every 3 seconds and checks if the current stored state has changed.
+     * calls itself every 5 seconds and checks if the current stored state has changed.
      * updates as necessary
      * NOTE: Disabled due to poor performance. Explore other options.
      */
@@ -80085,12 +80085,12 @@ var Menu = function (_React$Component) {
       function queryCallback(error, response, body) {
         if (error || body.hasOwnProperty('error')) window.location.href = '/error/455';else {
           var updatedState = JSON.parse(body).user;
-          var size = updatedState.cart.cart.length; // pull out cart size
+          var size = updatedState.cart.current.length; // pull out cart size
           var balance = updatedState.balance; // pull out user's balance
 
           self.setState({ user: updatedState, balance: balance, size: size });
 
-          //setTimeout(self.beginServerQuery, 10000);
+          setTimeout(self.beginServerQuery, 5000);
         }
       }
       Request.get(url, queryCallback).auth(credentials.username, credentials.password, true);

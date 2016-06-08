@@ -80091,7 +80091,7 @@ var Cart = function (_React$Component) {
         function callback(error, response, body) {
           if (error || body.hasOwnProperty('error')) window.location.href = '/error/455';else {
             var content = JSON.parse(body);
-            self.setState({ user: content.user, cart: content.user.cart.cart, credentials: credentials });
+            self.setState({ user: content.user, cart: content.user.cart.current, credentials: credentials });
           }
         }
 
@@ -80196,18 +80196,21 @@ var Cart = function (_React$Component) {
       }
       /* finish PUT route options object */
       options.json = { cart: currentCart, balance: currentBalance, cost: currentCost };
+      console.log(options);
 
       function callback(error, response, body) {
-        if (error) console.log(error);
-        if (body.hasOwnProperty('error')) console.log(body); //failureMsgElement2.classList.remove('hidden');
-        var receipt = JSON.parse(body).transaction;
-        console.log(receipt);
+        if (error) window.location.href = '/error/455';else if (body.hasOwnProperty('error')) failureMsgElement2.classList.remove('hidden');else {
+          (function () {
+            var receipt = body.transaction;
+            console.log(receipt);
 
-        /* show success message then the receipt after 5 seconds */
-        successMsgElement.classList.remove('hidden');
-        setTimeout(function () {
-          self.setState({ receipt: receipt });
-        }, 3000);
+            /* show success message then the receipt after 5 seconds */
+            successMsgElement.classList.remove('hidden');
+            setTimeout(function () {
+              self.setState({ receipt: receipt });
+            }, 3000);
+          })();
+        }
       }
 
       Request.put(options, callback).auth(this.state.credentials.username, this.state.credentials.password, true);
@@ -80349,7 +80352,7 @@ function CartReceipt(props) {
     return m.item;
   }).join(', ');
 
-  return React.createElement('div', { id: 'cart-receipt' }, React.createElement('h2', { className: 'receipt-header' }, 'Purchase Receipt'), React.createElement('p', { className: 'receipt-id' }, 'Transaction ID:', React.createElement('span', { className: 'receipt-number' }, props.receipt.id)), React.createElement('p', { className: 'receipt-moonlets' }, 'Moonlets: ' + receiptMoonlets), React.createElement('p', { className: 'receipt-cost' }, 'Cost: ', React.createElement('span', { className: 'receipt-cost-point' }, props.receipt.price)), React.createElement('p', { className: 'receipt-date' }, 'Date: ' + props.receipt.timestamp), React.createElement('a', { href: '/dashboard/admin' }, 'View New Moonlets!'));
+  return React.createElement('div', { id: 'cart-receipt' }, React.createElement('h2', { className: 'receipt-header' }, 'Purchase Receipt'), React.createElement('p', { className: 'receipt-id' }, 'Transaction ID:', React.createElement('span', { className: 'receipt-number' }, props.receipt.id)), React.createElement('p', { className: 'receipt-moonlets' }, 'Moonlets: ' + receiptMoonlets), React.createElement('p', { className: 'receipt-cost' }, 'Cost: ', React.createElement('span', { className: 'receipt-cost-point' }, props.receipt.price)), React.createElement('p', { className: 'receipt-date' }, 'Date: ' + props.receipt.timestamp.split(' ')[0]), React.createElement('a', { href: '/dashboard/admin' }, 'View New Moonlets!'));
 }
 
 CartReceipt.propTypes = {

@@ -26,7 +26,6 @@ class Dashboard extends React.Component {
     super(props);
     this.state = { user: null, moonlets: null, credentials: null };
 
-    this.handleButtonClick = this.handleButtonClick.bind(this);
     this.handleTabClick = this.handleTabClick.bind(this);
   }
   componentDidMount() {
@@ -56,8 +55,6 @@ class Dashboard extends React.Component {
       // request info on this user
       Request.get(userURL, userCallback).auth(credentials.username, credentials.password, true);
     });
-  }
-  handleButtonClick() {
   }
   handleTabClick(index, last) {
   }

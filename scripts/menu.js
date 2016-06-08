@@ -29,7 +29,7 @@ class Menu extends React.Component {
     });
   }
   /* Function that updates the menu bar with the current user's profile state.
-   * calls itself every 3 seconds and checks if the current stored state has changed.
+   * calls itself every 5 seconds and checks if the current stored state has changed.
    * updates as necessary
    * NOTE: Disabled due to poor performance. Explore other options.
    */
@@ -42,12 +42,12 @@ class Menu extends React.Component {
       if (error || body.hasOwnProperty('error')) window.location.href = '/error/455';
       else {
         const updatedState = JSON.parse(body).user;
-        const size = updatedState.cart.cart.length; // pull out cart size
+        const size = updatedState.cart.current.length; // pull out cart size
         const balance = updatedState.balance; // pull out user's balance
 
         self.setState({ user: updatedState, balance, size });
 
-        //setTimeout(self.beginServerQuery, 10000);
+        setTimeout(self.beginServerQuery, 5000);
       }
     }
     Request.get(url, queryCallback).auth(credentials.username, credentials.password, true);

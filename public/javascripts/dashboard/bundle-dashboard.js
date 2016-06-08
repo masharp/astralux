@@ -81167,7 +81167,7 @@ function TransactionsPanel(props) {
       var showRefund = h.transaction == 'refund' ? 'hidden' : ''; // if transaction is refundable - show a button to allow
       var date = h.timestamp.split(' ')[0]; // only show the date part of the utc timestamp
       var transactionMoonlets = h.moonlets.map(function (m, i) {
-        return m.id;
+        return m.item;
       });
 
       // components that compose a single transaction
@@ -81314,7 +81314,6 @@ var Dashboard = function (_React$Component) {
 
     _this.state = { user: null, moonlets: null, credentials: null };
 
-    _this.handleButtonClick = _this.handleButtonClick.bind(_this);
     _this.handleTabClick = _this.handleTabClick.bind(_this);
     return _this;
   }
@@ -81349,9 +81348,6 @@ var Dashboard = function (_React$Component) {
         Request.get(userURL, userCallback).auth(credentials.username, credentials.password, true);
       });
     }
-  }, {
-    key: 'handleButtonClick',
-    value: function handleButtonClick() {}
   }, {
     key: 'handleTabClick',
     value: function handleTabClick(index, last) {}

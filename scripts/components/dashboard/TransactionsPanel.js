@@ -29,7 +29,7 @@ export default function TransactionsPanel(props) {
        const price = h.transaction != 'purchase' ? `+ ${h.price}` : `- ${h.price}`; // price adjustment (incr or decr)
        const showRefund = h.transaction == 'refund' ? 'hidden' : ''; // if transaction is refundable - show a button to allow
        const date = h.timestamp.split(' ')[0]; // only show the date part of the utc timestamp
-       const transactionMoonlets = h.moonlets.map((m, i) => m.id);
+       const transactionMoonlets = h.moonlets.map((m, i) => m.item);
 
        // components that compose a single transaction
        return (

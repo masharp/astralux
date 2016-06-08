@@ -80328,7 +80328,7 @@ var Moonlet = function (_React$Component) {
             if (userError || userBody.hasOwnProperty('error')) console.log(userError); //window.location.href = '/error/455';
 
             /* obtain the user's current cart */
-            var currentCart = JSON.parse(userBody).user.cart.cart;
+            var currentCart = JSON.parse(userBody).user.cart.current;
 
             /* construct a new item for the cart from this moonlet */
             var currentItem = {
