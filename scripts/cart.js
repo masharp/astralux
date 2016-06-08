@@ -18,9 +18,7 @@ const ASTRALUX_API = 'https://astralux-api.herokuapp.com/api';
 class Cart extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { user: null, cart: null, credentials: null, receipt: {
-      
-    }};
+    this.state = { user: null, cart: null, credentials: null, receipt: null };
     this.handleItemRemove = this.handleItemRemove.bind(this);
     this.handlePurchase = this.handlePurchase.bind(this);
     this.handleEmptying = this.handleEmptying.bind(this);
@@ -47,12 +45,24 @@ class Cart extends React.Component {
       Request.get(url, callback).auth(credentials.username, credentials.password, true);
     });
   }
+  supressMessages() {
+    const failureMsgElement1 = document.getElementById('purchase-failure1');
+    const failureMsgElement2 = document.getElementById('purchase-failure2');
+    const successMsgElement = document.getElementById('purchase-success');
+
+    successMsgElement.classList.add('hidden');
+    failureMsgElement1.classList.add('hidden');
+    failureMsgElement2.classList.add('hidden');
+  }
   handleItemRemove(event) {
     /* see which item is being removed and pull out current cart */
     const currentCart = this.state.cart;
     const target = Number(event.target.classList[3]);
     const newCart = [];
     const self = this;
+
+    /* surpress purchase warnings if open */
+    self.supressMessages();
 
     for (let x = 0; x < currentCart.length; x++) {
       if (target === currentCart[x].item) continue;
@@ -79,6 +89,9 @@ class Cart extends React.Component {
     const self = this;
     const newCart = [];
 
+    /* surpress purchase warnings if open */
+    self.supressMessages();
+
     /* create object containg PUT request information */
     const options = {
       url: `${this.props.apiURL}/users/cart/${this.props.username}`,
@@ -96,7 +109,8 @@ class Cart extends React.Component {
   }
   handlePurchase(event) {
     const successMsgElement = document.getElementById('purchase-success');
-    const failureMsgElement = document.getElementById('purchase-failure');
+    const failureMsgElement1 = document.getElementById('purchase-failure1');
+    const failureMsgElement2 = document.getElementById('purchase-failure2');
     const localURL = this.props.localURL;
     const url = `${this.props.apiURL}/users/purchase/${this.props.username}`;
     const self = this;
@@ -110,14 +124,19 @@ class Cart extends React.Component {
     const currentCost = currentCart.map((i) => i.amount * i.price).reduce((a, b) => a + b, 0);
 
     /* surpress purchase warnings if open */
-    successMsgElement.classList.add('hidden');
-    failureMsgElement.classList.add('hidden');
+    self.supressMessages();
 
+    // check if user has available balance */
+    if (currentBalance < currentCost) {
+      failureMsgElement1.classList.remove('hidden');
+      return;
+    }
     /* finish PUT route options object */
     options.json = { cart: currentCart, balance: currentBalance, cost: currentCost };
 
     function callback(error, response, body) {
-      if (error || body.hasOwnProperty('error')) console.log(error); //window.location.href = '/error/455';
+      if (error) console.log(error);
+      if (body.hasOwnProperty('error')) console.log(body); //failureMsgElement2.classList.remove('hidden');
       const receipt = JSON.parse(body).transaction;
       console.log(receipt);
 
@@ -125,7 +144,7 @@ class Cart extends React.Component {
       successMsgElement.classList.remove('hidden');
       setTimeout(() => {
         self.setState({ receipt })
-      }, 5000);
+      }, 3000);
     }
 
     Request.put(options, callback).auth(this.state.credentials.username, this.state.credentials.password, true);
@@ -136,7 +155,8 @@ class Cart extends React.Component {
       return (
         React.createElement('div', { id: 'cart-component' },
           React.createElement('h3', { id: 'purchase-success', className: 'hidden' }, 'Purchase successful! Moonlets added to your inventory!'),
-          React.createElement('h3', { id: 'purchase-failure', className: 'hidden' }, 'You do not have enough credits!'),
+          React.createElement('h3', { id: 'purchase-failure1', className: 'hidden' }, 'You do not have enough credits!'),
+          React.createElement('h3', { id: 'purchase-failure2', className: 'hidden' }, 'Purchase invalid. Please reload this page.'),
           React.createElement(CartList, { cart: this.state.cart, handleItemRemove: this.handleItemRemove }),
           // div for page buttons
           React.createElement('div', { id: 'cart-buttons' },
@@ -152,8 +172,10 @@ class Cart extends React.Component {
     /* if there is a post-transaction receipt, render the component with the receipt */
     if (this.state.receipt !== null) {
       return (
-        React.createElement(CartReceipt, { receipt: this.state.receipt }),
-        React.createElement(PageFooter, null)
+        React.createElement('div', { id: 'receipt-component' },
+          React.createElement(CartReceipt, { receipt: this.state.receipt }),
+          React.createElement(PageFooter, null)
+        )
       );
     }
     return (React.createElement(LoadingOverlay, null));

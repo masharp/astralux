@@ -80069,7 +80069,7 @@ var Cart = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Cart).call(this, props));
 
-    _this.state = { user: null, cart: null, credentials: null, receipt: {} };
+    _this.state = { user: null, cart: null, credentials: null, receipt: null };
     _this.handleItemRemove = _this.handleItemRemove.bind(_this);
     _this.handlePurchase = _this.handlePurchase.bind(_this);
     _this.handleEmptying = _this.handleEmptying.bind(_this);
@@ -80100,6 +80100,17 @@ var Cart = function (_React$Component) {
       });
     }
   }, {
+    key: 'supressMessages',
+    value: function supressMessages() {
+      var failureMsgElement1 = document.getElementById('purchase-failure1');
+      var failureMsgElement2 = document.getElementById('purchase-failure2');
+      var successMsgElement = document.getElementById('purchase-success');
+
+      successMsgElement.classList.add('hidden');
+      failureMsgElement1.classList.add('hidden');
+      failureMsgElement2.classList.add('hidden');
+    }
+  }, {
     key: 'handleItemRemove',
     value: function handleItemRemove(event) {
       /* see which item is being removed and pull out current cart */
@@ -80107,6 +80118,9 @@ var Cart = function (_React$Component) {
       var target = Number(event.target.classList[3]);
       var newCart = [];
       var self = this;
+
+      /* surpress purchase warnings if open */
+      self.supressMessages();
 
       for (var x = 0; x < currentCart.length; x++) {
         if (target === currentCart[x].item) continue;else newCart.push(currentCart[x]);
@@ -80133,6 +80147,9 @@ var Cart = function (_React$Component) {
       var self = this;
       var newCart = [];
 
+      /* surpress purchase warnings if open */
+      self.supressMessages();
+
       /* create object containg PUT request information */
       var options = {
         url: this.props.apiURL + '/users/cart/' + this.props.username,
@@ -80151,7 +80168,8 @@ var Cart = function (_React$Component) {
     key: 'handlePurchase',
     value: function handlePurchase(event) {
       var successMsgElement = document.getElementById('purchase-success');
-      var failureMsgElement = document.getElementById('purchase-failure');
+      var failureMsgElement1 = document.getElementById('purchase-failure1');
+      var failureMsgElement2 = document.getElementById('purchase-failure2');
       var localURL = this.props.localURL;
       var url = this.props.apiURL + '/users/purchase/' + this.props.username;
       var self = this;
@@ -80169,14 +80187,19 @@ var Cart = function (_React$Component) {
       }, 0);
 
       /* surpress purchase warnings if open */
-      successMsgElement.classList.add('hidden');
-      failureMsgElement.classList.add('hidden');
+      self.supressMessages();
 
+      // check if user has available balance */
+      if (currentBalance < currentCost) {
+        failureMsgElement1.classList.remove('hidden');
+        return;
+      }
       /* finish PUT route options object */
       options.json = { cart: currentCart, balance: currentBalance, cost: currentCost };
 
       function callback(error, response, body) {
-        if (error || body.hasOwnProperty('error')) console.log(error); //window.location.href = '/error/455';
+        if (error) console.log(error);
+        if (body.hasOwnProperty('error')) console.log(body); //failureMsgElement2.classList.remove('hidden');
         var receipt = JSON.parse(body).transaction;
         console.log(receipt);
 
@@ -80184,7 +80207,7 @@ var Cart = function (_React$Component) {
         successMsgElement.classList.remove('hidden');
         setTimeout(function () {
           self.setState({ receipt: receipt });
-        }, 5000);
+        }, 3000);
       }
 
       Request.put(options, callback).auth(this.state.credentials.username, this.state.credentials.password, true);
@@ -80194,7 +80217,7 @@ var Cart = function (_React$Component) {
     value: function render() {
       /* render the user's current cart */
       if (this.state.user !== null && this.state.receipt === null) {
-        return React.createElement('div', { id: 'cart-component' }, React.createElement('h3', { id: 'purchase-success', className: 'hidden' }, 'Purchase successful! Moonlets added to your inventory!'), React.createElement('h3', { id: 'purchase-failure', className: 'hidden' }, 'You do not have enough credits!'), React.createElement(_CartList2.default, { cart: this.state.cart, handleItemRemove: this.handleItemRemove }),
+        return React.createElement('div', { id: 'cart-component' }, React.createElement('h3', { id: 'purchase-success', className: 'hidden' }, 'Purchase successful! Moonlets added to your inventory!'), React.createElement('h3', { id: 'purchase-failure1', className: 'hidden' }, 'You do not have enough credits!'), React.createElement('h3', { id: 'purchase-failure2', className: 'hidden' }, 'Purchase invalid. Please reload this page.'), React.createElement(_CartList2.default, { cart: this.state.cart, handleItemRemove: this.handleItemRemove }),
         // div for page buttons
         React.createElement('div', { id: 'cart-buttons' }, React.createElement('input', { type: 'button', className: 'cart-empty-btn',
           value: 'Empty Cart', onClick: this.handleEmptying }), React.createElement('input', { type: 'button', className: 'cart-purchase-btn',
@@ -80202,7 +80225,7 @@ var Cart = function (_React$Component) {
       }
       /* if there is a post-transaction receipt, render the component with the receipt */
       if (this.state.receipt !== null) {
-        return React.createElement(_CartReceipt2.default, { receipt: this.state.receipt }), React.createElement(_PageFooter2.default, null);
+        return React.createElement('div', { id: 'receipt-component' }, React.createElement(_CartReceipt2.default, { receipt: this.state.receipt }), React.createElement(_PageFooter2.default, null));
       }
       return React.createElement(_LoadingOverlay2.default, null);
     }
@@ -80320,32 +80343,13 @@ exports.default = CartReceipt;
 var React = require('react');
 
 function CartReceipt(props) {
-  /**
-   * Function that takes the user's cart object and constructs a React node for
-   * each item in the cart and the total cart cost
-   * @param {object} cart - object containing user's current cart
-   * @return {object} - array of react components and total cost of cart items
-   */
-  function constructItems(cart) {
-    var currentCart = cart;
-    var cartCost = 0;
-
-    var items = currentCart.map(function (c, i) {
-      var currentCost = c.amount * c.price;
-      cartCost += currentCost; // track the total cost of what's in the cart
-
-      // components that compose a single transaction
-      return React.createElement('tr', { className: 'cart-item', key: 'cart-item-' + i }, React.createElement('td', { className: 'cart-item-moonlet' }, React.createElement('a', { className: 'cart-moonlet-a',
-        href: '/moonlet/' + c.item, target: '_blank' }, c.item)), React.createElement('td', { className: 'cart-item-price' }, c.price + ' C'), React.createElement('td', { className: 'cart-item-amount' }, c.amount), React.createElement('td', { className: 'cart-item-cost' }, currentCost), React.createElement('td', { className: 'cart-item-remove' }, React.createElement('i', { className: 'remove-btn fa fa-times ' + c.item, onClick: props.handleItemRemove })));
-    });
-
-    return { items: items, cost: cartCost };
-  }
 
   /* contruct each row of transaction history via table rows */
-  var cartNodes = constructItems(props.cart);
+  var receiptMoonlets = props.receipt.moonlets.map(function (m) {
+    return m.item;
+  }).join(', ');
 
-  return React.createElement('div', { id: 'cart-receipt' });
+  return React.createElement('div', { id: 'cart-receipt' }, React.createElement('h2', { className: 'receipt-header' }, 'Purchase Receipt'), React.createElement('p', { className: 'receipt-id' }, 'Transaction ID:', React.createElement('span', { className: 'receipt-number' }, props.receipt.id)), React.createElement('p', { className: 'receipt-moonlets' }, 'Moonlets: ' + receiptMoonlets), React.createElement('p', { className: 'receipt-cost' }, 'Cost: ', React.createElement('span', { className: 'receipt-cost-point' }, props.receipt.price)), React.createElement('p', { className: 'receipt-date' }, 'Date: ' + props.receipt.timestamp), React.createElement('a', { href: '/dashboard/admin' }, 'View New Moonlets!'));
 }
 
 CartReceipt.propTypes = {

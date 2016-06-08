@@ -30,7 +30,9 @@ class Menu extends React.Component {
   }
   /* Function that updates the menu bar with the current user's profile state.
    * calls itself every 3 seconds and checks if the current stored state has changed.
-   * updates as necessary */
+   * updates as necessary
+   * NOTE: Disabled due to poor performance. Explore other options.
+   */
   beginServerQuery() {
     const credentials = this.state.credentials;
     const url = `${this.props.apiURL}/admin`;
@@ -40,18 +42,12 @@ class Menu extends React.Component {
       if (error || body.hasOwnProperty('error')) window.location.href = '/error/455';
       else {
         const updatedState = JSON.parse(body).user;
-        // turn json into quicky/dirty strings in order to compare equality (must be the same order)
-        const updatedStateStr = JSON.stringify(updatedState)
-        const currentStateStr = JSON.stringify(self.state.user);
+        const size = updatedState.cart.cart.length; // pull out cart size
+        const balance = updatedState.balance; // pull out user's balance
 
-        if (updatedStateStr !== currentStateStr) {
-          const size = updatedState.cart.cart.length; // pull out cart size
-          const balance = updatedState.balance; // pull out user's balance
+        self.setState({ user: updatedState, balance, size });
 
-          self.setState({ user: updatedState, balance, size });
-        }
-
-        setTimeout(self.beginServerQuery, 5000);
+        //setTimeout(self.beginServerQuery, 10000);
       }
     }
     Request.get(url, queryCallback).auth(credentials.username, credentials.password, true);

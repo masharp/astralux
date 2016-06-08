@@ -190,13 +190,14 @@ header {
   }
 }
 #cart {
-  #cart-component {
+  #cart-component, #receipt-component {
     margin-top: 9em;
     padding-left: 3em;
     text-align: center;
-
+  }
+  #cart-component {
     #purchase-success { color: $link-color; }
-    #purchase-failure { color: red; }
+    #purchase-failure1, #purchase-failure2 { color: red; }
     #cart-list {
       text-align: left;
 
@@ -244,15 +245,24 @@ header {
         &:hover { background-color: darken($font-color, 20) !important; }
       }
     }
+  }
+  #receipt-component {
     #cart-receipt {
-      
+      font-size: 1.2em;
+
+      .receipt-number { color: black; }
+      .receipt-cost-point { color: $quadrary-color; }
+      a {
+        color: $link-color;
+        &:hover { color: lighten($link-color, 15); }
+      }
     }
-    .page-footer {
-      position: absolute;
-      bottom: 0;
-      width: 100%;
-      height: 3em;
-    }
+  }
+  .page-footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 3em;
   }
 }
 #about {
