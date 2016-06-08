@@ -14,7 +14,7 @@ const ReactDOM = require('react-dom');
 const Request = require('request');
 
 const ASTRALUX_API = 'https://astralux-api.herokuapp.com/api/moonlets';
-const LOCAL_URL = 'http://localhost:3000/credentials';
+const LOCAL_URL = 'https://astralux.herokuapp.com/credentials';
 
 class Marketplace extends React.Component {
   constructor(props) {
@@ -45,7 +45,7 @@ class Marketplace extends React.Component {
           const classTypes = self.buildTypes(result.moonlets); // seperate moonlets by classification
           const categories = { sales, featured, classTypes }
 
-          self.setState({ moonlets: result.moonlets, categories });  
+          self.setState({ moonlets: result.moonlets, categories });
         }
       }
 

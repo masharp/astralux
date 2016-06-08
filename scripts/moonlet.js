@@ -8,7 +8,7 @@ const React = require('react');
 const ReactDOM = require('react-dom');
 const Request = require('request');
 
-const LOCAL_URL = 'http://localhost:3000/credentials';
+const LOCAL_URL = 'https://astralux.herokuapp.com/credentials';
 const ASTRALUX_API = 'https://astralux-api.herokuapp.com/api';
 
 // server side variables sent with render

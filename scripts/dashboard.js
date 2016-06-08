@@ -16,7 +16,7 @@ const TabList = ReactTabs.TabList;
 const TabPanel = ReactTabs.TabPanel;
 
 const ASTRALUX_API = 'https://astralux-api.herokuapp.com/api';
-const LOCAL_URL = 'http://localhost:3000/credentials';
+const LOCAL_URL = 'https://astralux.herokuapp.com/credentials';
 
 // server side variables sent with render
 const currentUser = username;

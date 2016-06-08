@@ -12,7 +12,7 @@ const Request = require('request');
 // server side variables sent with render
 const currentUser = username;
 
-const LOCAL_URL = 'http://localhost:3000/credentials';
+const LOCAL_URL = 'https://astralux.herokuapp.com/credentials';
 const ASTRALUX_API = 'https://astralux-api.herokuapp.com/api';
 
 class Cart extends React.Component {
