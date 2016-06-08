@@ -32,20 +32,21 @@ class Marketplace extends React.Component {
 
     // query local server for API credentials
     Request.get(localURL, (error, response, body) => {
-      if (error) window.location.href = '/error/455';
+      if (error || body.hasOwnProperty('error')) window.location.href = '/error/455';
       const credentials = JSON.parse(body);
 
       function callback(error, response, body) {
-        if (error || JSON.parse(body).hasOwnProperty('error')) window.location.href = '/error/455';
+        if (error || body.hasOwnProperty('error')) window.location.href = '/error/455';
+        else {
+          const result = JSON.parse(body);
 
-        const result = JSON.parse(body);
+          const featured = self.buildFeatured(result.moonlets); // extract the featured moonlets
+          const sales = self.buildSales(result.moonlets); // extract the moonlets on sale
+          const classTypes = self.buildTypes(result.moonlets); // seperate moonlets by classification
+          const categories = { sales, featured, classTypes }
 
-        const featured = self.buildFeatured(result.moonlets); // extract the featured moonlets
-        const sales = self.buildSales(result.moonlets); // extract the moonlets on sale
-        const classTypes = self.buildTypes(result.moonlets); // seperate moonlets by classification
-        const categories = { sales, featured, classTypes }
-
-        self.setState({ moonlets: result.moonlets, categories });
+          self.setState({ moonlets: result.moonlets, categories });  
+        }
       }
 
       Request.get(url, callback).auth(credentials.username, credentials.password, true);

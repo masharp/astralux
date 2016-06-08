@@ -80233,6 +80233,7 @@ var ASTRALUX_API = 'https://astralux-api.herokuapp.com/api';
 
 // server side variables sent with render
 var moonletTag = Number(moonletID);
+var currentUser = username;
 
 var Moonlet = function (_React$Component) {
   _inherits(Moonlet, _React$Component);
@@ -80251,35 +80252,36 @@ var Moonlet = function (_React$Component) {
   _createClass(Moonlet, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
-      var _this2 = this;
-
       var localURL = this.props.localURL;
       var url = this.props.apiURL + '/moonlets/' + this.props.moonletID;
       var self = this;
 
       // query local server for API credentials
       Request.get(localURL, function (error, response, body) {
-        if (error) window.location.href = '/error/455';
-        var credentials = JSON.parse(body);
-        _this2.setState({ credentials: credentials });
+        if (error || body.hasOwnProperty('error')) window.location.href = '/error/455';else {
+          (function () {
+            var callback = function callback(error, response, body) {
+              if (error || body.hasOwnProperty('error')) window.location.href = '/error/455';else {
+                var result = JSON.parse(body);
+                // add the featured class property in order to control display
+                result.moonlet['featured_class'] = 'hidden';
 
-        function callback(error, response, body) {
-          if (error || JSON.parse(body).hasOwnProperty('error')) window.location.href = '/error/455';
+                // if the item is on sale - calculate the new price based on the discount percentage
+                if (result.moonlet.sale) result.moonlet.price = result.moonlet.price * (1 - 1 / result.moonlet.discount);
+                // if the item is featured - show the featured message
+                if (result.moonlet.featured) result.moonlet.featured_class = '';
 
-          var result = JSON.parse(body);
-          // add the featured class property in order to control display
-          result.moonlet['featured_class'] = 'hidden';
+                self.setState({ moonlet: result.moonlet, credentials: credentials });
+              }
+            };
+            // request data from API
 
-          // if the item is on sale - calculate the new price based on the discount percentage
-          if (result.moonlet.sale) result.moonlet.price = result.moonlet.price * (1 - 1 / result.moonlet.discount);
-          // if the item is featured - show the featured message
-          if (result.moonlet.featured) result.moonlet.featured_class = '';
 
-          self.setState({ moonlet: result.moonlet });
+            var credentials = JSON.parse(body);
+
+            Request.get(url, callback).auth(credentials.username, credentials.password, true);
+          })();
         }
-
-        // request data from API
-        Request.get(url, callback).auth(credentials.username, credentials.password, true);
       });
     }
   }, {
@@ -80299,13 +80301,74 @@ var Moonlet = function (_React$Component) {
   }, {
     key: 'handleCartClick',
     value: function handleCartClick(event) {
-      console.log(this.state.cost);
+      var successMsgElement = document.getElementById('cart-success-msg');
+      var cartURL = this.props.apiURL + '/users/cart/' + this.props.username;
+      var userURL = this.props.apiURL + '/users/' + this.props.username;
+      var self = this;
+      var options = { url: cartURL, method: 'PUT', json: {} };
+
+      /* hide cart success message if open */
+      successMsgElement.classList.add('hidden');
+
+      /* check if there is anything to add to cart */
+      if (self.state.amount > 0) {
+        (function () {
+
+          /* callback for the cart update PUT request */
+
+          var cartCallback = function cartCallback(cartError, cartResponse, cartBody) {
+            if (cartError || cartBody.hasOwnProperty('error')) console.log(cartError); //window.location.href = '/error/455';
+            else successMsgElement.classList.remove('hidden');
+          };
+
+          /* callback for the user's GET request */
+
+
+          var userCallback = function userCallback(userError, userResponse, userBody) {
+            if (userError || userBody.hasOwnProperty('error')) console.log(userError); //window.location.href = '/error/455';
+
+            /* obtain the user's current cart */
+            var currentCart = JSON.parse(userBody).user.cart.cart;
+
+            /* construct a new item for the cart from this moonlet */
+            var currentItem = {
+              item: self.state.moonlet.id,
+              amount: self.state.amount,
+              price: self.state.moonlet.price
+            };
+
+            /* check if moonlet is already in cart, if so add current amount to the cart */
+            var found = false;
+            for (var x = 0; x < currentCart.length; x++) {
+              if (Number(currentCart[x].item) === currentItem.item && currentCart[x].price === currentItem.price) {
+                currentCart[x].amount += currentItem.amount;
+                found = true;
+                break;
+              }
+            }
+
+            /* if moonlet not currently in the cart, add it */
+            if (!found) currentCart.push(currentItem);
+
+            /* update the PUT request options with cart JSON */
+            options.json = { cart: currentCart };
+
+            /* request a PUT to the current's users cart and update with current addition */
+            Request.put(options, cartCallback).auth(self.state.credentials.username, self.state.credentials.password, true);
+          };
+
+          // request the current user's cart
+
+
+          Request.get(userURL, userCallback).auth(self.state.credentials.username, self.state.credentials.password, true);
+        })();
+      }
     }
   }, {
     key: 'render',
     value: function render() {
       if (this.state.moonlet !== null) {
-        return React.createElement('div', { id: 'moonlet-component' }, React.createElement('div', { id: 'moonlet-header' }, React.createElement('h1', { className: 'moonlet-header-name' }, this.state.moonlet.display_name), React.createElement('img', { className: 'moonlet-header-img', src: this.state.moonlet.img_src }), React.createElement('h2', { className: 'moonlet-header-price' }, React.createElement('span', { className: 'moonlet-header-pricepoint' }, this.state.moonlet.price), ' Credits'), React.createElement('h3', { className: 'moonlet-header-featured ' + this.state.moonlet.featured_class }, 'SPECIAL!')), React.createElement('div', { id: 'moonlet-info' }, React.createElement('h2', { className: 'moonlet-info-type' }, 'Classification: ', React.createElement('span', { className: 'moonlet-type-class' }, this.state.moonlet.classification)), React.createElement('p', { className: 'moonlet-info-desc' }, this.state.moonlet.description), React.createElement('p', { className: 'moonlet-info-color' }, 'Color: ', React.createElement('span', { className: 'moonlet-color-point', style: { color: this.state.moonlet.color } }, this.state.moonlet.color)), React.createElement('p', { className: 'moonlet-info-inventory' }, 'Astralux Inventory: ', React.createElement('span', { className: 'moonlet-inventory-point' }, this.state.moonlet.inventory)), React.createElement('div', { id: 'moonlet-purchase' }, React.createElement('div', { id: 'moonlet-amount' }, React.createElement('a', { className: 'amount-decrement', onClick: this.handleAmountClick }, '-'), React.createElement('label', { className: 'amount-label' }, this.state.amount), React.createElement('a', { className: 'amount-increment', onClick: this.handleAmountClick }, '+')), React.createElement('p', { className: 'moonlet-amount-cost' }, 'Cost: ', React.createElement('span', { className: 'moonlet-cost-point' }, this.state.cost)), React.createElement('input', { type: 'button', className: 'moonlet-purchase-btn',
+        return React.createElement('div', { id: 'moonlet-component' }, React.createElement('h3', { id: 'cart-success-msg', className: 'hidden' }, 'Item(s) added to cart successfully!'), React.createElement('div', { id: 'moonlet-header' }, React.createElement('h1', { className: 'moonlet-header-name' }, this.state.moonlet.display_name), React.createElement('img', { className: 'moonlet-header-img', src: this.state.moonlet.img_src }), React.createElement('h2', { className: 'moonlet-header-price' }, React.createElement('span', { className: 'moonlet-header-pricepoint' }, this.state.moonlet.price), ' Credits'), React.createElement('h3', { className: 'moonlet-header-featured ' + this.state.moonlet.featured_class }, 'SPECIAL!')), React.createElement('div', { id: 'moonlet-info' }, React.createElement('h2', { className: 'moonlet-info-type' }, 'Classification: ', React.createElement('span', { className: 'moonlet-type-class' }, this.state.moonlet.classification)), React.createElement('p', { className: 'moonlet-info-desc' }, this.state.moonlet.description), React.createElement('p', { className: 'moonlet-info-color' }, 'Color: ', React.createElement('span', { className: 'moonlet-color-point', style: { color: this.state.moonlet.color } }, this.state.moonlet.color)), React.createElement('p', { className: 'moonlet-info-inventory' }, 'Astralux Inventory: ', React.createElement('span', { className: 'moonlet-inventory-point' }, this.state.moonlet.inventory)), React.createElement('div', { id: 'moonlet-purchase' }, React.createElement('div', { id: 'moonlet-amount' }, React.createElement('a', { className: 'amount-decrement', onClick: this.handleAmountClick }, '-'), React.createElement('label', { className: 'amount-label' }, this.state.amount), React.createElement('a', { className: 'amount-increment', onClick: this.handleAmountClick }, '+')), React.createElement('p', { className: 'moonlet-amount-cost' }, 'Cost: ', React.createElement('span', { className: 'moonlet-cost-point' }, this.state.cost)), React.createElement('input', { type: 'button', className: 'moonlet-purchase-btn',
           value: 'Add to Cart', onClick: this.handleCartClick }))), React.createElement(_SimilarMoonlets2.default, { apiURL: this.props.apiURL, apiCredentials: this.state.credentials,
           moonletType: this.state.moonlet.classification, moonletID: this.props.moonletID }), React.createElement(_PageFooter2.default, null));
       }
@@ -80319,12 +80382,13 @@ var Moonlet = function (_React$Component) {
 Moonlet.propTypes = {
   apiURL: React.PropTypes.string.isRequired,
   localURL: React.PropTypes.string.isRequired,
-  moonletID: React.PropTypes.number.isRequired
+  moonletID: React.PropTypes.number.isRequired,
+  username: React.PropTypes.string
 };
 
 // front end global error handler -> redirect to error page for now
 // window.onerror = () => window.location.href = '/error/455';
 
-ReactDOM.render(React.createElement(Moonlet, { apiURL: ASTRALUX_API, localURL: LOCAL_URL, moonletID: moonletTag }), document.getElementById('moonlet'));
+ReactDOM.render(React.createElement(Moonlet, { apiURL: ASTRALUX_API, localURL: LOCAL_URL, moonletID: moonletTag, username: currentUser }), document.getElementById('moonlet'));
 
 },{"./components/LoadingOverlay":443,"./components/PageFooter":445,"./components/moonlet/SimilarMoonlets":446,"react":367,"react-dom":238,"request":378}]},{},[447]);

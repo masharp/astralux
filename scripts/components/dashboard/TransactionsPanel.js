@@ -68,7 +68,7 @@ export default function TransactionsPanel(props) {
           json: { transaction }
         };
         function refundCallback(error, response, body) {
-          if (error || body.error) {
+          if (error || body.hasOwnProperty('error')) {
             error = body.error ? body.error : error;
             reject(error);
           }
@@ -110,7 +110,7 @@ export default function TransactionsPanel(props) {
          refundSuccess.classList.remove('hidden');
          refundSpinner.classList.add('hidden');
 
-       }).catch((error) => { window.location.href = '/error' });
+       }).catch((error) => { window.location.href = '/error/455'; });
      }
    }
 

@@ -1,6 +1,6 @@
 /* This is a module that contains a stateless react component, which constructs
  * the user's inventory of moonlets for use in the profile panel of the dashboard */
- 
+
 'use strict';
 import MoonletItem from '../../components/MoonletItem';
 
@@ -28,7 +28,7 @@ export default function ProfileInventory(props) {
       for (let x in userMoonlets) {
         for (let y = 0; y < allMoonlets.length; y++) {
           // match the current moonlet id to the URI (which includes the id at the end)
-          if (allMoonlets[y].id === Number(x)) {
+          if (Number(allMoonlets[y].id) === Number(x)) {
             let moonlet = allMoonlets[y];
             moonlet.inventory = userMoonlets[x]; // edit the moonlet object's inventory to reflect the user's inventory
 

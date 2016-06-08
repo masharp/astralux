@@ -13,6 +13,7 @@ const ASTRALUX_API = 'https://astralux-api.herokuapp.com/api';
 
 // server side variables sent with render
 const moonletTag = Number(moonletID);
+const currentUser = username;
 
 class Moonlet extends React.Component {
   constructor(props) {
@@ -28,27 +29,28 @@ class Moonlet extends React.Component {
 
     // query local server for API credentials
     Request.get(localURL, (error, response, body) => {
-      if (error) window.location.href = '/error/455';
-      const credentials = JSON.parse(body);
-      this.setState({ credentials });
+      if (error || body.hasOwnProperty('error')) window.location.href = '/error/455';
+      else {
+        const credentials = JSON.parse(body);
 
-      function callback(error, response, body) {
-        if (error || JSON.parse(body).hasOwnProperty('error')) window.location.href = '/error/455';
+        function callback(error, response, body) {
+          if (error || body.hasOwnProperty('error')) window.location.href = '/error/455';
+          else {
+            const result = JSON.parse(body);
+            // add the featured class property in order to control display
+            result.moonlet['featured_class'] = 'hidden';
 
-        const result = JSON.parse(body);
-        // add the featured class property in order to control display
-        result.moonlet['featured_class'] = 'hidden';
+            // if the item is on sale - calculate the new price based on the discount percentage
+            if (result.moonlet.sale) result.moonlet.price = result.moonlet.price * (1 - (1 / result.moonlet.discount));
+            // if the item is featured - show the featured message
+            if (result.moonlet.featured) result.moonlet.featured_class = '';
 
-        // if the item is on sale - calculate the new price based on the discount percentage
-        if (result.moonlet.sale) result.moonlet.price = result.moonlet.price * (1 - (1 / result.moonlet.discount));
-        // if the item is featured - show the featured message
-        if (result.moonlet.featured) result.moonlet.featured_class = '';
-
-        self.setState({ moonlet: result.moonlet });
+            self.setState({ moonlet: result.moonlet, credentials });
+          }
+        }
+        // request data from API
+        Request.get(url, callback).auth(credentials.username, credentials.password, true);
       }
-
-      // request data from API
-      Request.get(url, callback).auth(credentials.username, credentials.password, true);
     });
   }
   handleAmountClick(event) {
@@ -64,13 +66,67 @@ class Moonlet extends React.Component {
     this.setState({ amount: amountState, cost });
   }
   handleCartClick(event) {
-    console.log(this.state.cost);
+    const successMsgElement = document.getElementById('cart-success-msg');
+    const cartURL = `${this.props.apiURL}/users/cart/${this.props.username}`;
+    const userURL = `${this.props.apiURL}/users/${this.props.username}`;
+    const self = this;
+    const options = { url: cartURL, method: 'PUT', json: { }, };
 
+    /* hide cart success message if open */
+    successMsgElement.classList.add('hidden');
+
+    /* check if there is anything to add to cart */
+    if (self.state.amount > 0) {
+
+      /* callback for the cart update PUT request */
+      function cartCallback(cartError, cartResponse, cartBody) {
+        if (cartError || cartBody.hasOwnProperty('error')) console.log(cartError);//window.location.href = '/error/455';
+        else successMsgElement.classList.remove('hidden');
+      }
+
+      /* callback for the user's GET request */
+      function userCallback(userError, userResponse, userBody) {
+        if (userError || userBody.hasOwnProperty('error')) console.log(userError);//window.location.href = '/error/455';
+
+        /* obtain the user's current cart */
+        const currentCart = JSON.parse(userBody).user.cart.cart;
+
+        /* construct a new item for the cart from this moonlet */
+        const currentItem = {
+          item: self.state.moonlet.id,
+          amount: self.state.amount,
+          price: self.state.moonlet.price,
+        };
+
+        /* check if moonlet is already in cart, if so add current amount to the cart */
+        let found = false;
+        for (let x = 0; x < currentCart.length; x++) {
+          if (Number(currentCart[x].item) === currentItem.item && currentCart[x].price === currentItem.price) {
+            currentCart[x].amount += currentItem.amount;
+            found = true;
+            break;
+          }
+        }
+
+        /* if moonlet not currently in the cart, add it */
+        if (!found) currentCart.push(currentItem);
+
+        /* update the PUT request options with cart JSON */
+        options.json = { cart: currentCart };
+
+        /* request a PUT to the current's users cart and update with current addition */
+        Request.put(options, cartCallback).auth(self.state.credentials.username, self.state.credentials.password, true);
+      }
+
+      // request the current user's cart
+      Request.get(userURL, userCallback).auth(self.state.credentials.username, self.state.credentials.password, true);
+    }
   }
   render() {
     if (this.state.moonlet !== null) {
       return (
         React.createElement('div', { id: 'moonlet-component' },
+          React.createElement('h3', { id: 'cart-success-msg', className: 'hidden' }, 'Item(s) added to cart successfully!'),
           React.createElement('div', { id: 'moonlet-header' },
             React.createElement('h1', { className: 'moonlet-header-name' }, this.state.moonlet.display_name),
             React.createElement('img', { className: 'moonlet-header-img', src: this.state.moonlet.img_src }),
@@ -120,10 +176,11 @@ Moonlet.propTypes = {
   apiURL: React.PropTypes.string.isRequired,
   localURL: React.PropTypes.string.isRequired,
   moonletID: React.PropTypes.number.isRequired,
+  username: React.PropTypes.string,
 };
 
 // front end global error handler -> redirect to error page for now
 // window.onerror = () => window.location.href = '/error/455';
 
-ReactDOM.render(React.createElement(Moonlet, { apiURL: ASTRALUX_API, localURL: LOCAL_URL, moonletID: moonletTag }),
+ReactDOM.render(React.createElement(Moonlet, { apiURL: ASTRALUX_API, localURL: LOCAL_URL, moonletID: moonletTag, username: currentUser }),
   document.getElementById('moonlet'));

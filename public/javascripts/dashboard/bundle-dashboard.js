@@ -80863,7 +80863,7 @@ function ProfileInventory(props) {
       for (var x in userMoonlets) {
         for (var y = 0; y < allMoonlets.length; y++) {
           // match the current moonlet id to the URI (which includes the id at the end)
-          if (allMoonlets[y].id === Number(x)) {
+          if (Number(allMoonlets[y].id) === Number(x)) {
             var moonlet = allMoonlets[y];
             moonlet.inventory = userMoonlets[x]; // edit the moonlet object's inventory to reflect the user's inventory
 
@@ -81000,7 +81000,7 @@ function SettingsPanel(props) {
         json: { email: email }
       };
       function updateCallback(error, response, body) {
-        if (error || body.error) {
+        if (error || body.hasOwnProperty('error')) {
           error = body.error ? body.error : error;
           reject(error);
         }
@@ -81025,7 +81025,7 @@ function SettingsPanel(props) {
       var call = url + '/users/' + username;
 
       function deleteCallback(error, response, body) {
-        if (error || body.error) {
+        if (error || body.hasOwnProperty('error')) {
           error = body.error ? body.error : error;
           reject(error);
         }
@@ -81080,7 +81080,7 @@ function SettingsPanel(props) {
             document.getElementById('email-selector').innerHTML = emailOneVal;
           }
         }).catch(function (error) {
-          window.location.href = '/error';
+          window.location.href = '/error/455';
         });
 
         break;
@@ -81096,7 +81096,7 @@ function SettingsPanel(props) {
               window.location.href = '/';
             }
           }).catch(function (error) {
-            window.location.href = '/error';
+            window.location.href = '/error/455';
           });
         }
         break;
@@ -81198,7 +81198,7 @@ function TransactionsPanel(props) {
         json: { transaction: transaction }
       };
       function refundCallback(error, response, body) {
-        if (error || body.error) {
+        if (error || body.hasOwnProperty('error')) {
           error = body.error ? body.error : error;
           reject(error);
         }
@@ -81240,7 +81240,7 @@ function TransactionsPanel(props) {
         refundSuccess.classList.remove('hidden');
         refundSpinner.classList.add('hidden');
       }).catch(function (error) {
-        window.location.href = '/error';
+        window.location.href = '/error/455';
       });
     }
   }
@@ -81322,8 +81322,6 @@ var Dashboard = function (_React$Component) {
   _createClass(Dashboard, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
-      var _this2 = this;
-
       var userURL = this.props.apiURL + '/users/' + this.props.username;
       var localURL = this.props.localURL;
       var moonletsURL = this.props.apiURL + '/moonlets';
@@ -81331,20 +81329,18 @@ var Dashboard = function (_React$Component) {
 
       // query local server for API credentials
       Request.get(localURL, function (error, response, body) {
-        if (error) window.location.href = '/error/455';
-
+        if (error || body.hasOwnProperty('error')) window.location.href = '/error/455';
         var credentials = JSON.parse(body);
-        _this2.setState({ credentials: credentials });
 
         function userCallback(userError, userResponse, userBody) {
-          if (userError || JSON.parse(userBody).hasOwnProperty('error')) window.location.href = '/error/455';
+          if (userError || userBody.hasOwnProperty('error')) window.location.href = '/error/455';
           var user = JSON.parse(userBody).user;
 
           function moonletsCallback(moonletsError, moonletsResponse, moonletsBody) {
-            if (moonletsError || JSON.parse(moonletsBody).hasOwnProperty('error')) window.location.href = '/error/455';
+            if (moonletsError || moonletsBody.hasOwnProperty('error')) window.location.href = '/error/455';
             var moonlets = JSON.parse(moonletsBody).moonlets;
 
-            self.setState({ user: user, moonlets: moonlets });
+            self.setState({ user: user, moonlets: moonlets, credentials: credentials });
           }
           // request info on all moonlets
           Request.get(moonletsURL, moonletsCallback).auth(credentials.username, credentials.password, true);

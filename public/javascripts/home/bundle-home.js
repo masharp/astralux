@@ -80149,10 +80149,10 @@ var Home = function (_React$Component) {
         var credentials = JSON.parse(body);
 
         function callback(error, response, body) {
-          if (error || JSON.parse(body).hasOwnProperty('error')) window.location.href = '/error/455';
-
-          var content = JSON.parse(body);
-          self.setState({ moonlets: content.moonlets });
+          if (error || body.hasOwnProperty('error')) window.location.href = '/error/455';else {
+            var content = JSON.parse(body);
+            self.setState({ moonlets: content.moonlets });
+          }
         }
 
         // request data from API

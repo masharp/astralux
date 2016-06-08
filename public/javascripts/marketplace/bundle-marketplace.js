@@ -80367,20 +80367,20 @@ var Marketplace = function (_React$Component) {
 
       // query local server for API credentials
       Request.get(localURL, function (error, response, body) {
-        if (error) window.location.href = '/error/455';
+        if (error || body.hasOwnProperty('error')) window.location.href = '/error/455';
         var credentials = JSON.parse(body);
 
         function callback(error, response, body) {
-          if (error || JSON.parse(body).hasOwnProperty('error')) window.location.href = '/error/455';
+          if (error || body.hasOwnProperty('error')) window.location.href = '/error/455';else {
+            var result = JSON.parse(body);
 
-          var result = JSON.parse(body);
+            var featured = self.buildFeatured(result.moonlets); // extract the featured moonlets
+            var sales = self.buildSales(result.moonlets); // extract the moonlets on sale
+            var classTypes = self.buildTypes(result.moonlets); // seperate moonlets by classification
+            var categories = { sales: sales, featured: featured, classTypes: classTypes };
 
-          var featured = self.buildFeatured(result.moonlets); // extract the featured moonlets
-          var sales = self.buildSales(result.moonlets); // extract the moonlets on sale
-          var classTypes = self.buildTypes(result.moonlets); // seperate moonlets by classification
-          var categories = { sales: sales, featured: featured, classTypes: classTypes };
-
-          self.setState({ moonlets: result.moonlets, categories: categories });
+            self.setState({ moonlets: result.moonlets, categories: categories });
+          }
         }
 
         Request.get(url, callback).auth(credentials.username, credentials.password, true);

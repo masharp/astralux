@@ -35,7 +35,7 @@ export default function SettingsPanel(props) {
         json: { email }
       };
       function updateCallback(error, response, body) {
-        if (error || body.error) {
+        if (error || body.hasOwnProperty('error')) {
           error = body.error ? body.error : error;
           reject(error);
         }
@@ -60,7 +60,7 @@ export default function SettingsPanel(props) {
       const call = `${url}/users/${username}`;
 
       function deleteCallback(error, response, body) {
-        if (error || body.error) {
+        if (error || body.hasOwnProperty('error')) {
           error = body.error ? body.error : error;
           reject(error);
         }
@@ -114,7 +114,7 @@ export default function SettingsPanel(props) {
             requestSuccess.classList.remove('hidden');
             document.getElementById('email-selector').innerHTML = emailOneVal;
           }
-        }).catch((error) => { window.location.href = '/error'; });
+        }).catch((error) => { window.location.href = '/error/455'; });
 
         break;
       // handle clicking of the delete acct btn
@@ -128,7 +128,7 @@ export default function SettingsPanel(props) {
               let alert = window.alert('Your account has been deleted. We\'re sorry to see you go!');
               window.location.href = '/';
             }
-          }).catch((error) => { window.location.href = '/error'; });
+          }).catch((error) => { window.location.href = '/error/455'; });
         }
         break;
     }

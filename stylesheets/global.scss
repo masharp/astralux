@@ -59,7 +59,7 @@ header {
       text-decoration: none;
     }
     .menu-balance {
-      .balance-amount-point { color: darken($font-color, 25); }
+      .balance-amount-point { color: black; }
     }
     #link-nav {
       float: right;
@@ -195,33 +195,35 @@ header {
     padding-left: 3em;
     text-align: center;
 
+    #purchase-success { color: $link-color; }
+    #purchase-failure { color: red; }
     #cart-list {
       text-align: left;
 
       .cart-list-header { font-size: 2.2em; }
       #cart-list-display {
-        margin-top: 3em;
+        margin-top: 1.5em;
         float: right;
         width: 75%;
 
         th {
           font-size: 1.3em;
-          padding-bottom: 2em;
+          padding-bottom: 1.5em;
         }
         .cart-item {
+          font-size: 1.15em;
           .cart-moonlet-a {
             text-decoration: none;
             color: $link-color;
             &:hover { color: lighten($link-color, 15); }
           }
-          .cart-item-cost { color: black; }
-          #item-remove-btn {
-            width: 3em;
+          .cart-item-cost { color: red; }
+          .remove-btn {
+            padding-top: .2em;
             font-size: 2em;
             cursor: pointer;
-            padding: .5em;
-            color: red;
-            &:hover { color: lighten(red, 15); }
+            color: black;
+            &:hover { color: lighten(black, 15); }
           }
         }
       }
@@ -239,7 +241,11 @@ header {
         margin-right: 1em;
         background-color: $font-color !important;
         color: $tertiary-color !important;
+        &:hover { background-color: darken($font-color, 20) !important; }
       }
+    }
+    #cart-receipt {
+      
     }
     .page-footer {
       position: absolute;

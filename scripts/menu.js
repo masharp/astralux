@@ -19,11 +19,13 @@ class Menu extends React.Component {
     const self = this;
 
     Request.get(localURL, (error, response, body) => {
-      if (error) window.location.href = '/error/455';
-      const credentials = JSON.parse(body);
+      if (error || body.hasOwnProperty('error')) window.location.href = '/error/455';
+      else {
+        const credentials = JSON.parse(body);
 
-      self.setState({ credentials });
-      self.beginServerQuery(); // load initial state and query every 3 seconds thereafter
+        self.setState({ credentials });
+        self.beginServerQuery(); // load initial state and query every 3 seconds thereafter
+      }
     });
   }
   /* Function that updates the menu bar with the current user's profile state.
@@ -35,19 +37,22 @@ class Menu extends React.Component {
     const self = this;
 
     function queryCallback(error, response, body) {
-      const updatedState = JSON.parse(body).user;
-      // turn json into quicky/dirty strings in order to compare equality (must be the same order)
-      const updatedStateStr = JSON.stringify(updatedState)
-      const currentStateStr = JSON.stringify(self.state.user);
+      if (error || body.hasOwnProperty('error')) window.location.href = '/error/455';
+      else {
+        const updatedState = JSON.parse(body).user;
+        // turn json into quicky/dirty strings in order to compare equality (must be the same order)
+        const updatedStateStr = JSON.stringify(updatedState)
+        const currentStateStr = JSON.stringify(self.state.user);
 
-      if (updatedStateStr !== currentStateStr) {
-        const size = updatedState.cart.cart.length; // pull out cart size
-        const balance = updatedState.balance; // pull out user's balance
+        if (updatedStateStr !== currentStateStr) {
+          const size = updatedState.cart.cart.length; // pull out cart size
+          const balance = updatedState.balance; // pull out user's balance
 
-        self.setState({ user: updatedState, balance, size });
+          self.setState({ user: updatedState, balance, size });
+        }
+
+        setTimeout(self.beginServerQuery, 5000);
       }
-
-      setTimeout(self.beginServerQuery, 3000);
     }
     Request.get(url, queryCallback).auth(credentials.username, credentials.password, true);
   }

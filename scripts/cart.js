@@ -1,5 +1,6 @@
 'use strict';
 
+import CartReceipt from './components/cart/CartReceipt';
 import CartList from './components/cart/CartList';
 import PageFooter from './components/PageFooter';
 import LoadingOverlay from './components/LoadingOverlay';
@@ -12,19 +13,21 @@ const Request = require('request');
 const currentUser = username;
 
 const LOCAL_URL = 'http://localhost:3000/credentials';
-const ASTRALUX_API = `https://astralux-api.herokuapp.com/api/users/${username}`;
+const ASTRALUX_API = 'https://astralux-api.herokuapp.com/api';
 
 class Cart extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { user: null, cart: null };
+    this.state = { user: null, cart: null, credentials: null, receipt: {
+      
+    }};
     this.handleItemRemove = this.handleItemRemove.bind(this);
     this.handlePurchase = this.handlePurchase.bind(this);
     this.handleEmptying = this.handleEmptying.bind(this);
   }
   componentDidMount() {
     const localURL = this.props.localURL;
-    const url = this.props.apiURL;
+    const url = `${this.props.apiURL}/users/${this.props.username}`;
     const self = this;
 
     // query local server for API credentials
@@ -33,10 +36,11 @@ class Cart extends React.Component {
       const credentials = JSON.parse(body);
 
       function callback(error, response, body) {
-        if (error || JSON.parse(body).hasOwnProperty('error')) window.location.href = '/error/455';
-
-        const content = JSON.parse(body);
-        self.setState({ user: content.user, cart: content.user.cart.cart });
+        if (error || body.hasOwnProperty('error')) window.location.href = '/error/455';
+        else {
+          const content = JSON.parse(body);
+          self.setState({ user: content.user, cart: content.user.cart.cart, credentials });
+        }
       }
 
       // request data from API
@@ -44,21 +48,95 @@ class Cart extends React.Component {
     });
   }
   handleItemRemove(event) {
-    console.log(event.target);
-  }
-  handlePurchase(event) {
+    /* see which item is being removed and pull out current cart */
+    const currentCart = this.state.cart;
+    const target = Number(event.target.classList[3]);
+    const newCart = [];
+    const self = this;
 
+    for (let x = 0; x < currentCart.length; x++) {
+      if (target === currentCart[x].item) continue;
+      else newCart.push(currentCart[x]);
+    }
+
+    /* create object containg PUT request information */
+    const options = {
+      url: `${this.props.apiURL}/users/cart/${this.props.username}`,
+      method: 'PUT',
+      json: { cart: newCart }
+    };
+
+    function callback(error, response, body) {
+      if (error || body.hasOwnProperty('error')) window.location.href = '/error/455';
+      else self.setState({ cart: newCart });
+    }
+
+    // request PUT to API
+    Request.put(options, callback).auth(this.state.credentials.username, this.state.credentials.password, true);
   }
   handleEmptying(event) {
+    const url = `${this.props.apiURL}/users/cart/${this.props.username}`;
+    const self = this;
+    const newCart = [];
 
+    /* create object containg PUT request information */
+    const options = {
+      url: `${this.props.apiURL}/users/cart/${this.props.username}`,
+      method: 'PUT',
+      json: { cart: newCart }
+    };
+
+    function callback(error, response, body) {
+      if (error || body.hasOwnProperty('error')) window.location.href = '/error/455';
+      else self.setState({ cart: newCart });
+    }
+
+    // request PUT to API
+    Request.put(options, callback).auth(this.state.credentials.username, this.state.credentials.password, true);
+  }
+  handlePurchase(event) {
+    const successMsgElement = document.getElementById('purchase-success');
+    const failureMsgElement = document.getElementById('purchase-failure');
+    const localURL = this.props.localURL;
+    const url = `${this.props.apiURL}/users/purchase/${this.props.username}`;
+    const self = this;
+    const options = { url, method: 'PUT', json: {} };
+
+    /* extract pertinant information on purchase state */
+    const currentCart = this.state.cart;
+    const currentBalance = this.state.user.balance;
+
+    /* obtain cart purchase cost */
+    const currentCost = currentCart.map((i) => i.amount * i.price).reduce((a, b) => a + b, 0);
+
+    /* surpress purchase warnings if open */
+    successMsgElement.classList.add('hidden');
+    failureMsgElement.classList.add('hidden');
+
+    /* finish PUT route options object */
+    options.json = { cart: currentCart, balance: currentBalance, cost: currentCost };
+
+    function callback(error, response, body) {
+      if (error || body.hasOwnProperty('error')) console.log(error); //window.location.href = '/error/455';
+      const receipt = JSON.parse(body).transaction;
+      console.log(receipt);
+
+      /* show success message then the receipt after 5 seconds */
+      successMsgElement.classList.remove('hidden');
+      setTimeout(() => {
+        self.setState({ receipt })
+      }, 5000);
+    }
+
+    Request.put(options, callback).auth(this.state.credentials.username, this.state.credentials.password, true);
   }
   render() {
-    if (this.state.user !== null) {
-      console.log(this.state.user);
-      console.log(this.state.cart);
-
+    /* render the user's current cart */
+    if (this.state.user !== null && this.state.receipt === null) {
       return (
         React.createElement('div', { id: 'cart-component' },
+          React.createElement('h3', { id: 'purchase-success', className: 'hidden' }, 'Purchase successful! Moonlets added to your inventory!'),
+          React.createElement('h3', { id: 'purchase-failure', className: 'hidden' }, 'You do not have enough credits!'),
           React.createElement(CartList, { cart: this.state.cart, handleItemRemove: this.handleItemRemove }),
           // div for page buttons
           React.createElement('div', { id: 'cart-buttons' },
@@ -71,6 +149,13 @@ class Cart extends React.Component {
         )
       );
     }
+    /* if there is a post-transaction receipt, render the component with the receipt */
+    if (this.state.receipt !== null) {
+      return (
+        React.createElement(CartReceipt, { receipt: this.state.receipt }),
+        React.createElement(PageFooter, null)
+      );
+    }
     return (React.createElement(LoadingOverlay, null));
   }
 }
@@ -78,10 +163,11 @@ class Cart extends React.Component {
 Cart.propTypes = {
   apiURL: React.PropTypes.string.isRequired,
   localURL: React.PropTypes.string.isRequired,
+  username: React.PropTypes.string.isRequired,
 };
 
 // front end global error handler -> redirect to error page for now
 //window.onerror = () => window.location.href = '/error/455';
 
-ReactDOM.render(React.createElement(Cart, { apiURL: ASTRALUX_API, localURL: LOCAL_URL }),
+ReactDOM.render(React.createElement(Cart, { apiURL: ASTRALUX_API, localURL: LOCAL_URL, username: currentUser }),
   document.getElementById('cart'));

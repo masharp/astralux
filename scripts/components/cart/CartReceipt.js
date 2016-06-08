@@ -1,12 +1,11 @@
 /* This is a module that contains a stateless react component, which constructs
- * the user's current cart. Includes functionality for removing an item from the cart
- */
+ * the a receipt upon purchase of a user's cart. */
 
 'use strict';
 
 const React = require('react');
 
-export default function CartList(props) {
+export default function CartReceipt(props) {
   /**
    * Function that takes the user's cart object and constructs a React node for
    * each item in the cart and the total cart cost
@@ -45,30 +44,11 @@ export default function CartList(props) {
   const cartNodes = constructItems(props.cart);
 
   return (
-    React.createElement('div', { id: 'cart-list' },
-      React.createElement('h2', { className: 'cart-list-header' }, 'Your Current Cart'),
-      React.createElement('table', { id: 'cart-list-display' },
-        // cart list table header
-        React.createElement('thead', null,
-          React.createElement('tr', null,
-            React.createElement('th', null, 'Moonlet'),
-            React.createElement('th', null, 'Price'),
-            React.createElement('th', null, 'Amount'),
-            React.createElement('th', null, 'Cost'),
-            React.createElement('th', null, 'Remove')
-          )
-        ),
-        React.createElement('tbody', null, cartNodes.items)
-      ),
-      React.createElement('div', { className: 'clear-filler' }),
-      React.createElement('h2', { className: 'cart-cost-final' }, 'Total Cost: ',
-        React.createElement('span', { className: 'cart-cost-point' }, `${cartNodes.cost} Credits`)
-      )
+    React.createElement('div', { id: 'cart-receipt' }
     )
   );
 }
 
-CartList.propTypes = {
-  cart: React.PropTypes.object,
-  handleItemRemove: React.PropTypes.func.isRequired,
+CartReceipt.propTypes = {
+  receipt: React.PropTypes.object.isRequired,
 };

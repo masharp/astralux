@@ -37,20 +37,18 @@ class Dashboard extends React.Component {
 
     // query local server for API credentials
     Request.get(localURL, (error, response, body) => {
-      if (error) window.location.href = '/error/455';
-
+      if (error || body.hasOwnProperty('error')) window.location.href = '/error/455';
       const credentials = JSON.parse(body);
-      this.setState({ credentials });
 
       function userCallback(userError, userResponse, userBody) {
-        if (userError || JSON.parse(userBody).hasOwnProperty('error')) window.location.href = '/error/455';
+        if (userError || userBody.hasOwnProperty('error')) window.location.href = '/error/455';
         const user = JSON.parse(userBody).user;
 
         function moonletsCallback(moonletsError, moonletsResponse, moonletsBody) {
-          if (moonletsError || JSON.parse(moonletsBody).hasOwnProperty('error')) window.location.href = '/error/455';
+          if (moonletsError || moonletsBody.hasOwnProperty('error')) window.location.href = '/error/455';
           const moonlets =  JSON.parse(moonletsBody).moonlets;
 
-          self.setState({ user, moonlets });
+          self.setState({ user, moonlets, credentials });
         }
         // request info on all moonlets
         Request.get(moonletsURL, moonletsCallback).auth(credentials.username, credentials.password, true);

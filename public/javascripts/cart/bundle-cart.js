@@ -80027,6 +80027,10 @@ function extend() {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _CartReceipt = require('./components/cart/CartReceipt');
+
+var _CartReceipt2 = _interopRequireDefault(_CartReceipt);
+
 var _CartList = require('./components/cart/CartList');
 
 var _CartList2 = _interopRequireDefault(_CartList);
@@ -80055,7 +80059,7 @@ var Request = require('request');
 var currentUser = username;
 
 var LOCAL_URL = 'http://localhost:3000/credentials';
-var ASTRALUX_API = 'https://astralux-api.herokuapp.com/api/users/' + username;
+var ASTRALUX_API = 'https://astralux-api.herokuapp.com/api';
 
 var Cart = function (_React$Component) {
   _inherits(Cart, _React$Component);
@@ -80065,7 +80069,7 @@ var Cart = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Cart).call(this, props));
 
-    _this.state = { user: null, cart: null };
+    _this.state = { user: null, cart: null, credentials: null, receipt: {} };
     _this.handleItemRemove = _this.handleItemRemove.bind(_this);
     _this.handlePurchase = _this.handlePurchase.bind(_this);
     _this.handleEmptying = _this.handleEmptying.bind(_this);
@@ -80076,7 +80080,7 @@ var Cart = function (_React$Component) {
     key: 'componentDidMount',
     value: function componentDidMount() {
       var localURL = this.props.localURL;
-      var url = this.props.apiURL;
+      var url = this.props.apiURL + '/users/' + this.props.username;
       var self = this;
 
       // query local server for API credentials
@@ -80085,10 +80089,10 @@ var Cart = function (_React$Component) {
         var credentials = JSON.parse(body);
 
         function callback(error, response, body) {
-          if (error || JSON.parse(body).hasOwnProperty('error')) window.location.href = '/error/455';
-
-          var content = JSON.parse(body);
-          self.setState({ user: content.user, cart: content.user.cart.cart });
+          if (error || body.hasOwnProperty('error')) window.location.href = '/error/455';else {
+            var content = JSON.parse(body);
+            self.setState({ user: content.user, cart: content.user.cart.cart, credentials: credentials });
+          }
         }
 
         // request data from API
@@ -80098,26 +80102,107 @@ var Cart = function (_React$Component) {
   }, {
     key: 'handleItemRemove',
     value: function handleItemRemove(event) {
-      console.log(event.target);
+      /* see which item is being removed and pull out current cart */
+      var currentCart = this.state.cart;
+      var target = Number(event.target.classList[3]);
+      var newCart = [];
+      var self = this;
+
+      for (var x = 0; x < currentCart.length; x++) {
+        if (target === currentCart[x].item) continue;else newCart.push(currentCart[x]);
+      }
+
+      /* create object containg PUT request information */
+      var options = {
+        url: this.props.apiURL + '/users/cart/' + this.props.username,
+        method: 'PUT',
+        json: { cart: newCart }
+      };
+
+      function callback(error, response, body) {
+        if (error || body.hasOwnProperty('error')) window.location.href = '/error/455';else self.setState({ cart: newCart });
+      }
+
+      // request PUT to API
+      Request.put(options, callback).auth(this.state.credentials.username, this.state.credentials.password, true);
+    }
+  }, {
+    key: 'handleEmptying',
+    value: function handleEmptying(event) {
+      var url = this.props.apiURL + '/users/cart/' + this.props.username;
+      var self = this;
+      var newCart = [];
+
+      /* create object containg PUT request information */
+      var options = {
+        url: this.props.apiURL + '/users/cart/' + this.props.username,
+        method: 'PUT',
+        json: { cart: newCart }
+      };
+
+      function callback(error, response, body) {
+        if (error || body.hasOwnProperty('error')) window.location.href = '/error/455';else self.setState({ cart: newCart });
+      }
+
+      // request PUT to API
+      Request.put(options, callback).auth(this.state.credentials.username, this.state.credentials.password, true);
     }
   }, {
     key: 'handlePurchase',
-    value: function handlePurchase(event) {}
-  }, {
-    key: 'handleEmptying',
-    value: function handleEmptying(event) {}
+    value: function handlePurchase(event) {
+      var successMsgElement = document.getElementById('purchase-success');
+      var failureMsgElement = document.getElementById('purchase-failure');
+      var localURL = this.props.localURL;
+      var url = this.props.apiURL + '/users/purchase/' + this.props.username;
+      var self = this;
+      var options = { url: url, method: 'PUT', json: {} };
+
+      /* extract pertinant information on purchase state */
+      var currentCart = this.state.cart;
+      var currentBalance = this.state.user.balance;
+
+      /* obtain cart purchase cost */
+      var currentCost = currentCart.map(function (i) {
+        return i.amount * i.price;
+      }).reduce(function (a, b) {
+        return a + b;
+      }, 0);
+
+      /* surpress purchase warnings if open */
+      successMsgElement.classList.add('hidden');
+      failureMsgElement.classList.add('hidden');
+
+      /* finish PUT route options object */
+      options.json = { cart: currentCart, balance: currentBalance, cost: currentCost };
+
+      function callback(error, response, body) {
+        if (error || body.hasOwnProperty('error')) console.log(error); //window.location.href = '/error/455';
+        var receipt = JSON.parse(body).transaction;
+        console.log(receipt);
+
+        /* show success message then the receipt after 5 seconds */
+        successMsgElement.classList.remove('hidden');
+        setTimeout(function () {
+          self.setState({ receipt: receipt });
+        }, 5000);
+      }
+
+      Request.put(options, callback).auth(this.state.credentials.username, this.state.credentials.password, true);
+    }
   }, {
     key: 'render',
     value: function render() {
-      if (this.state.user !== null) {
-        console.log(this.state.user);
-        console.log(this.state.cart);
-
-        return React.createElement('div', { id: 'cart-component' }, React.createElement(_CartList2.default, { cart: this.state.cart, handleItemRemove: this.handleItemRemove }),
+      /* render the user's current cart */
+      if (this.state.user !== null && this.state.receipt === null) {
+        return React.createElement('div', { id: 'cart-component' }, React.createElement('h3', { id: 'purchase-success', className: 'hidden' }, 'Purchase successful! Moonlets added to your inventory!'), React.createElement('h3', { id: 'purchase-failure', className: 'hidden' }, 'You do not have enough credits!'), React.createElement(_CartList2.default, { cart: this.state.cart, handleItemRemove: this.handleItemRemove }),
         // div for page buttons
         React.createElement('div', { id: 'cart-buttons' }, React.createElement('input', { type: 'button', className: 'cart-empty-btn',
           value: 'Empty Cart', onClick: this.handleEmptying }), React.createElement('input', { type: 'button', className: 'cart-purchase-btn',
           value: 'Purchase', onClick: this.handlePurchase })), React.createElement(_PageFooter2.default, null));
+      }
+      /* if there is a post-transaction receipt, render the component with the receipt */
+      if (this.state.receipt !== null) {
+        return React.createElement(_CartReceipt2.default, { receipt: this.state.receipt }), React.createElement(_PageFooter2.default, null);
       }
       return React.createElement(_LoadingOverlay2.default, null);
     }
@@ -80128,15 +80213,16 @@ var Cart = function (_React$Component) {
 
 Cart.propTypes = {
   apiURL: React.PropTypes.string.isRequired,
-  localURL: React.PropTypes.string.isRequired
+  localURL: React.PropTypes.string.isRequired,
+  username: React.PropTypes.string.isRequired
 };
 
 // front end global error handler -> redirect to error page for now
 //window.onerror = () => window.location.href = '/error/455';
 
-ReactDOM.render(React.createElement(Cart, { apiURL: ASTRALUX_API, localURL: LOCAL_URL }), document.getElementById('cart'));
+ReactDOM.render(React.createElement(Cart, { apiURL: ASTRALUX_API, localURL: LOCAL_URL, username: currentUser }), document.getElementById('cart'));
 
-},{"./components/LoadingOverlay":444,"./components/PageFooter":445,"./components/cart/CartList":446,"react":367,"react-dom":238,"request":378}],444:[function(require,module,exports){
+},{"./components/LoadingOverlay":444,"./components/PageFooter":445,"./components/cart/CartList":446,"./components/cart/CartReceipt":447,"react":367,"react-dom":238,"request":378}],444:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80202,7 +80288,7 @@ function CartList(props) {
 
       // components that compose a single transaction
       return React.createElement('tr', { className: 'cart-item', key: 'cart-item-' + i }, React.createElement('td', { className: 'cart-item-moonlet' }, React.createElement('a', { className: 'cart-moonlet-a',
-        href: '/moonlet/' + c.item, target: '_blank' }, c.item)), React.createElement('td', { className: 'cart-item-price' }, c.price + ' C'), React.createElement('td', { className: 'cart-item-amount' }, c.amount), React.createElement('td', { className: 'cart-item-cost' }, currentCost), React.createElement('td', { className: 'cart-item-remove' }, React.createElement('a', { id: 'item-remove-btn', onClick: props.handleItemRemove }, React.createElement('i', { className: 'fa fa-times ' + c.item }))));
+        href: '/moonlet/' + c.item, target: '_blank' }, c.item)), React.createElement('td', { className: 'cart-item-price' }, c.price + ' C'), React.createElement('td', { className: 'cart-item-amount' }, c.amount), React.createElement('td', { className: 'cart-item-cost' }, currentCost), React.createElement('td', { className: 'cart-item-remove' }, React.createElement('i', { className: 'remove-btn fa fa-times ' + c.item, onClick: props.handleItemRemove })));
     });
 
     return { items: items, cost: cartCost };
@@ -80219,6 +80305,51 @@ function CartList(props) {
 CartList.propTypes = {
   cart: React.PropTypes.object,
   handleItemRemove: React.PropTypes.func.isRequired
+};
+
+},{"react":367}],447:[function(require,module,exports){
+/* This is a module that contains a stateless react component, which constructs
+ * the a receipt upon purchase of a user's cart. */
+
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = CartReceipt;
+var React = require('react');
+
+function CartReceipt(props) {
+  /**
+   * Function that takes the user's cart object and constructs a React node for
+   * each item in the cart and the total cart cost
+   * @param {object} cart - object containing user's current cart
+   * @return {object} - array of react components and total cost of cart items
+   */
+  function constructItems(cart) {
+    var currentCart = cart;
+    var cartCost = 0;
+
+    var items = currentCart.map(function (c, i) {
+      var currentCost = c.amount * c.price;
+      cartCost += currentCost; // track the total cost of what's in the cart
+
+      // components that compose a single transaction
+      return React.createElement('tr', { className: 'cart-item', key: 'cart-item-' + i }, React.createElement('td', { className: 'cart-item-moonlet' }, React.createElement('a', { className: 'cart-moonlet-a',
+        href: '/moonlet/' + c.item, target: '_blank' }, c.item)), React.createElement('td', { className: 'cart-item-price' }, c.price + ' C'), React.createElement('td', { className: 'cart-item-amount' }, c.amount), React.createElement('td', { className: 'cart-item-cost' }, currentCost), React.createElement('td', { className: 'cart-item-remove' }, React.createElement('i', { className: 'remove-btn fa fa-times ' + c.item, onClick: props.handleItemRemove })));
+    });
+
+    return { items: items, cost: cartCost };
+  }
+
+  /* contruct each row of transaction history via table rows */
+  var cartNodes = constructItems(props.cart);
+
+  return React.createElement('div', { id: 'cart-receipt' });
+}
+
+CartReceipt.propTypes = {
+  receipt: React.PropTypes.object.isRequired
 };
 
 },{"react":367}]},{},[443]);

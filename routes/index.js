@@ -29,40 +29,41 @@ router.get('/sitemap.txt', (request, response) => {
 
 /* Home Page */
 router.get('/', (request, response) => {
-  response.render('home', { title: 'Astralux - A moonlet Marketplace of the Future', credentials });
+  response.render('home', { title: 'Astralux - A moonlet Marketplace of the Future' });
 });
 
 router.get('/moonlet/:moonletID/:moonletName?', (request, response) => {
   const moonletID = request.params.moonletID;
   const moonletName = request.params.moonletName ? request.params.moonletName : 'Moonlet';
+  const username = 'admin';
 
-  response.render('moonlet', { title: `Astralux - ${moonletName} | A fancy space Moonlet!`, credentials, moonletID });
+  response.render('moonlet', { title: `Astralux - ${moonletName} | A fancy space Moonlet!`, moonletID, username });
 });
 
 /* Login Page */
 router.get('/login', (request, response) => {
-  response.render('login', { title: 'Astralux Login | A moonlet Marketplace of the Future', credentials });
+  response.render('login', { title: 'Astralux Login | A moonlet Marketplace of the Future' });
 });
 
 /* Dashboard Page */
 router.get('/dashboard/:username', (request, response) => {
   const username = request.params.username;
-  response.render('dashboard', { title: 'Astralux Dashboard | A moonlet Marketplace of the Future', username, credentials });
+  response.render('dashboard', { title: 'Astralux Dashboard | A moonlet Marketplace of the Future', username });
 });
 
 router.get('/cart/:username', (request, response) => {
   const username = request.params.username;
-  response.render('cart', { title: 'Astralux Cart | A moonlet Marketplace of the Future', username, credentials });
+  response.render('cart', { title: 'Astralux Cart | A moonlet Marketplace of the Future', username });
 });
 
 /* Marketplace Page */
 router.get('/marketplace', (request, response) => {
-  response.render('marketplace', { title: 'Astralux Marketplace | A moonlet Marketplace of the Future', credentials });
+  response.render('marketplace', { title: 'Astralux Marketplace | A moonlet Marketplace of the Future' });
 });
 
 /* Marketplace Page */
 router.get('/about', (request, response) => {
-  response.render('about', { title: 'Astralux About | A moonlet Marketplace of the Future', credentials });
+  response.render('about', { title: 'Astralux About | A moonlet Marketplace of the Future' });
 });
 
 /* Error Page */
@@ -96,7 +97,7 @@ router.get('/error/:code?', (request, response) => {
         message = 'Internal Server Error';
   }
 
-  response.render('error', { title: 'Astralux - Critical Error!', error: { status: code, message }, credentials });
+  response.render('error', { title: 'Astralux - Critical Error!', error: { status: code, message }});
 });
 
 /* Credentials Route - returns credentials for calling the Flask API

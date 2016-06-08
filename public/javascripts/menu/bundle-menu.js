@@ -80061,11 +80061,12 @@ var Menu = function (_React$Component) {
       var self = this;
 
       Request.get(localURL, function (error, response, body) {
-        if (error) window.location.href = '/error/455';
-        var credentials = JSON.parse(body);
+        if (error || body.hasOwnProperty('error')) window.location.href = '/error/455';else {
+          var credentials = JSON.parse(body);
 
-        self.setState({ credentials: credentials });
-        self.beginServerQuery(); // load initial state and query every 3 seconds thereafter
+          self.setState({ credentials: credentials });
+          self.beginServerQuery(); // load initial state and query every 3 seconds thereafter
+        }
       });
     }
     /* Function that updates the menu bar with the current user's profile state.
@@ -80080,19 +80081,21 @@ var Menu = function (_React$Component) {
       var self = this;
 
       function queryCallback(error, response, body) {
-        var updatedState = JSON.parse(body).user;
-        // turn json into quicky/dirty strings in order to compare equality (must be the same order)
-        var updatedStateStr = JSON.stringify(updatedState);
-        var currentStateStr = JSON.stringify(self.state.user);
+        if (error || body.hasOwnProperty('error')) window.location.href = '/error/455';else {
+          var updatedState = JSON.parse(body).user;
+          // turn json into quicky/dirty strings in order to compare equality (must be the same order)
+          var updatedStateStr = JSON.stringify(updatedState);
+          var currentStateStr = JSON.stringify(self.state.user);
 
-        if (updatedStateStr !== currentStateStr) {
-          var size = updatedState.cart.cart.length; // pull out cart size
-          var balance = updatedState.balance; // pull out user's balance
+          if (updatedStateStr !== currentStateStr) {
+            var size = updatedState.cart.cart.length; // pull out cart size
+            var balance = updatedState.balance; // pull out user's balance
 
-          self.setState({ user: updatedState, balance: balance, size: size });
+            self.setState({ user: updatedState, balance: balance, size: size });
+          }
+
+          setTimeout(self.beginServerQuery, 5000);
         }
-
-        setTimeout(self.beginServerQuery, 3000);
       }
       Request.get(url, queryCallback).auth(credentials.username, credentials.password, true);
     }
