@@ -80854,18 +80854,20 @@ function ProfileInventory(props) {
    * @return {aray} - array of react components comprising the user's moonlet inventory
    */
   function constructInventory(moonlets, availableMoonlets) {
-    var userMoonlets = moonlets;
+    var userMoonlets = moonlets.inventory;
     var allMoonlets = availableMoonlets;
     var nodes = [];
 
     // populate inventory with moonlets that match the user's moonlets
-    if (Object.keys(userMoonlets).length > 0) {
-      for (var x in userMoonlets) {
+    if (userMoonlets.length > 0) {
+      for (var x = 0; x < userMoonlets.length; x++) {
+        var currentMoonlet = userMoonlets[x];
+
         for (var y = 0; y < allMoonlets.length; y++) {
           // match the current moonlet id to the URI (which includes the id at the end)
-          if (Number(allMoonlets[y].id) === Number(x)) {
+          if (currentMoonlet.hasOwnProperty(Number(allMoonlets[y].id))) {
             var moonlet = allMoonlets[y];
-            moonlet.inventory = userMoonlets[x]; // edit the moonlet object's inventory to reflect the user's inventory
+            moonlet.inventory = currentMoonlet[moonlet.id]; // edit the moonlet object's inventory to reflect the user's inventory
 
             nodes.push(React.createElement(_MoonletItem2.default, { moonlet: moonlet, key: 'inv-' + x }));
           }
