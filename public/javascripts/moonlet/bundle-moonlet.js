@@ -80228,7 +80228,7 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var Request = require('request');
 
-var LOCAL_URL = 'https://astralux.herokuapp.com/credentials';
+var LOCAL_URL = 'http://localhost:3000/credentials';
 var ASTRALUX_API = 'https://astralux-api.herokuapp.com/api';
 
 // server side variables sent with render
@@ -80311,7 +80311,7 @@ var Moonlet = function (_React$Component) {
       successMsgElement.classList.add('hidden');
 
       /* check if there is anything to add to cart */
-      if (self.state.amount > 0) {
+      if (self.state.amount > 0 && this.props.username.length > 0) {
         (function () {
 
           /* callback for the cart update PUT request */

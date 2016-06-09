@@ -9,7 +9,7 @@ const ReactDOM = require('react-dom');
 const Request = require('request');
 
 const ASTRALUX_API = 'https://astralux-api.herokuapp.com/api/moonlets';
-const LOCAL_URL = 'https://astralux.herokuapp.com/credentials';
+const LOCAL_URL = 'http://localhost:3000/credentials';
 
 class Home extends React.Component {
   constructor(props) {

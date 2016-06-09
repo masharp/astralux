@@ -2,6 +2,8 @@ extends menu
 block content
   link(rel='stylesheet', href='/stylesheets/marketplace.css')
   #marketplace
-
+  
+  script(type='text/javascript').
+    const username = !{ JSON.stringify(username) };
   script(src='/javascripts/menu/bundle-menu.min.js')
   script(src='/javascripts/marketplace/bundle-marketplace.js')

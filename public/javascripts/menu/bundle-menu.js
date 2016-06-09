@@ -80038,7 +80038,10 @@ var ReactDOM = require('react-dom');
 var Request = require('request');
 
 var ASTRALUX_API = 'https://astralux-api.herokuapp.com/api/users';
-var LOCAL_URL = 'https://astralux.herokuapp.com/credentials';
+var LOCAL_URL = 'http://localhost:3000/credentials';
+
+/* capture sever-sent globabl variable */
+var currentUser = username;
 
 var Menu = function (_React$Component) {
   _inherits(Menu, _React$Component);
@@ -80057,6 +80060,8 @@ var Menu = function (_React$Component) {
   _createClass(Menu, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
+      var _this2 = this;
+
       var localURL = this.props.localURL;
       var self = this;
 
@@ -80065,7 +80070,8 @@ var Menu = function (_React$Component) {
           var credentials = JSON.parse(body);
 
           self.setState({ credentials: credentials });
-          self.beginServerQuery(); // load initial state and query every 3 seconds thereafter
+          /* load initial state and query every 3 seconds thereafter if authenticated user */
+          if (_this2.props.username.length > 0) self.beginServerQuery();
         }
       });
     }
@@ -80079,7 +80085,7 @@ var Menu = function (_React$Component) {
     key: 'beginServerQuery',
     value: function beginServerQuery() {
       var credentials = this.state.credentials;
-      var url = this.props.apiURL + '/admin';
+      var url = this.props.apiURL + '/' + this.props.username;
       var self = this;
 
       function queryCallback(error, response, body) {
@@ -80102,7 +80108,7 @@ var Menu = function (_React$Component) {
     key: 'render',
     value: function render() {
 
-      return React.createElement('div', { id: 'menu-bar' }, React.createElement('a', { className: 'navlink', href: '/' }, React.createElement('img', { className: 'menu-brand', src: '/assets/brand.png' })), React.createElement('div', { id: 'link-nav' }, React.createElement('a', { className: 'navlink menu-marketplace', href: '/marketplace' }, 'Marketplace'), React.createElement('a', { className: 'menu-logout navlink', href: '/' }, 'Logout'), React.createElement('span', { className: 'navlink menu-balance' }, 'Balance: ', React.createElement('span', { className: 'balance-amount-point' }, this.state.balance)), React.createElement('a', { id: 'menu-cart', className: 'navlink', href: '/cart/admin' }, React.createElement('i', { className: 'fa fa-shopping-cart' }), React.createElement('span', { id: 'menu-cart-updater' }, ' ' + this.state.size + ' ')), React.createElement('a', { className: 'menu-account navlink', href: '/dashboard/admin' }, 'Dashboard'), React.createElement('a', { className: 'navlink menu-login', href: '/login' }, 'Login')));
+      return React.createElement('div', { id: 'menu-bar' }, React.createElement('a', { className: 'navlink', href: '/' }, React.createElement('img', { className: 'menu-brand', src: '/assets/brand.png' })), React.createElement('div', { id: 'link-nav' }, React.createElement('a', { className: 'navlink menu-marketplace', href: '/marketplace' }, 'Marketplace'), React.createElement('a', { className: 'menu-logout navlink hidden', href: '/' }, 'Logout'), React.createElement('span', { className: 'navlink menu-balance hidden' }, 'Balance: ', React.createElement('span', { className: 'balance-amount-point' }, this.state.balance)), React.createElement('a', { id: 'menu-cart', className: 'navlink hidden', href: '/cart/' + this.props.username }, React.createElement('i', { className: 'fa fa-shopping-cart' }), React.createElement('span', { id: 'menu-cart-updater' }, ' ' + this.state.size + ' ')), React.createElement('a', { className: 'menu-account navlink hidden', href: '/dashboard/' + this.props.username }, 'Dashboard'), React.createElement('a', { className: 'navlink menu-login', href: '/login' }, 'Login')));
     }
   }]);
 
@@ -80111,12 +80117,13 @@ var Menu = function (_React$Component) {
 
 Menu.propTypes = {
   apiURL: React.PropTypes.string.isRequired,
-  localURL: React.PropTypes.string.isRequired
+  localURL: React.PropTypes.string.isRequired,
+  username: React.PropTypes.string
 };
 
 // front end global error handler -> redirect to error page for now
 // window.onerror = () => window.location.href = '/error/455';
 
-ReactDOM.render(React.createElement(Menu, { apiURL: ASTRALUX_API, localURL: LOCAL_URL }), document.getElementById('menu'));
+ReactDOM.render(React.createElement(Menu, { apiURL: ASTRALUX_API, localURL: LOCAL_URL, username: currentUser }), document.getElementById('menu'));
 
 },{"react":367,"react-dom":238,"request":378}]},{},[443]);

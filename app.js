@@ -13,6 +13,12 @@ const cookieParser = require('cookie-parser');
 const compression = require('compression');
 const dotenv = require('dotenv'); dotenv.config();
 const debug = require('debug'); debug('astralux:server');
+const passport = require('passport');
+
+/* passport auth strategies */
+const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+const FacebookStrategy = require('passport-facebook').Strategy;
+const TwitterStrategy = require('passport-twitter').Strategy;
 
 /* Route Controller */
 const index = require('./routes/index');

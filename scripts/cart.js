@@ -12,7 +12,7 @@ const Request = require('request');
 // server side variables sent with render
 const currentUser = username;
 
-const LOCAL_URL = 'https://astralux.herokuapp.com/credentials';
+const LOCAL_URL = 'http://localhost:3000/credentials';
 const ASTRALUX_API = 'https://astralux-api.herokuapp.com/api';
 
 class Cart extends React.Component {
@@ -28,6 +28,8 @@ class Cart extends React.Component {
     const url = `${this.props.apiURL}/users/${this.props.username}`;
     const self = this;
 
+    /* redirect if unathenticated user */
+    if (this.props.username.length >= 0) window.location.href = '/';
     // query local server for API credentials
     Request.get(localURL, (error, response, body) => {
       if (error) window.location.href = '/error/455';

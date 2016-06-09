@@ -16,7 +16,7 @@ const TabList = ReactTabs.TabList;
 const TabPanel = ReactTabs.TabPanel;
 
 const ASTRALUX_API = 'https://astralux-api.herokuapp.com/api';
-const LOCAL_URL = 'https://astralux.herokuapp.com/credentials';
+const LOCAL_URL = 'http://localhost:3000/credentials';
 
 // server side variables sent with render
 const currentUser = username;
@@ -33,6 +33,9 @@ class Dashboard extends React.Component {
     const localURL = this.props.localURL;
     const moonletsURL = `${this.props.apiURL}/moonlets`;
     const self = this;
+
+    /* disallow if unauthenticated user */
+    if (this.props.username.length <= 0) window.location.href = '/';
 
     // query local server for API credentials
     Request.get(localURL, (error, response, body) => {

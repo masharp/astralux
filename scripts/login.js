@@ -6,7 +6,7 @@ const ReactDOM = require('react-dom');
 const Request = require('request');
 
 const ASTRALUX_API = 'https://astralux-api.herokuapp.com/api/users';
-const LOCAL_URL = 'https://astralux.herokuapp.com/credentials';
+const LOCAL_URL = 'http://localhost:3000/credentials';
 
 class Login extends React.Component {
   constructor(props) {

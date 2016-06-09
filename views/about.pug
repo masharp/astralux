@@ -2,5 +2,7 @@ extends menu
 block content
   #about
 
+  script(type='text/javascript').
+    const username = !{ JSON.stringify(username) };
   script(src='/javascripts/menu/bundle-menu.min.js')
   script(src='/javascripts/about/bundle-about.min.js')

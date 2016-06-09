@@ -5,7 +5,10 @@ const ReactDOM = require('react-dom');
 const Request = require('request');
 
 const ASTRALUX_API = 'https://astralux-api.herokuapp.com/api/users';
-const LOCAL_URL = 'https://astralux.herokuapp.com/credentials';
+const LOCAL_URL = 'http://localhost:3000/credentials';
+
+/* capture sever-sent globabl variable */
+const currentUser = username;
 
 class Menu extends React.Component {
   constructor(props) {
@@ -24,7 +27,8 @@ class Menu extends React.Component {
         const credentials = JSON.parse(body);
 
         self.setState({ credentials });
-        self.beginServerQuery(); // load initial state and query every 3 seconds thereafter
+        /* load initial state and query every 3 seconds thereafter if authenticated user */
+        if (this.props.username.length > 0) self.beginServerQuery();
       }
     });
   }
@@ -35,7 +39,7 @@ class Menu extends React.Component {
    */
   beginServerQuery() {
     const credentials = this.state.credentials;
-    const url = `${this.props.apiURL}/admin`;
+    const url = `${this.props.apiURL}/${this.props.username}`;
     const self = this;
 
     function queryCallback(error, response, body) {
@@ -63,15 +67,15 @@ class Menu extends React.Component {
         ),
         React.createElement('div', { id: 'link-nav' },
           React.createElement('a', { className: 'navlink menu-marketplace', href: '/marketplace'}, 'Marketplace'),
-          React.createElement('a', { className: 'menu-logout navlink', href: '/' }, 'Logout'),
-          React.createElement('span', { className: 'navlink menu-balance'}, 'Balance: ',
+          React.createElement('a', { className: 'menu-logout navlink hidden', href: '/' }, 'Logout'),
+          React.createElement('span', { className: 'navlink menu-balance hidden'}, 'Balance: ',
             React.createElement('span', { className: 'balance-amount-point' }, this.state.balance)
           ),
-          React.createElement('a', { id: 'menu-cart', className: 'navlink', href: '/cart/admin' },
+          React.createElement('a', { id: 'menu-cart', className: 'navlink hidden', href: `/cart/${this.props.username}` },
             React.createElement('i', { className: 'fa fa-shopping-cart' }),
             React.createElement('span', { id: 'menu-cart-updater' }, ` ${this.state.size} `)
           ),
-          React.createElement('a', { className: 'menu-account navlink', href: '/dashboard/admin' }, 'Dashboard'),
+          React.createElement('a', { className: 'menu-account navlink hidden', href: `/dashboard/${this.props.username}` }, 'Dashboard'),
           React.createElement('a', { className: 'navlink menu-login', href: '/login' }, 'Login')
         )
       )
@@ -82,10 +86,11 @@ class Menu extends React.Component {
 Menu.propTypes = {
   apiURL: React.PropTypes.string.isRequired,
   localURL: React.PropTypes.string.isRequired,
+  username: React.PropTypes.string
 };
 
 // front end global error handler -> redirect to error page for now
 // window.onerror = () => window.location.href = '/error/455';
 
-ReactDOM.render(React.createElement(Menu, { apiURL: ASTRALUX_API, localURL: LOCAL_URL }),
+ReactDOM.render(React.createElement(Menu, { apiURL: ASTRALUX_API, localURL: LOCAL_URL, username: currentUser }),
   document.getElementById('menu'));

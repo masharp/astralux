@@ -29,7 +29,8 @@ router.get('/sitemap.txt', (request, response) => {
 
 /* Home Page */
 router.get('/', (request, response) => {
-  response.render('home', { title: 'Astralux - A moonlet Marketplace of the Future' });
+  const username = request.params.username ? request.params.username : '';
+  response.render('home', { title: 'Astralux - A moonlet Marketplace of the Future', username });
 });
 
 router.get('/moonlet/:moonletID/:moonletName?', (request, response) => {
@@ -42,32 +43,36 @@ router.get('/moonlet/:moonletID/:moonletName?', (request, response) => {
 
 /* Login Page */
 router.get('/login', (request, response) => {
-  response.render('login', { title: 'Astralux Login | A moonlet Marketplace of the Future' });
+  const username = request.params.username ? request.params.username : '';
+  response.render('login', { title: 'Astralux Login | A moonlet Marketplace of the Future', username });
 });
 
 /* Dashboard Page */
-router.get('/dashboard/:username', (request, response) => {
-  const username = request.params.username;
+router.get('/dashboard/:username?', (request, response) => {
+  const username = request.params.username ? request.params.username : '';
   response.render('dashboard', { title: 'Astralux Dashboard | A moonlet Marketplace of the Future', username });
 });
 
-router.get('/cart/:username', (request, response) => {
-  const username = request.params.username;
+router.get('/cart/:username?', (request, response) => {
+  const username = request.params.username ? request.params.username : '';
   response.render('cart', { title: 'Astralux Cart | A moonlet Marketplace of the Future', username });
 });
 
 /* Marketplace Page */
 router.get('/marketplace', (request, response) => {
-  response.render('marketplace', { title: 'Astralux Marketplace | A moonlet Marketplace of the Future' });
+  const username = request.params.username ? request.params.username : '';
+  response.render('marketplace', { title: 'Astralux Marketplace | A moonlet Marketplace of the Future', username });
 });
 
 /* Marketplace Page */
 router.get('/about', (request, response) => {
-  response.render('about', { title: 'Astralux About | A moonlet Marketplace of the Future' });
+  const username = request.params.username ? request.params.username : '';
+  response.render('about', { title: 'Astralux About | A moonlet Marketplace of the Future', username });
 });
 
 /* Error Page */
 router.get('/error/:code?', (request, response) => {
+  const username = request.params.username ? request.params.username : '';
   let code = request.params.code ? Number(request.params.code) : 500; // pull out the error code, if present
   if (code < 400 || code > 501 || isNaN(code)) code = 500; // check if error code is valid
   let message = '';
@@ -97,7 +102,7 @@ router.get('/error/:code?', (request, response) => {
         message = 'Internal Server Error';
   }
 
-  response.render('error', { title: 'Astralux - Critical Error!', error: { status: code, message }});
+  response.render('error', { title: 'Astralux - Critical Error!', error: { status: code, message }, username });
 });
 
 /* Credentials Route - returns credentials for calling the Flask API
