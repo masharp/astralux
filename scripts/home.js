@@ -1,3 +1,8 @@
+/* Stateful React Component that controls the Home view. Allows the user to
+ * navigate to the user page or view featured moonlets. Uses the moonlet component
+ * for featured moonlet display
+ */
+
 'use strict';
 
 import PageFooter from './components/PageFooter';
@@ -9,7 +14,7 @@ const ReactDOM = require('react-dom');
 const Request = require('request');
 
 const ASTRALUX_API = 'https://astralux-api.herokuapp.com/api/moonlets';
-const LOCAL_URL = 'http://localhost:3000/credentials';
+const LOCAL_URL = 'https://astralux.herokuapp.com/credentials';
 
 /* capture sever-sent globabl variable */
 const currentUser = username;
@@ -21,6 +26,9 @@ class Home extends React.Component {
     this.handleButtonClick = this.handleButtonClick.bind(this);
     this.constructFeatured = this.constructFeatured.bind(this);
   }
+  /* upon component load, query the local server for API credentials, then query
+   * API for data on featured moonlets
+   */
   componentDidMount() {
     const url = this.props.apiURL;
     const localURL = this.props.localURL;
@@ -44,6 +52,7 @@ class Home extends React.Component {
     });
 
   }
+  /* Simple click handler for redirecting to the login page */
   handleButtonClick() {
     window.location.href = '/login';
   }

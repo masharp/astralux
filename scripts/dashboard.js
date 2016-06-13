@@ -1,3 +1,7 @@
+/* Stateful React Component that controls the Dashboard view. Composes
+ * the transaction, profile, and settings panels.
+ */
+
 'use strict';
 
 import LoadingOverlay from './components/LoadingOverlay';
@@ -16,7 +20,7 @@ const TabList = ReactTabs.TabList;
 const TabPanel = ReactTabs.TabPanel;
 
 const ASTRALUX_API = 'https://astralux-api.herokuapp.com/api';
-const LOCAL_URL = 'http://localhost:3000/credentials';
+const LOCAL_URL = 'https://astralux.herokuapp.com/credentials';
 
 // server side variables sent with render
 const currentUser = username;
@@ -28,6 +32,9 @@ class Dashboard extends React.Component {
 
     this.handleTabClick = this.handleTabClick.bind(this);
   }
+  /* upon component load, query the local server for API credentials, then query
+   * API for data on the current user.
+   */
   componentDidMount() {
     const userURL = `${this.props.apiURL}/users/${this.props.username}`;
     const localURL = this.props.localURL;
@@ -97,7 +104,7 @@ Dashboard.propTypes = {
 };
 
 // front end global error handler -> redirect to error page for now
-// window.onerror = () => window.location.href = '/error/455';
+window.onerror = () => window.location.href = '/error/455';
 
 ReactDOM.render(React.createElement(Dashboard, { apiURL: ASTRALUX_API, localURL: LOCAL_URL, username: currentUser }),
   document.getElementById('dashboard'));

@@ -1,3 +1,9 @@
+/**
+ * Stateful Moonlet React Controller for the main Moonlet route. Displays info
+ * on the current moonlet and similar moonlets (weighted towards similar moonlet type)
+ * component.
+ */
+
 'use strict';
 
 import LoadingOverlay from './components/LoadingOverlay';
@@ -8,7 +14,7 @@ const React = require('react');
 const ReactDOM = require('react-dom');
 const Request = require('request');
 
-const LOCAL_URL = 'http://localhost:3000/credentials';
+const LOCAL_URL = 'https://astralux.herokuapp.com/credentials';
 const ASTRALUX_API = 'https://astralux-api.herokuapp.com/api';
 
 // server side variables sent with render
@@ -22,6 +28,9 @@ class Moonlet extends React.Component {
     this.handleCartClick = this.handleCartClick.bind(this);
     this.handleAmountClick = this.handleAmountClick.bind(this);
   }
+  /* upon component loading, call the local server for credentials, then query API
+     for data on current moonlet.
+   */
   componentDidMount() {
     const localURL = this.props.localURL;
     const url = `${this.props.apiURL}/moonlets/${this.props.moonletID}`;
@@ -53,6 +62,9 @@ class Moonlet extends React.Component {
       }
     });
   }
+  /**
+   * click handler for the Moonlet Amount incr/decr. ceiling at 0
+   */
   handleAmountClick(event) {
     const target = event.target.classList[0];
     let amountState = this.state.amount;
@@ -65,6 +77,11 @@ class Moonlet extends React.Component {
     cost =  this.state.moonlet.price * amountState;
     this.setState({ amount: amountState, cost });
   }
+  /**
+   * click handler for adding the moonlet amount to the user's cart.
+   * First queries for the user's current cart, combines stored cart with
+   * new additions, then updates the user's store.
+   */
   handleCartClick(event) {
     const successMsgElement = document.getElementById('cart-success-msg');
     const cartURL = `${this.props.apiURL}/users/cart/${this.props.username}`;
@@ -180,7 +197,7 @@ Moonlet.propTypes = {
 };
 
 // front end global error handler -> redirect to error page for now
-// window.onerror = () => window.location.href = '/error/455';
+window.onerror = () => window.location.href = '/error/455';
 
 ReactDOM.render(React.createElement(Moonlet, { apiURL: ASTRALUX_API, localURL: LOCAL_URL, moonletID: moonletTag, username: currentUser }),
   document.getElementById('moonlet'));

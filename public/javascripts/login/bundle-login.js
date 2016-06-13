@@ -80041,6 +80041,9 @@ function PageFooter() {
 }
 
 },{"react":367}],444:[function(require,module,exports){
+/* Stateful React Component that controls the login view. Allows a user to
+ * authenticate via Facebook and Twitter OAuth. */
+
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -80062,7 +80065,7 @@ var ReactDOM = require('react-dom');
 var Request = require('request');
 
 var ASTRALUX_API = 'https://astralux-api.herokuapp.com/api/users';
-var LOCAL_URL = 'http://localhost:3000/credentials';
+var LOCAL_URL = 'https://astralux.herokuapp.com/credentials';
 
 var Login = function (_React$Component) {
   _inherits(Login, _React$Component);
@@ -80076,6 +80079,10 @@ var Login = function (_React$Component) {
     _this.handleLogin = _this.handleLogin.bind(_this);
     return _this;
   }
+  /**
+   * Based on what is clicked, trigger authenitcation route call for platform
+   */
+
 
   _createClass(Login, [{
     key: 'handleLogin',
@@ -80100,7 +80107,9 @@ Login.propTypes = {
 };
 
 // front end global error handler -> redirect to error page for now
-//window.onerror = () => window.location.href = '/error/455';
+window.onerror = function () {
+  return window.location.href = '/error/455';
+};
 
 ReactDOM.render(React.createElement(Login, { apiURL: ASTRALUX_API, localURL: LOCAL_URL }), document.getElementById('login'));
 

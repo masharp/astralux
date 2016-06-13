@@ -1,3 +1,6 @@
+/* Stateful React Component that controls the login view. Allows a user to
+ * authenticate via Facebook and Twitter OAuth. */
+
 'use strict';
 
 import PageFooter from './components/PageFooter';
@@ -6,7 +9,7 @@ const ReactDOM = require('react-dom');
 const Request = require('request');
 
 const ASTRALUX_API = 'https://astralux-api.herokuapp.com/api/users';
-const LOCAL_URL = 'http://localhost:3000/credentials';
+const LOCAL_URL = 'https://astralux.herokuapp.com/credentials';
 
 class Login extends React.Component {
   constructor(props) {
@@ -14,6 +17,9 @@ class Login extends React.Component {
     this.state = { };
     this.handleLogin = this.handleLogin.bind(this);
   }
+  /**
+   * Based on what is clicked, trigger authenitcation route call for platform
+   */
   handleLogin(event) {
     const target = event.target.id;
 
@@ -49,7 +55,7 @@ Login.propTypes = {
 };
 
 // front end global error handler -> redirect to error page for now
-//window.onerror = () => window.location.href = '/error/455';
+window.onerror = () => window.location.href = '/error/455';
 
 ReactDOM.render(React.createElement(Login, { apiURL: ASTRALUX_API, localURL: LOCAL_URL }),
   document.getElementById('login'));

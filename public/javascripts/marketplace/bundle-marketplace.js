@@ -80340,7 +80340,7 @@ var ReactDOM = require('react-dom');
 var Request = require('request');
 
 var ASTRALUX_API = 'https://astralux-api.herokuapp.com/api/moonlets';
-var LOCAL_URL = 'http://localhost:3000/credentials';
+var LOCAL_URL = 'https://astralux.herokuapp.com/credentials';
 
 var Marketplace = function (_React$Component) {
   _inherits(Marketplace, _React$Component);
@@ -80357,6 +80357,10 @@ var Marketplace = function (_React$Component) {
     _this.handleCategoryClick = _this.handleCategoryClick.bind(_this);
     return _this;
   }
+  /* upon component load, query the local server for API credentials, then query
+   * API for data on current moonlets.
+   */
+
 
   _createClass(Marketplace, [{
     key: 'componentDidMount',
@@ -80524,7 +80528,9 @@ Marketplace.propTypes = {
 };
 
 // front end global error handler -> redirect to error page for now
-//window.onerror = () => window.location.href = '/error/455';
+window.onerror = function () {
+  return window.location.href = '/error/455';
+};
 
 ReactDOM.render(React.createElement(Marketplace, { apiURL: ASTRALUX_API, localURL: LOCAL_URL }), document.getElementById('marketplace'));
 

@@ -80091,6 +80091,11 @@ function PageFooter() {
 }
 
 },{"react":367}],446:[function(require,module,exports){
+/* Stateful React Component that controls the Home view. Allows the user to
+ * navigate to the user page or view featured moonlets. Uses the moonlet component
+ * for featured moonlet display
+ */
+
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -80120,7 +80125,7 @@ var ReactDOM = require('react-dom');
 var Request = require('request');
 
 var ASTRALUX_API = 'https://astralux-api.herokuapp.com/api/moonlets';
-var LOCAL_URL = 'http://localhost:3000/credentials';
+var LOCAL_URL = 'https://astralux.herokuapp.com/credentials';
 
 /* capture sever-sent globabl variable */
 var currentUser = username;
@@ -80138,6 +80143,10 @@ var Home = function (_React$Component) {
     _this.constructFeatured = _this.constructFeatured.bind(_this);
     return _this;
   }
+  /* upon component load, query the local server for API credentials, then query
+   * API for data on featured moonlets
+   */
+
 
   _createClass(Home, [{
     key: 'componentDidMount',
@@ -80162,6 +80171,8 @@ var Home = function (_React$Component) {
         Request.get(url, callback).auth(credentials.username, credentials.password, true);
       });
     }
+    /* Simple click handler for redirecting to the login page */
+
   }, {
     key: 'handleButtonClick',
     value: function handleButtonClick() {

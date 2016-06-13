@@ -81262,6 +81262,10 @@ TransactionsPanel.propTypes = {
 };
 
 },{"../PageFooter":455,"react":377,"request":388}],460:[function(require,module,exports){
+/* Stateful React Component that controls the Dashboard view. Composes
+ * the transaction, profile, and settings panels.
+ */
+
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -81301,7 +81305,7 @@ var TabList = ReactTabs.TabList;
 var TabPanel = ReactTabs.TabPanel;
 
 var ASTRALUX_API = 'https://astralux-api.herokuapp.com/api';
-var LOCAL_URL = 'http://localhost:3000/credentials';
+var LOCAL_URL = 'https://astralux.herokuapp.com/credentials';
 
 // server side variables sent with render
 var currentUser = username;
@@ -81319,6 +81323,10 @@ var Dashboard = function (_React$Component) {
     _this.handleTabClick = _this.handleTabClick.bind(_this);
     return _this;
   }
+  /* upon component load, query the local server for API credentials, then query
+   * API for data on the current user.
+   */
+
 
   _createClass(Dashboard, [{
     key: 'componentDidMount',
@@ -81376,7 +81384,9 @@ Dashboard.propTypes = {
 };
 
 // front end global error handler -> redirect to error page for now
-// window.onerror = () => window.location.href = '/error/455';
+window.onerror = function () {
+  return window.location.href = '/error/455';
+};
 
 ReactDOM.render(React.createElement(Dashboard, { apiURL: ASTRALUX_API, localURL: LOCAL_URL, username: currentUser }), document.getElementById('dashboard'));
 

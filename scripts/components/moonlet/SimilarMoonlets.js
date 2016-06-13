@@ -1,3 +1,8 @@
+/* Stateful child component of the Moonlet component that queries the API
+ * for moonlets and then parses them based on the parent moonlet's type. Gives
+ * the user a list of similar items. Uses the MoonletItem child
+ */
+
 'use strict';
 import MoonletItem from '../../components/MoonletItem';
 

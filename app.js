@@ -1,6 +1,8 @@
 /**
  * Node Express Application that inludes our server-side middleware, route indexing,
- * and server-side error logging. */
+ * and server-side error logging.
+ */
+
 'use strict';
 
 /* Module Dependencies */
@@ -56,7 +58,7 @@ function registerNewUser(profile) {
 passport.use(new TwitterStrategy({
   consumerKey: process.env.TWITTER_CONSUMER_KEY,
   consumerSecret: process.env.TWITTER_CONSUMER_SECRET,
-  callbackURL: 'http://127.0.0.1:3000/auth/twitter/callback'
+  callbackURL: 'https://astralux.herokuapp.com/auth/twitter/callback'
 
 }, function (token, tokenSecret, profile, done) {
   const username = profile.username;
@@ -84,7 +86,7 @@ passport.use(new TwitterStrategy({
 passport.use(new FacebookStrategy({
   clientID: process.env.FACEBOOK_APP_ID,
   clientSecret: process.env.FACEBOOK_APP_SECRET,
-  callbackURL: 'http://localhost:3000/auth/facebook/callback'
+  callbackURL: 'https://astralux.herokuapp.com/auth/facebook/callback'
 
 }, function (accessToken, refreshToken, profile, done) {
   /* use Facebook user ID if it does not provide a username */

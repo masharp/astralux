@@ -80023,6 +80023,11 @@ function extend() {
 }
 
 },{}],443:[function(require,module,exports){
+/**
+ * Stateful Menu React Controller for the Menu Component. If there is an authenticated user,
+ * displays data on user's current balance and cart
+ */
+
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -80038,7 +80043,7 @@ var ReactDOM = require('react-dom');
 var Request = require('request');
 
 var ASTRALUX_API = 'https://astralux-api.herokuapp.com/api/users';
-var LOCAL_URL = 'http://localhost:3000/credentials';
+var LOCAL_URL = 'https://astralux.herokuapp.com/credentials';
 
 /* capture sever-sent globabl variable */
 var currentUser = username;
@@ -80056,6 +80061,10 @@ var Menu = function (_React$Component) {
     _this.beginServerQuery = _this.beginServerQuery.bind(_this);
     return _this;
   }
+  /* upon component load, query the local server for API credentials, then query
+   * API for data on current user. If authenticated, shows balance and cart info
+   */
+
 
   _createClass(Menu, [{
     key: 'componentDidMount',
@@ -80102,9 +80111,6 @@ var Menu = function (_React$Component) {
       Request.get(url, queryCallback).auth(credentials.username, credentials.password, true);
     }
   }, {
-    key: 'handleButtonClick',
-    value: function handleButtonClick() {}
-  }, {
     key: 'render',
     value: function render() {
       /* Show/Hide menu navlinks if there is an authenticated user */
@@ -80126,7 +80132,9 @@ Menu.propTypes = {
 };
 
 // front end global error handler -> redirect to error page for now
-// window.onerror = () => window.location.href = '/error/455';
+window.onerror = function () {
+  return window.location.href = '/error/455';
+};
 
 ReactDOM.render(React.createElement(Menu, { apiURL: ASTRALUX_API, localURL: LOCAL_URL, username: currentUser }), document.getElementById('menu'));
 

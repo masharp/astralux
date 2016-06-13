@@ -1,3 +1,9 @@
+/* Stateful React Component that controls the Cart view. Allows the user to
+ * view their current cart, confirm the purchase of that cart, and then view
+ * a receipt of that transaction. Composes a receipt and list stateless components.
+ */
+
+
 'use strict';
 
 import CartReceipt from './components/cart/CartReceipt';
@@ -12,7 +18,7 @@ const Request = require('request');
 // server side variables sent with render
 const currentUser = username;
 
-const LOCAL_URL = 'http://localhost:3000/credentials';
+const LOCAL_URL = 'https://astralux.herokuapp.com/credentials';
 const ASTRALUX_API = 'https://astralux-api.herokuapp.com/api';
 
 class Cart extends React.Component {
@@ -23,6 +29,9 @@ class Cart extends React.Component {
     this.handlePurchase = this.handlePurchase.bind(this);
     this.handleEmptying = this.handleEmptying.bind(this);
   }
+  /* upon component load, query the local server for API credentials, then query
+   * API for data on the current user.
+   */
   componentDidMount() {
     const localURL = this.props.localURL;
     const url = `${this.props.apiURL}/users/${this.props.username}`;
@@ -45,6 +54,7 @@ class Cart extends React.Component {
       Request.get(url, callback).auth(credentials.username, credentials.password, true);
     });
   }
+  /* simple function that hides all messages as a result of purchasing the cart */
   supressMessages() {
     const failureMsgElement1 = document.getElementById('purchase-failure1');
     const failureMsgElement2 = document.getElementById('purchase-failure2');
@@ -54,6 +64,8 @@ class Cart extends React.Component {
     failureMsgElement1.classList.add('hidden');
     failureMsgElement2.classList.add('hidden');
   }
+  /* click handler that removes an item from the cart list and updates the user's
+   * stored cart */
   handleItemRemove(event) {
     /* see which item is being removed and pull out current cart */
     const currentCart = this.state.cart;
@@ -84,6 +96,8 @@ class Cart extends React.Component {
     // request PUT to API
     Request.put(options, callback).auth(this.state.credentials.username, this.state.credentials.password, true);
   }
+  /* click handler that removes all items from the cart list and updates the user's
+   * stored cart */
   handleEmptying(event) {
     const url = `${this.props.apiURL}/users/cart/${this.props.username}`;
     const self = this;
@@ -107,6 +121,10 @@ class Cart extends React.Component {
     // request PUT to API
     Request.put(options, callback).auth(this.state.credentials.username, this.state.credentials.password, true);
   }
+  /* click handler that initiates the purchase of the user's current cart.
+   * Sends the API a copy of the cart, balance, and cost of transaction in the
+   * current view.
+   */
   handlePurchase(event) {
     const successMsgElement = document.getElementById('purchase-success');
     const failureMsgElement1 = document.getElementById('purchase-failure1');
@@ -190,7 +208,7 @@ Cart.propTypes = {
 };
 
 // front end global error handler -> redirect to error page for now
-//window.onerror = () => window.location.href = '/error/455';
+window.onerror = () => window.location.href = '/error/455';
 
 ReactDOM.render(React.createElement(Cart, { apiURL: ASTRALUX_API, localURL: LOCAL_URL, username: currentUser }),
   document.getElementById('cart'));

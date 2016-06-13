@@ -1,3 +1,8 @@
+/**
+ * Node Router module that exports the Express HTTP paths for OAuth authentication.
+ * Includes authentication route and callbacks for each strategy.
+ */
+
 'use strict';
 
 /* HTTP Routing */

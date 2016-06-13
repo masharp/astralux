@@ -1,4 +1,9 @@
 #!/usr/bin/env node
+
+/**
+ * Node Script that initializes the server
+ */
+ 
 'use strict';
 
 /* Module Dependencies */

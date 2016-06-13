@@ -80091,6 +80091,11 @@ function PageFooter() {
 }
 
 },{"react":367}],446:[function(require,module,exports){
+/* Stateful child component of the Moonlet component that queries the API
+ * for moonlets and then parses them based on the parent moonlet's type. Gives
+ * the user a list of similar items. Uses the MoonletItem child
+ */
+
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80200,6 +80205,12 @@ SimilarMoonlets.propTypes = {
 };
 
 },{"../../components/MoonletItem":444,"react":367,"request":378}],447:[function(require,module,exports){
+/**
+ * Stateful Moonlet React Controller for the main Moonlet route. Displays info
+ * on the current moonlet and similar moonlets (weighted towards similar moonlet type)
+ * component.
+ */
+
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -80228,7 +80239,7 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var Request = require('request');
 
-var LOCAL_URL = 'http://localhost:3000/credentials';
+var LOCAL_URL = 'https://astralux.herokuapp.com/credentials';
 var ASTRALUX_API = 'https://astralux-api.herokuapp.com/api';
 
 // server side variables sent with render
@@ -80248,6 +80259,10 @@ var Moonlet = function (_React$Component) {
     _this.handleAmountClick = _this.handleAmountClick.bind(_this);
     return _this;
   }
+  /* upon component loading, call the local server for credentials, then query API
+     for data on current moonlet.
+   */
+
 
   _createClass(Moonlet, [{
     key: 'componentDidMount',
@@ -80284,6 +80299,10 @@ var Moonlet = function (_React$Component) {
         }
       });
     }
+    /**
+     * click handler for the Moonlet Amount incr/decr. ceiling at 0
+     */
+
   }, {
     key: 'handleAmountClick',
     value: function handleAmountClick(event) {
@@ -80298,6 +80317,12 @@ var Moonlet = function (_React$Component) {
       cost = this.state.moonlet.price * amountState;
       this.setState({ amount: amountState, cost: cost });
     }
+    /**
+     * click handler for adding the moonlet amount to the user's cart.
+     * First queries for the user's current cart, combines stored cart with
+     * new additions, then updates the user's store.
+     */
+
   }, {
     key: 'handleCartClick',
     value: function handleCartClick(event) {
@@ -80387,7 +80412,9 @@ Moonlet.propTypes = {
 };
 
 // front end global error handler -> redirect to error page for now
-// window.onerror = () => window.location.href = '/error/455';
+window.onerror = function () {
+  return window.location.href = '/error/455';
+};
 
 ReactDOM.render(React.createElement(Moonlet, { apiURL: ASTRALUX_API, localURL: LOCAL_URL, moonletID: moonletTag, username: currentUser }), document.getElementById('moonlet'));
 

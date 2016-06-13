@@ -1,3 +1,8 @@
+/**
+ * Stateful Menu React Controller for the Menu Component. If there is an authenticated user,
+ * displays data on user's current balance and cart
+ */
+
 'use strict';
 
 const React = require('react');
@@ -5,7 +10,7 @@ const ReactDOM = require('react-dom');
 const Request = require('request');
 
 const ASTRALUX_API = 'https://astralux-api.herokuapp.com/api/users';
-const LOCAL_URL = 'http://localhost:3000/credentials';
+const LOCAL_URL = 'https://astralux.herokuapp.com/credentials';
 
 /* capture sever-sent globabl variable */
 const currentUser = username;
@@ -17,6 +22,9 @@ class Menu extends React.Component {
 
     this.beginServerQuery = this.beginServerQuery.bind(this);
   }
+  /* upon component load, query the local server for API credentials, then query
+   * API for data on current user. If authenticated, shows balance and cart info
+   */
   componentDidMount() {
     const localURL = this.props.localURL;
     const self = this;
@@ -56,8 +64,6 @@ class Menu extends React.Component {
     }
     Request.get(url, queryCallback).auth(credentials.username, credentials.password, true);
   }
-  handleButtonClick() {
-  }
   render() {
     /* Show/Hide menu navlinks if there is an authenticated user */
     const isLoggedIn = this.props.username.length > 0 ? true : false;
@@ -95,7 +101,7 @@ Menu.propTypes = {
 };
 
 // front end global error handler -> redirect to error page for now
-// window.onerror = () => window.location.href = '/error/455';
+window.onerror = () => window.location.href = '/error/455';
 
 ReactDOM.render(React.createElement(Menu, { apiURL: ASTRALUX_API, localURL: LOCAL_URL, username: currentUser }),
   document.getElementById('menu'));

@@ -1,6 +1,9 @@
 /**
- * Node module that exports the Express HTTP router for the application. Handles
+ * Node Router module that exports the Express HTTP router for the application. Handles
  * all server-side HTTP page requests and includes a REST layer for client-side AJAX requests.
+ * Most routes check for an authenticated username. If found - sends that along for use in
+ * the client. If not found - sends an empty string which the client uses to indicate
+ * unauthentication.
  */
 
 'use strict';
@@ -17,10 +20,10 @@ const credentials = {
 
 /**
  * Function that ensures a user is authenticated via Passport in order to
- * access routes
+ * access routes. Operates as a middleware / decorator on individual routes.
  */
 function ensureAuthentication(request, response, next) {
-  if (request.isAuthenticated()) return next(null);
+  if (request.isAuthenticated()) return next(null); // checks the middleware passport function
   response.redirect('/error/403');
 }
 
@@ -90,7 +93,7 @@ router.get('/about', (request, response) => {
   response.render('about', { title: 'Astralux About | A moonlet Marketplace of the Future', username });
 });
 
-/* Error Page */
+/* Error Page - includes custom error codes for custom error message on the error page */
 router.get('/error/:code?', (request, response) => {
   const username = request.session.passport ? request.session.passport.user.username : '';
 
