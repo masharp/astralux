@@ -6,6 +6,11 @@
     padding-left: 4em;
     margin-top: 7em;
 
+    @media (max-width: 650px) {
+      padding: .5em;
+      margin-top: 5em;
+    }
+
     #marketplace-header {
       #marketplace-display-tree {
         .tree {
@@ -36,6 +41,11 @@
         font-size: 1.2em;
         margin-right: 2em;
 
+        @media (max-width: 650px) {
+          display: inline-block;
+          margin-right: 1em;
+          font-size: 1em;
+        }
         &:hover {
           box-shadow: .5px .5px .5px .5px #000;
           cursor: pointer;
