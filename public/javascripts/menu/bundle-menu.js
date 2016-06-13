@@ -80107,8 +80107,12 @@ var Menu = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
+      /* Show/Hide menu navlinks if there is an authenticated user */
+      var isLoggedIn = this.props.username.length > 0 ? true : false;
+      var hiddenLoggedIn = isLoggedIn ? 'hidden' : '';
+      var hiddenLoggedOut = isLoggedIn ? '' : 'hidden';
 
-      return React.createElement('div', { id: 'menu-bar' }, React.createElement('a', { className: 'navlink', href: '/' }, React.createElement('img', { className: 'menu-brand', src: '/assets/brand.png' })), React.createElement('div', { id: 'link-nav' }, React.createElement('a', { className: 'navlink menu-marketplace', href: '/marketplace' }, 'Marketplace'), React.createElement('a', { className: 'menu-logout navlink hidden', href: '/' }, 'Logout'), React.createElement('span', { className: 'navlink menu-balance hidden' }, 'Balance: ', React.createElement('span', { className: 'balance-amount-point' }, this.state.balance)), React.createElement('a', { id: 'menu-cart', className: 'navlink hidden', href: '/cart/' + this.props.username }, React.createElement('i', { className: 'fa fa-shopping-cart' }), React.createElement('span', { id: 'menu-cart-updater' }, ' ' + this.state.size + ' ')), React.createElement('a', { className: 'menu-account navlink hidden', href: '/dashboard/' + this.props.username }, 'Dashboard'), React.createElement('a', { className: 'navlink menu-login', href: '/login' }, 'Login')));
+      return React.createElement('div', { id: 'menu-bar' }, React.createElement('a', { className: 'navlink', href: '/' }, React.createElement('img', { className: 'menu-brand', src: '/assets/brand.png' })), React.createElement('div', { id: 'link-nav' }, React.createElement('a', { className: 'navlink menu-marketplace', href: '/marketplace' }, 'Marketplace'), React.createElement('a', { className: 'menu-account navlink ' + hiddenLoggedOut, href: '/dashboard' }, 'Dashboard'), React.createElement('span', { className: 'navlink menu-balance ' + hiddenLoggedOut }, 'Balance: ', React.createElement('span', { className: 'balance-amount-point' }, this.state.balance)), React.createElement('a', { id: 'menu-cart', className: 'navlink ' + hiddenLoggedOut, href: '/cart' }, React.createElement('i', { className: 'fa fa-shopping-cart' }), React.createElement('span', { id: 'menu-cart-updater' }, ' ' + this.state.size + ' ')), React.createElement('a', { className: 'menu-logout navlink ' + hiddenLoggedOut, href: '/logout' }, 'Logout'), React.createElement('a', { className: 'navlink menu-login ' + hiddenLoggedIn, href: '/login' }, 'Login')));
     }
   }]);
 

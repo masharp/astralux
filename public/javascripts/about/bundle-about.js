@@ -80047,9 +80047,6 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var Request = require('request');
 
-// server side variables sent with render
-var appCredentials = credentials;
-
 var About = function (_React$Component) {
   _inherits(About, _React$Component);
 

@@ -10,9 +10,6 @@ const React = require('react');
 const ReactDOM = require('react-dom');
 const Request = require('request');
 
-// server side variables sent with render
-const appCredentials = credentials;
-
 class About extends React.Component {
   constructor(props) {
     super(props);

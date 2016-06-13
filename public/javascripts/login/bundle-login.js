@@ -80073,17 +80073,21 @@ var Login = function (_React$Component) {
     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Login).call(this, props));
 
     _this.state = {};
-    _this.handleButtonClick = _this.handleButtonClick.bind(_this);
+    _this.handleLogin = _this.handleLogin.bind(_this);
     return _this;
   }
 
   _createClass(Login, [{
-    key: 'handleButtonClick',
-    value: function handleButtonClick(event) {}
+    key: 'handleLogin',
+    value: function handleLogin(event) {
+      var target = event.target.id;
+
+      if (target === 'login-twitter') location.href = '/auth/twitter', 'twitter-auth-window';else if (target === 'login-facebook') location.href = '/auth/facebook', 'facebook-auth-window';
+    }
   }, {
     key: 'render',
     value: function render() {
-      return React.createElement('div', { id: 'login-component' }, React.createElement('div', { id: 'login-header' }, React.createElement('img', { src: '/assets/login-alien.png' }), React.createElement('h2', { className: 'login-header-text' }, 'Login  |  Sign Up'), React.createElement('h3', null, 'Connect with: '), React.createElement('div', { id: 'login-facebook', className: 'login-btn' }, React.createElement('i', { className: 'fa fa-facebook' }), React.createElement('span', { className: 'login-btn-text' }, 'Facebook')), React.createElement('br', null), React.createElement('div', { id: 'login-google', className: 'login-btn' }, React.createElement('i', { className: 'fa fa-google' }), React.createElement('span', { className: 'login-btn-text' }, 'Google')), React.createElement('br', null), React.createElement('div', { id: 'login-twitter', className: 'login-btn' }, React.createElement('i', { className: 'fa fa-twitter' }), React.createElement('span', { className: 'login-btn-text' }, 'Twitter'))), React.createElement(_PageFooter2.default, null));
+      return React.createElement('div', { id: 'login-component' }, React.createElement('div', { id: 'login-header' }, React.createElement('img', { src: '/assets/login-alien.png' }), React.createElement('h2', { className: 'login-header-text' }, 'Login  |  Sign Up'), React.createElement('h3', null, 'Connect with: '), React.createElement('div', { id: 'login-facebook', className: 'login-btn', onClick: this.handleLogin }, React.createElement('i', { className: 'fa fa-facebook' }), React.createElement('span', { className: 'login-btn-text' }, 'Facebook')), React.createElement('br', null), React.createElement('div', { id: 'login-twitter', className: 'login-btn', onClick: this.handleLogin }, React.createElement('i', { className: 'fa fa-twitter' }), React.createElement('span', { className: 'login-btn-text' }, 'Twitter'))), React.createElement(_PageFooter2.default, null));
     }
   }]);
 

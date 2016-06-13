@@ -12,9 +12,13 @@ class Login extends React.Component {
   constructor(props) {
     super(props);
     this.state = { };
-    this.handleButtonClick = this.handleButtonClick.bind(this);
+    this.handleLogin = this.handleLogin.bind(this);
   }
-  handleButtonClick(event) {
+  handleLogin(event) {
+    const target = event.target.id;
+
+    if (target === 'login-twitter') location.href = '/auth/twitter', 'twitter-auth-window';
+    else if (target === 'login-facebook') location.href = '/auth/facebook', 'facebook-auth-window';
   }
   render() {
     return (
@@ -23,17 +27,12 @@ class Login extends React.Component {
           React.createElement('img', { src: '/assets/login-alien.png' }),
           React.createElement('h2', { className: 'login-header-text' }, 'Login  |  Sign Up'),
           React.createElement('h3', null, 'Connect with: '),
-          React.createElement('div', { id: 'login-facebook', className: 'login-btn' },
+          React.createElement('div', { id: 'login-facebook', className: 'login-btn', onClick: this.handleLogin },
             React.createElement('i', { className: 'fa fa-facebook'}),
             React.createElement('span', { className: 'login-btn-text'}, 'Facebook')
           ),
           React.createElement('br', null),
-          React.createElement('div', { id: 'login-google', className: 'login-btn' },
-            React.createElement('i', { className: 'fa fa-google'}),
-            React.createElement('span', { className: 'login-btn-text'}, 'Google')
-          ),
-          React.createElement('br', null),
-          React.createElement('div', { id: 'login-twitter', className: 'login-btn' },
+          React.createElement('div', { id: 'login-twitter', className: 'login-btn', onClick: this.handleLogin },
             React.createElement('i', { className: 'fa fa-twitter'}),
             React.createElement('span', { className: 'login-btn-text'}, 'Twitter')
           )

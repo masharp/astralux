@@ -75,7 +75,7 @@ class Moonlet extends React.Component {
     /* hide cart success message if open */
     successMsgElement.classList.add('hidden');
 
-    /* check if there is anything to add to cart */
+    /* check if there is anything to add to cart and user is logged in */
     if (self.state.amount > 0 && this.props.username.length > 0) {
 
       /* callback for the cart update PUT request */

@@ -15,6 +15,15 @@ const credentials = {
   password: process.env.MASTER_PASSWORD
 };
 
+/**
+ * Function that ensures a user is authenticated via Passport in order to
+ * access routes
+ */
+function ensureAuthentication(request, response, next) {
+  if (request.isAuthenticated()) return next(null);
+  response.redirect('/error/403');
+}
+
 /* handle web crawlers */
 router.get('/robots.txt', (request, response) => {
   response.type('text/plain');
@@ -29,50 +38,62 @@ router.get('/sitemap.txt', (request, response) => {
 
 /* Home Page */
 router.get('/', (request, response) => {
-  const username = request.params.username ? request.params.username : '';
+  const username = request.session.passport ? request.session.passport.user.username : '';
+
   response.render('home', { title: 'Astralux - A moonlet Marketplace of the Future', username });
 });
 
 router.get('/moonlet/:moonletID/:moonletName?', (request, response) => {
+  const username = request.session.passport ? request.session.passport.user.username : '';
   const moonletID = request.params.moonletID;
   const moonletName = request.params.moonletName ? request.params.moonletName : 'Moonlet';
-  const username = 'admin';
 
   response.render('moonlet', { title: `Astralux - ${moonletName} | A fancy space Moonlet!`, moonletID, username });
 });
 
 /* Login Page */
 router.get('/login', (request, response) => {
-  const username = request.params.username ? request.params.username : '';
+  const username = request.session.passport ? request.session.passport.user.username : '';
+
   response.render('login', { title: 'Astralux Login | A moonlet Marketplace of the Future', username });
 });
 
+router.get('/logout', (request, response) => {
+  request.logout();
+  request.session.destroy((error) => response.redirect('/'));
+});
+
 /* Dashboard Page */
-router.get('/dashboard/:username?', (request, response) => {
-  const username = request.params.username ? request.params.username : '';
+router.get('/dashboard', ensureAuthentication, (request, response) => {
+  const username = request.session.passport.user.username;
+
   response.render('dashboard', { title: 'Astralux Dashboard | A moonlet Marketplace of the Future', username });
 });
 
-router.get('/cart/:username?', (request, response) => {
-  const username = request.params.username ? request.params.username : '';
+router.get('/cart', ensureAuthentication, (request, response) => {
+  const username = request.session.passport.user.username;
+
   response.render('cart', { title: 'Astralux Cart | A moonlet Marketplace of the Future', username });
 });
 
 /* Marketplace Page */
 router.get('/marketplace', (request, response) => {
-  const username = request.params.username ? request.params.username : '';
+  const username = request.session.passport ? request.session.passport.user.username : '';
+
   response.render('marketplace', { title: 'Astralux Marketplace | A moonlet Marketplace of the Future', username });
 });
 
 /* Marketplace Page */
 router.get('/about', (request, response) => {
-  const username = request.params.username ? request.params.username : '';
+  const username = request.session.passport ? request.session.passport.user.username : '';
+
   response.render('about', { title: 'Astralux About | A moonlet Marketplace of the Future', username });
 });
 
 /* Error Page */
 router.get('/error/:code?', (request, response) => {
-  const username = request.params.username ? request.params.username : '';
+  const username = request.session.passport ? request.session.passport.user.username : '';
+
   let code = request.params.code ? Number(request.params.code) : 500; // pull out the error code, if present
   if (code < 400 || code > 501 || isNaN(code)) code = 500; // check if error code is valid
   let message = '';

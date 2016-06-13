@@ -80122,6 +80122,9 @@ var Request = require('request');
 var ASTRALUX_API = 'https://astralux-api.herokuapp.com/api/moonlets';
 var LOCAL_URL = 'http://localhost:3000/credentials';
 
+/* capture sever-sent globabl variable */
+var currentUser = username;
+
 var Home = function (_React$Component) {
   _inherits(Home, _React$Component);
 
@@ -80197,8 +80200,12 @@ var Home = function (_React$Component) {
       if (this.state.moonlets !== null) {
         var featuredNodes = this.constructFeatured();
 
-        return React.createElement('div', { id: 'home-component' }, React.createElement('div', { id: 'home-header' }, React.createElement('img', { src: '/assets/home.png', id: 'home-img' }), React.createElement('div', { id: 'home-copy' }, React.createElement('h1', { className: 'copy-header' }, 'Astralux Industries'), React.createElement('p', { className: 'copy' }, 'Brave space explorers have discovered Moonlets in the far reaches of the galaxy! ' + 'The United Nations Galactic Agency has commissioned Astralux to sell rights to these ' + 'countless wonders in hopes to fund colonization efforts. Stake your claim and grab your ' + 'moonlet today!'), React.createElement('input', { type: 'button', className: 'home-btn',
-          value: 'Sign Up', onClick: this.handleButtonClick }), React.createElement('input', { type: 'button', className: 'home-btn',
+        /* Show/Hide menu navlinks if there is an authenticated user */
+        var isLoggedIn = this.props.username.length > 0 ? true : false;
+        var hiddenLoggedIn = isLoggedIn ? 'hidden' : '';
+
+        return React.createElement('div', { id: 'home-component' }, React.createElement('div', { id: 'home-header' }, React.createElement('img', { src: '/assets/home.png', id: 'home-img' }), React.createElement('div', { id: 'home-copy' }, React.createElement('h1', { className: 'copy-header' }, 'Astralux Industries'), React.createElement('p', { className: 'copy' }, 'Brave space explorers have discovered Moonlets in the far reaches of the galaxy! ' + 'The United Nations Galactic Agency has commissioned Astralux to sell rights to these ' + 'countless wonders in hopes to fund colonization efforts. Stake your claim and grab your ' + 'moonlet today!'), React.createElement('input', { type: 'button', className: 'home-btn ' + hiddenLoggedIn,
+          value: 'Sign Up', onClick: this.handleButtonClick }), React.createElement('input', { type: 'button', className: 'home-btn ' + hiddenLoggedIn,
           value: 'Login', onClick: this.handleButtonClick }))), React.createElement('h1', { className: 'featured-header' }, 'Today\'s Featured Moonlets'), React.createElement('div', { id: 'home-featured' }, featuredNodes), React.createElement(_PageFooter2.default, null));
       }
       return React.createElement(_LoadingOverlay2.default, null);
@@ -80210,7 +80217,8 @@ var Home = function (_React$Component) {
 
 Home.propTypes = {
   apiURL: React.PropTypes.string.isRequired,
-  localURL: React.PropTypes.string.isRequired
+  localURL: React.PropTypes.string.isRequired,
+  username: React.PropTypes.string
 };
 
 // front end global error handler -> redirect to error page for now
@@ -80218,6 +80226,6 @@ window.onerror = function () {
   return window.location.href = '/error/455';
 };
 
-ReactDOM.render(React.createElement(Home, { apiURL: ASTRALUX_API, localURL: LOCAL_URL }), document.getElementById('home'));
+ReactDOM.render(React.createElement(Home, { apiURL: ASTRALUX_API, localURL: LOCAL_URL, username: currentUser }), document.getElementById('home'));
 
 },{"./components/LoadingOverlay":443,"./components/MoonletItem":444,"./components/PageFooter":445,"react":367,"react-dom":238,"request":378}]},{},[446]);

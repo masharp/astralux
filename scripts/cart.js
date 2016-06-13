@@ -28,8 +28,6 @@ class Cart extends React.Component {
     const url = `${this.props.apiURL}/users/${this.props.username}`;
     const self = this;
 
-    /* redirect if unathenticated user */
-    if (this.props.username.length >= 0) window.location.href = '/';
     // query local server for API credentials
     Request.get(localURL, (error, response, body) => {
       if (error) window.location.href = '/error/455';
@@ -135,14 +133,12 @@ class Cart extends React.Component {
     }
     /* finish PUT route options object */
     options.json = { cart: currentCart, balance: currentBalance, cost: currentCost };
-    console.log(options);
 
     function callback(error, response, body) {
       if (error) window.location.href = '/error/455';
       else if (body.hasOwnProperty('error')) failureMsgElement2.classList.remove('hidden');
       else {
         const receipt = body.transaction;
-        console.log(receipt);
 
         /* show success message then the receipt after 5 seconds */
         successMsgElement.classList.remove('hidden');

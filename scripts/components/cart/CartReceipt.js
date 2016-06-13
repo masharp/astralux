@@ -21,7 +21,7 @@ export default function CartReceipt(props) {
         React.createElement('span', { className: 'receipt-cost-point' }, props.receipt.price)
       ),
       React.createElement('p', { className: 'receipt-date' }, `Date: ${props.receipt.timestamp.split(' ')[0]}`),
-      React.createElement('a', { href: '/dashboard/admin' }, 'View New Moonlets!')
+      React.createElement('a', { href: '/dashboard' }, 'View New Moonlets!')
     )
   );
 }

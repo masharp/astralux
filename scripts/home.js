@@ -11,6 +11,9 @@ const Request = require('request');
 const ASTRALUX_API = 'https://astralux-api.herokuapp.com/api/moonlets';
 const LOCAL_URL = 'http://localhost:3000/credentials';
 
+/* capture sever-sent globabl variable */
+const currentUser = username;
+
 class Home extends React.Component {
   constructor(props) {
     super(props);
@@ -73,6 +76,10 @@ class Home extends React.Component {
     if (this.state.moonlets !== null) {
       const featuredNodes = this.constructFeatured();
 
+      /* Show/Hide menu navlinks if there is an authenticated user */
+      const isLoggedIn = this.props.username.length > 0 ? true : false;
+      const hiddenLoggedIn = isLoggedIn ? 'hidden' : '';
+
       return (
         React.createElement('div', { id: 'home-component' },
           React.createElement('div', { id: 'home-header' },
@@ -85,9 +92,9 @@ class Home extends React.Component {
                 'countless wonders in hopes to fund colonization efforts. Stake your claim and grab your ' +
                 'moonlet today!'
               ),
-              React.createElement('input', { type: 'button', className: 'home-btn',
+              React.createElement('input', { type: 'button', className: `home-btn ${hiddenLoggedIn}`,
                 value: 'Sign Up', onClick: this.handleButtonClick }),
-              React.createElement('input', { type: 'button', className: 'home-btn',
+              React.createElement('input', { type: 'button', className: `home-btn ${hiddenLoggedIn}`,
                 value: 'Login', onClick: this.handleButtonClick })
             )
           ),
@@ -104,9 +111,11 @@ class Home extends React.Component {
 Home.propTypes = {
   apiURL: React.PropTypes.string.isRequired,
   localURL: React.PropTypes.string.isRequired,
+  username: React.PropTypes.string
 };
 
 // front end global error handler -> redirect to error page for now
 window.onerror = () => window.location.href = '/error/455';
 
-ReactDOM.render(React.createElement(Home, { apiURL: ASTRALUX_API, localURL: LOCAL_URL }), document.getElementById('home'));
+ReactDOM.render(React.createElement(Home, { apiURL: ASTRALUX_API, localURL: LOCAL_URL, username: currentUser }),
+  document.getElementById('home'));
