@@ -80085,7 +80085,7 @@ var Menu = function (_React$Component) {
       });
     }
     /* Function that updates the menu bar with the current user's profile state.
-     * calls itself every 5 seconds and checks if the current stored state has changed.
+     * calls itself every 3 seconds and checks if the current stored state has changed.
      * updates as necessary
      * NOTE: Disabled due to poor performance. Explore other options.
      */
@@ -80105,7 +80105,7 @@ var Menu = function (_React$Component) {
 
           self.setState({ user: updatedState, balance: balance, size: size });
 
-          setTimeout(self.beginServerQuery, 5000);
+          setTimeout(self.beginServerQuery, 3000);
         }
       }
       Request.get(url, queryCallback).auth(credentials.username, credentials.password, true);
@@ -80118,7 +80118,7 @@ var Menu = function (_React$Component) {
       var hiddenLoggedIn = isLoggedIn ? 'hidden' : '';
       var hiddenLoggedOut = isLoggedIn ? '' : 'hidden';
 
-      return React.createElement('div', { id: 'menu-bar' }, React.createElement('a', { className: 'navlink', href: '/' }, React.createElement('img', { className: 'menu-brand', src: '/assets/brand.png' })), React.createElement('div', { id: 'link-nav' }, React.createElement('a', { className: 'navlink menu-marketplace', href: '/marketplace' }, 'Marketplace'), React.createElement('a', { className: 'menu-account navlink ' + hiddenLoggedOut, href: '/dashboard' }, 'Dashboard'), React.createElement('span', { className: 'navlink menu-balance ' + hiddenLoggedOut }, 'Balance: ', React.createElement('span', { className: 'balance-amount-point' }, this.state.balance)), React.createElement('a', { id: 'menu-cart', className: 'navlink ' + hiddenLoggedOut, href: '/cart' }, React.createElement('i', { className: 'fa fa-shopping-cart' }), React.createElement('span', { id: 'menu-cart-updater' }, ' ' + this.state.size + ' ')), React.createElement('a', { className: 'menu-logout navlink ' + hiddenLoggedOut, href: '/logout' }, 'Logout'), React.createElement('a', { className: 'navlink menu-login ' + hiddenLoggedIn, href: '/login' }, 'Login')));
+      return React.createElement('div', { id: 'menu-bar' }, React.createElement('a', { className: 'navlink ' + hiddenLoggedIn, href: '/' }, React.createElement('img', { className: 'menu-brand', src: '/assets/brand.png' })), React.createElement('div', { id: 'link-nav' }, React.createElement('a', { className: 'navlink menu-marketplace', href: '/marketplace' }, 'Marketplace'), React.createElement('a', { className: 'menu-account navlink ' + hiddenLoggedOut, href: '/dashboard' }, 'Dashboard'), React.createElement('span', { className: 'navlink menu-balance ' + hiddenLoggedOut }, 'Balance: ', React.createElement('span', { className: 'balance-amount-point' }, this.state.balance)), React.createElement('a', { id: 'menu-cart', className: 'navlink ' + hiddenLoggedOut, href: '/cart' }, React.createElement('i', { className: 'fa fa-shopping-cart' }), React.createElement('span', { id: 'menu-cart-updater' }, ' ' + this.state.size + ' ')), React.createElement('a', { className: 'menu-logout navlink ' + hiddenLoggedOut, href: '/logout' }, 'Logout'), React.createElement('a', { className: 'navlink menu-login ' + hiddenLoggedIn, href: '/login' }, 'Login')));
     }
   }]);
 
@@ -80132,9 +80132,7 @@ Menu.propTypes = {
 };
 
 // front end global error handler -> redirect to error page for now
-window.onerror = function () {
-  return window.location.href = '/error/455';
-};
+//window.onerror = () => window.location.href = '/error/455';
 
 ReactDOM.render(React.createElement(Menu, { apiURL: ASTRALUX_API, localURL: LOCAL_URL, username: currentUser }), document.getElementById('menu'));
 

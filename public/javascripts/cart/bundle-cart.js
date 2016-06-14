@@ -80228,7 +80228,7 @@ var Cart = function (_React$Component) {
             successMsgElement.classList.remove('hidden');
             setTimeout(function () {
               self.setState({ receipt: receipt });
-            }, 3000);
+            }, 2000);
           })();
         }
       }

@@ -119,9 +119,8 @@ passport.deserializeUser((obj, done) => done(null, obj));
 const index = require('./routes/index');
 const auths = require('./routes/auths');
 
-/* time in miliseconds, const oneDay = 86400000; */
+/* time in miliseconds, const oneDay = 86400000; const oneHour = 3600000; */
 const oneMinute = 60000;
-const oneHour = 3600000;
 
 /* Express Application */
 const app = express();
@@ -149,7 +148,7 @@ app.use(cors());
 
 /* express.static for setting browser cache headers, currently cacheing all
  * public scripts, css, and images. */
-app.use(express.static(path.join(__dirname, 'public'), { maxAge: 0 }));
+app.use(express.static(path.join(__dirname, 'public'), { maxAge: oneMinute * 10 }));
 
 /* Passport Middleware */
 app.use(passport.initialize());

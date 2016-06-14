@@ -162,7 +162,7 @@ class Cart extends React.Component {
         successMsgElement.classList.remove('hidden');
         setTimeout(() => {
           self.setState({ receipt })
-        }, 3000);
+        }, 2000);
       }
     }
 

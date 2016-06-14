@@ -29,17 +29,34 @@ class Dashboard extends React.Component {
   constructor(props) {
     super(props);
     this.state = { user: null, moonlets: null, credentials: null };
-
+    this.queryUserData = this.queryUserData.bind(this);
     this.handleTabClick = this.handleTabClick.bind(this);
   }
-  /* upon component load, query the local server for API credentials, then query
-   * API for data on the current user.
-   */
-  componentDidMount() {
+  queryUserData(credentials) {
     const userURL = `${this.props.apiURL}/users/${this.props.username}`;
-    const localURL = this.props.localURL;
     const moonletsURL = `${this.props.apiURL}/moonlets`;
     const self = this;
+
+    function userCallback(userError, userResponse, userBody) {
+      if (userError || userBody.hasOwnProperty('error')) window.location.href = '/error/455';
+      const user = JSON.parse(userBody).user;
+
+      function moonletsCallback(moonletsError, moonletsResponse, moonletsBody) {
+        if (moonletsError || moonletsBody.hasOwnProperty('error')) window.location.href = '/error/455';
+        const moonlets =  JSON.parse(moonletsBody).moonlets;
+
+        self.setState({ user, moonlets, credentials });
+      }
+      // request info on all moonlets
+      Request.get(moonletsURL, moonletsCallback).auth(credentials.username, credentials.password, true);
+    }
+    // request info on this user
+    Request.get(userURL, userCallback).auth(credentials.username, credentials.password, true);
+
+  }
+  /* upon component load, query the local server for API credentials */
+  componentDidMount() {
+    const localURL = this.props.localURL;
 
     /* disallow if unauthenticated user */
     if (this.props.username.length <= 0) window.location.href = '/';
@@ -48,24 +65,11 @@ class Dashboard extends React.Component {
     Request.get(localURL, (error, response, body) => {
       if (error || body.hasOwnProperty('error')) window.location.href = '/error/455';
       const credentials = JSON.parse(body);
-
-      function userCallback(userError, userResponse, userBody) {
-        if (userError || userBody.hasOwnProperty('error')) window.location.href = '/error/455';
-        const user = JSON.parse(userBody).user;
-
-        function moonletsCallback(moonletsError, moonletsResponse, moonletsBody) {
-          if (moonletsError || moonletsBody.hasOwnProperty('error')) window.location.href = '/error/455';
-          const moonlets =  JSON.parse(moonletsBody).moonlets;
-
-          self.setState({ user, moonlets, credentials });
-        }
-        // request info on all moonlets
-        Request.get(moonletsURL, moonletsCallback).auth(credentials.username, credentials.password, true);
-      }
-      // request info on this user
-      Request.get(userURL, userCallback).auth(credentials.username, credentials.password, true);
+      this.setState({ credentials });
+      this.queryUserData(credentials);
     });
   }
+  /* class function used by the ReactTabs plugin to change panels */
   handleTabClick(index, last) {
   }
   render() {
@@ -83,7 +87,8 @@ class Dashboard extends React.Component {
             ),
             React.createElement(TabPanel, {},
               React.createElement(TransactionsPanel,
-                { user: this.state.user, credentials: this.state.credentials, url: this.props.apiURL })
+                { user: this.state.user, credentials: this.state.credentials,
+                  url: this.props.apiURL, query: this.queryUserData })
             ),
             React.createElement(TabPanel, {},
               React.createElement(SettingsPanel,
@@ -104,7 +109,7 @@ Dashboard.propTypes = {
 };
 
 // front end global error handler -> redirect to error page for now
-window.onerror = () => window.location.href = '/error/455';
+//window.onerror = () => window.location.href = '/error/455';
 
 ReactDOM.render(React.createElement(Dashboard, { apiURL: ASTRALUX_API, localURL: LOCAL_URL, username: currentUser }),
   document.getElementById('dashboard'));

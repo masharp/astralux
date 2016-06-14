@@ -6,9 +6,12 @@
     padding-left: 5em;
     padding-right: 5em;
 
+    @media (max-width: 650px) { padding-left: 1em; padding-right: 0; }
+    @media (min-width: 700px) and (max-width: 1000px) { margin-top: 9em; }
     .ReactTabs__TabList {
       border-bottom: 2px solid $quadrary-color;
       text-align: right;
+      @media (max-width: 650px) { text-align: center; }
     }
     .ReactTabs__Tab {
       background-color: $quadrary-color;
@@ -26,6 +29,7 @@
         float: left;
         margin-left: 1em;
         margin-bottom: 3em;
+        @media (max-width: 650px) { float: none; }
 
         .profile-username {
           font-size: 1.8em;
@@ -39,6 +43,7 @@
       }
       #profile-panel-wallet {
         float: right;
+        @media (max-width: 650px) { float: none; }
 
         .wallet-header { font-size: 1.8em; }
         p { font-size: 1.2em; }
@@ -49,6 +54,7 @@
         #moonlet-inventory {
           display: table;
           border-spacing: 1em;
+          @media (max-width: 650px) { display: inline-block; }
 
           .moonlet-display {
             text-align: center;
@@ -58,6 +64,7 @@
             font-size: 1em;
             margin-right: 2em;
 
+            @media (max-width: 650px) { display: auto; font-size: .8em; }
             &:hover {
               box-shadow: .5px .5px .5px .5px #000;
               cursor: pointer;
@@ -65,12 +72,14 @@
             .moonlet-display-name {
               color: $link-color;
               font-size: 1.8em;
+              @media (max-width: 650px) { font-size: 1.4em; }
             }
             .moonlet-display-img {
               width: auto;
               height: 10em;
               display: inline-block;
               margin: 0 auto;
+              @media (max-width: 650px) { height: 5em; }
             }
             .moonlet-display-btn {
               display: none;
@@ -78,13 +87,17 @@
           }
         }
       }
-      .page-footer { text-align: center; }
+      .page-footer {
+        text-align: center;
+        @media (max-width: 650px) { font-size: .7em; }
+      }
     }
     #transaction-panel {
       #refund-status {
         text-align: center;
         font-size: 1.1em;
 
+        @media (max-width: 650px) { font-size: 1em; }
         #refund-success { color: green; }
         #refund-failure { color: red; }
       }
@@ -93,9 +106,13 @@
         width: 100%;
         text-align: center;
 
-        th { font-size: 1.5em; }
+        th {
+          font-size: 1.5em;
+          @media (max-width: 650px) { font-size: 1em; }
+        }
         .transaction {
           font-size: 1em;
+          @media (max-width: 650px) { font-size: .7em; }
 
           td {
             padding-top: .6em;
@@ -118,6 +135,7 @@
         bottom: 0;
         width: 100%;
         height: 3em;
+        @media (max-width: 650px) { width: 80%; font-size: .7em; }
       }
     }
     #settings-panel {
@@ -125,6 +143,7 @@
         text-align: center;
         font-size: 1.1em;
 
+        @media (max-width: 650px) { font-size: 1em; }
         #request-success {
           color: green;
         }
@@ -135,6 +154,7 @@
         float: left;
         width: 50%;
 
+        @media (max-width: 650px) { float: none; width: 100%; }
         .current-email {
           font-size: 1.1em;
 
@@ -154,6 +174,7 @@
         label, input {
           font-size: 1.1em;
           width: 60%;
+          @media (max-width: 650px) { width: 80%; }
         }
         input {
           padding: .2em;
@@ -174,6 +195,7 @@
         margin-top: 2em;
         margin-right: 5em;
 
+        @media (max-width: 650px) { float: none; margin-bottom: 3em; }
         .danger-zone-header {
           color: red;
         }
@@ -193,6 +215,11 @@
         bottom: 0;
         width: 100%;
         height: 3em;
+        @media (max-width: 650px) {
+          font-size: .7em;
+          position: relative;
+          
+        }
       }
     }
   }

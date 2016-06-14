@@ -59,6 +59,12 @@ header {
       margin-right: .5em;
       color: $font-color;
       text-decoration: none;
+
+      @media (max-width: 650px) {
+        font-size: .8em;
+        margin-left: 0;
+        margin-right: .5em;
+      }
     }
     .menu-balance {
       .balance-amount-point { color: black; }
@@ -227,6 +233,7 @@ header {
       bottom: 0;
       width: 100%;
       height: 3em;
+      @media (max-width: 650px) { width: 80%; font-size: .7em; }
     }
   }
 }
@@ -235,25 +242,33 @@ header {
     margin-top: 9em;
     padding-left: 3em;
     text-align: center;
+    @media (max-width: 650px) { margin-top: 5em; padding-left: 1em; }
   }
   #cart-component {
     #purchase-success { color: $link-color; }
     #purchase-failure1, #purchase-failure2 { color: red; }
     #cart-list {
       text-align: left;
+      @media (max-width: 650px) { text-align: center; }
 
-      .cart-list-header { font-size: 2.2em; }
+      .cart-list-header {
+        font-size: 2.2em;
+        @media (max-width: 650px) { font-size: 1.6em; }
+      }
       #cart-list-display {
         margin-top: 1.5em;
         float: right;
         width: 75%;
+        @media (max-width: 650px) { float: none; width: 100%; }
 
         th {
           font-size: 1.3em;
           padding-bottom: 1.5em;
+          @media (max-width: 650px) { font-size: .9em; }
         }
         .cart-item {
           font-size: 1.15em;
+
           .cart-moonlet-a {
             text-decoration: none;
             color: $link-color;
@@ -273,11 +288,13 @@ header {
     .cart-cost-final {
       margin-top: 2em;
       .cart-cost-point { color: red; }
+      @media (max-width: 650px) { font-size: 1.5em; }
     }
     .clear-filler { clear: both; }
     #cart-buttons {
       text-align: left;
       margin-top: 3em;
+      @media (max-width: 650px) { text-align: center; }
 
       .cart-empty-btn {
         margin-right: 1em;
@@ -290,6 +307,7 @@ header {
   #receipt-component {
     #cart-receipt {
       font-size: 1.2em;
+      @media (max-width: 650px) { font-size: 1em; }
 
       .receipt-number { color: black; }
       .receipt-cost-point { color: $quadrary-color; }
@@ -304,6 +322,7 @@ header {
     bottom: 0;
     width: 100%;
     height: 3em;
+    @media (max-width: 650px) { width: 80%; font-size: .7em; }
   }
 }
 #about {
@@ -338,7 +357,7 @@ header {
       bottom: 0;
       width: 100%;
       height: 3em;
-      @media (max-width: 650px) { width: 80%; }
+      @media (max-width: 650px) { width: 80%; font-size: .7em; }
       @media (min-width: 700px) and (max-width: 1000px) { width: 80%; }
     }
   }

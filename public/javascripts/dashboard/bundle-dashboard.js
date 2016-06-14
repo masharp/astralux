@@ -81241,6 +81241,10 @@ function TransactionsPanel(props) {
       refundTransaction(username, credentials, url, transactionID).then(function (result) {
         refundSuccess.classList.remove('hidden');
         refundSpinner.classList.add('hidden');
+
+        setTimeout(function () {
+          props.query(credentials);
+        }, 3000);
       }).catch(function (error) {
         window.location.href = '/error/455';
       });
@@ -81250,7 +81254,7 @@ function TransactionsPanel(props) {
   /* contruct each row of transaction history via table rows */
   var historyNodes = constructHistory(props.user);
 
-  return React.createElement('div', { id: 'transaction-panel' }, React.createElement('h2', { className: 'transaction-header' }, 'Your Transaction History'), React.createElement('div', { id: 'refund-status' }, React.createElement('p', { id: 'refund-success', className: 'hidden' }, 'Your refund was successful! It should be displayed the next time you visit your dashboard!'), React.createElement('i', { id: 'refund-spinner', className: 'fa fa-spinner fa-pulse hidden' })), React.createElement('table', { id: 'transaction-history' },
+  return React.createElement('div', { id: 'transaction-panel' }, React.createElement('h2', { className: 'transaction-header' }, 'Your Transaction History'), React.createElement('div', { id: 'refund-status' }, React.createElement('p', { id: 'refund-success', className: 'hidden' }, 'Your refund was successful!'), React.createElement('i', { id: 'refund-spinner', className: 'fa fa-spinner fa-pulse hidden' })), React.createElement('table', { id: 'transaction-history' },
   // transaction table header
   React.createElement('thead', null, React.createElement('tr', null, React.createElement('th', null, 'ID'), React.createElement('th', null, 'Date'), React.createElement('th', null, 'Type'), React.createElement('th', null, 'Items'), React.createElement('th', null, 'Balance'), React.createElement('th', null, 'Actions'))), React.createElement('tbody', null, historyNodes)), React.createElement(_PageFooter2.default, null));
 }
@@ -81258,7 +81262,8 @@ function TransactionsPanel(props) {
 TransactionsPanel.propTypes = {
   user: React.PropTypes.object.isRequired,
   credentials: React.PropTypes.object.isRequired,
-  url: React.PropTypes.string.isRequired
+  url: React.PropTypes.string.isRequired,
+  query: React.PropTypes.func.isRequired
 };
 
 },{"../PageFooter":455,"react":377,"request":388}],460:[function(require,module,exports){
@@ -81319,22 +81324,42 @@ var Dashboard = function (_React$Component) {
     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Dashboard).call(this, props));
 
     _this.state = { user: null, moonlets: null, credentials: null };
-
+    _this.queryUserData = _this.queryUserData.bind(_this);
     _this.handleTabClick = _this.handleTabClick.bind(_this);
     return _this;
   }
-  /* upon component load, query the local server for API credentials, then query
-   * API for data on the current user.
-   */
-
 
   _createClass(Dashboard, [{
-    key: 'componentDidMount',
-    value: function componentDidMount() {
+    key: 'queryUserData',
+    value: function queryUserData(credentials) {
       var userURL = this.props.apiURL + '/users/' + this.props.username;
-      var localURL = this.props.localURL;
       var moonletsURL = this.props.apiURL + '/moonlets';
       var self = this;
+
+      function userCallback(userError, userResponse, userBody) {
+        if (userError || userBody.hasOwnProperty('error')) window.location.href = '/error/455';
+        var user = JSON.parse(userBody).user;
+
+        function moonletsCallback(moonletsError, moonletsResponse, moonletsBody) {
+          if (moonletsError || moonletsBody.hasOwnProperty('error')) window.location.href = '/error/455';
+          var moonlets = JSON.parse(moonletsBody).moonlets;
+
+          self.setState({ user: user, moonlets: moonlets, credentials: credentials });
+        }
+        // request info on all moonlets
+        Request.get(moonletsURL, moonletsCallback).auth(credentials.username, credentials.password, true);
+      }
+      // request info on this user
+      Request.get(userURL, userCallback).auth(credentials.username, credentials.password, true);
+    }
+    /* upon component load, query the local server for API credentials */
+
+  }, {
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      var _this2 = this;
+
+      var localURL = this.props.localURL;
 
       /* disallow if unauthenticated user */
       if (this.props.username.length <= 0) window.location.href = '/';
@@ -81343,24 +81368,12 @@ var Dashboard = function (_React$Component) {
       Request.get(localURL, function (error, response, body) {
         if (error || body.hasOwnProperty('error')) window.location.href = '/error/455';
         var credentials = JSON.parse(body);
-
-        function userCallback(userError, userResponse, userBody) {
-          if (userError || userBody.hasOwnProperty('error')) window.location.href = '/error/455';
-          var user = JSON.parse(userBody).user;
-
-          function moonletsCallback(moonletsError, moonletsResponse, moonletsBody) {
-            if (moonletsError || moonletsBody.hasOwnProperty('error')) window.location.href = '/error/455';
-            var moonlets = JSON.parse(moonletsBody).moonlets;
-
-            self.setState({ user: user, moonlets: moonlets, credentials: credentials });
-          }
-          // request info on all moonlets
-          Request.get(moonletsURL, moonletsCallback).auth(credentials.username, credentials.password, true);
-        }
-        // request info on this user
-        Request.get(userURL, userCallback).auth(credentials.username, credentials.password, true);
+        _this2.setState({ credentials: credentials });
+        _this2.queryUserData(credentials);
       });
     }
+    /* class function used by the ReactTabs plugin to change panels */
+
   }, {
     key: 'handleTabClick',
     value: function handleTabClick(index, last) {}
@@ -81368,7 +81381,8 @@ var Dashboard = function (_React$Component) {
     key: 'render',
     value: function render() {
       if (this.state.user !== null && this.state.moonlets !== null) {
-        return React.createElement('div', { id: 'dash-component' }, React.createElement(Tabs, { onSelect: this.handleTabClick, selectedIndex: 0 }, React.createElement(TabList, null, React.createElement(Tab, null, 'Profile'), React.createElement(Tab, null, 'History'), React.createElement(Tab, null, 'Settings')), React.createElement(TabPanel, {}, React.createElement(_ProfilePanel2.default, { user: this.state.user, moonlets: this.state.moonlets })), React.createElement(TabPanel, {}, React.createElement(_TransactionsPanel2.default, { user: this.state.user, credentials: this.state.credentials, url: this.props.apiURL })), React.createElement(TabPanel, {}, React.createElement(_SettingsPanel2.default, { user: this.state.user, credentials: this.state.credentials, url: this.props.apiURL }))));
+        return React.createElement('div', { id: 'dash-component' }, React.createElement(Tabs, { onSelect: this.handleTabClick, selectedIndex: 0 }, React.createElement(TabList, null, React.createElement(Tab, null, 'Profile'), React.createElement(Tab, null, 'History'), React.createElement(Tab, null, 'Settings')), React.createElement(TabPanel, {}, React.createElement(_ProfilePanel2.default, { user: this.state.user, moonlets: this.state.moonlets })), React.createElement(TabPanel, {}, React.createElement(_TransactionsPanel2.default, { user: this.state.user, credentials: this.state.credentials,
+          url: this.props.apiURL, query: this.queryUserData })), React.createElement(TabPanel, {}, React.createElement(_SettingsPanel2.default, { user: this.state.user, credentials: this.state.credentials, url: this.props.apiURL }))));
       }
       return React.createElement(_LoadingOverlay2.default, null);
     }
@@ -81384,9 +81398,7 @@ Dashboard.propTypes = {
 };
 
 // front end global error handler -> redirect to error page for now
-window.onerror = function () {
-  return window.location.href = '/error/455';
-};
+//window.onerror = () => window.location.href = '/error/455';
 
 ReactDOM.render(React.createElement(Dashboard, { apiURL: ASTRALUX_API, localURL: LOCAL_URL, username: currentUser }), document.getElementById('dashboard'));
 

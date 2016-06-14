@@ -110,6 +110,9 @@ export default function TransactionsPanel(props) {
          refundSuccess.classList.remove('hidden');
          refundSpinner.classList.add('hidden');
 
+         setTimeout(() => {
+           props.query(credentials);
+         }, 3000);
        }).catch((error) => { window.location.href = '/error/455'; });
      }
    }
@@ -122,7 +125,7 @@ export default function TransactionsPanel(props) {
       React.createElement('h2', { className: 'transaction-header' }, `Your Transaction History`),
       React.createElement('div', { id: 'refund-status' },
         React.createElement('p', { id: 'refund-success', className: 'hidden' },
-          'Your refund was successful! It should be displayed the next time you visit your dashboard!'),
+          'Your refund was successful!'),
         React.createElement('i', { id: 'refund-spinner', className: 'fa fa-spinner fa-pulse hidden' })
       ),
       React.createElement('table', { id: 'transaction-history' },
@@ -148,4 +151,5 @@ TransactionsPanel.propTypes = {
   user: React.PropTypes.object.isRequired,
   credentials: React.PropTypes.object.isRequired,
   url: React.PropTypes.string.isRequired,
+  query: React.PropTypes.func.isRequired,
 };

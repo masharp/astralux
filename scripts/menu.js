@@ -41,7 +41,7 @@ class Menu extends React.Component {
     });
   }
   /* Function that updates the menu bar with the current user's profile state.
-   * calls itself every 5 seconds and checks if the current stored state has changed.
+   * calls itself every 3 seconds and checks if the current stored state has changed.
    * updates as necessary
    * NOTE: Disabled due to poor performance. Explore other options.
    */
@@ -59,7 +59,7 @@ class Menu extends React.Component {
 
         self.setState({ user: updatedState, balance, size });
 
-        setTimeout(self.beginServerQuery, 5000);
+        setTimeout(self.beginServerQuery, 3000);
       }
     }
     Request.get(url, queryCallback).auth(credentials.username, credentials.password, true);
@@ -72,7 +72,7 @@ class Menu extends React.Component {
 
     return (
       React.createElement('div', { id: 'menu-bar' },
-        React.createElement('a', { className: 'navlink', href: '/' },
+        React.createElement('a', { className: `navlink ${hiddenLoggedIn}`, href: '/' },
           React.createElement('img', { className: 'menu-brand', src: '/assets/brand.png' })
         ),
         React.createElement('div', { id: 'link-nav' },
@@ -101,7 +101,7 @@ Menu.propTypes = {
 };
 
 // front end global error handler -> redirect to error page for now
-window.onerror = () => window.location.href = '/error/455';
+//window.onerror = () => window.location.href = '/error/455';
 
 ReactDOM.render(React.createElement(Menu, { apiURL: ASTRALUX_API, localURL: LOCAL_URL, username: currentUser }),
   document.getElementById('menu'));
